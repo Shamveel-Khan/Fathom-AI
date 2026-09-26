@@ -13,21 +13,93 @@
       "date": "October 13, 2026",
       "durationMinutes": 40,
       "participants": [
-        { "name": "Alex Rivera", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" },
-        { "name": "Leo Hartman", "role": "Frontend Engineer", "avatarColor": "bg-teal-500" },
-        { "name": "Marcus Brody", "role": "Backend Infrastructure Lead", "avatarColor": "bg-amber-500" }
+        {
+          "name": "Alex Rivera",
+          "role": "Lead Frontend Engineer",
+          "avatarColor": "bg-indigo-500"
+        },
+        {
+          "name": "Leo Hartman",
+          "role": "Frontend Engineer",
+          "avatarColor": "bg-teal-500"
+        },
+        {
+          "name": "Marcus Brody",
+          "role": "Backend Infrastructure Lead",
+          "avatarColor": "bg-amber-500"
+        }
       ],
       "transcript": [
-        { "id": "u-01", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "00:05", "text": "Okay team, the big question for today: do we migrate to React Server Components across the board, or do we keep the hybrid approach for the meeting detail page?" },
-        { "id": "u-02", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "00:48", "text": "I've been prototyping RSC for the transcript viewer. Server-side rendering dramatically reduces the initial load time — from 1.4s to under 400ms on a cold page load." },
-        { "id": "u-03", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "01:30", "text": "From the infra side, RSC means more compute on the edge. We'd need to make sure the meeting data fetching doesn't add latency — especially for large transcripts over 200 utterances." },
-        { "id": "u-04", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "02:05", "text": "I think we adopt RSC for static parts of the meeting detail page — header, metadata, transcript viewer. Keep the AI analysis panel as a client component since it has interactive tabs and optimistic state." },
-        { "id": "u-05", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "02:50", "text": "That hybrid architecture makes sense. We already have that split naturally from Commit 2. RSC for data, client for interaction." },
-        { "id": "u-06", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "03:25", "text": "Agreed. Let's also standardize error boundaries — right now a failed analysis fetch causes the whole page to go blank. Not ideal." },
-        { "id": "u-07", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "04:00", "text": "Good point Marcus. I'll add a MeetingErrorBoundary component that shows graceful fallback UI instead of crashing the render tree." },
-        { "id": "u-08", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "04:40", "text": "Can we also talk about the transcript search? Right now it's all in client state. For very long transcripts that could get slow. Should we consider server-side filtering?" },
-        { "id": "u-09", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "05:15", "text": "Let's defer server-side search until transcripts actually get long. Right now average is under 50 utterances. Flag it for Commit 4." },
-        { "id": "u-10", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "05:50", "text": "Sounds like a plan. I'll update the infrastructure notes with the RSC adoption decision. Let's move fast." }
+        {
+          "id": "u-01",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "00:05",
+          "text": "Okay team, the big question for today: do we migrate to React Server Components across the board, or do we keep the hybrid approach for the meeting detail page?"
+        },
+        {
+          "id": "u-02",
+          "speaker": "Leo Hartman",
+          "speakerRole": "Frontend Engineer",
+          "timestamp": "00:48",
+          "text": "I've been prototyping RSC for the transcript viewer. Server-side rendering dramatically reduces the initial load time — from 1.4s to under 400ms on a cold page load."
+        },
+        {
+          "id": "u-03",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Backend Infrastructure Lead",
+          "timestamp": "01:30",
+          "text": "From the infra side, RSC means more compute on the edge. We'd need to make sure the meeting data fetching doesn't add latency — especially for large transcripts over 200 utterances."
+        },
+        {
+          "id": "u-04",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "02:05",
+          "text": "I think we adopt RSC for static parts of the meeting detail page — header, metadata, transcript viewer. Keep the AI analysis panel as a client component since it has interactive tabs and optimistic state."
+        },
+        {
+          "id": "u-05",
+          "speaker": "Leo Hartman",
+          "speakerRole": "Frontend Engineer",
+          "timestamp": "02:50",
+          "text": "That hybrid architecture makes sense. We already have that split naturally from Commit 2. RSC for data, client for interaction."
+        },
+        {
+          "id": "u-06",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Backend Infrastructure Lead",
+          "timestamp": "03:25",
+          "text": "Agreed. Let's also standardize error boundaries — right now a failed analysis fetch causes the whole page to go blank. Not ideal."
+        },
+        {
+          "id": "u-07",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "04:00",
+          "text": "Good point Marcus. I'll add a MeetingErrorBoundary component that shows graceful fallback UI instead of crashing the render tree."
+        },
+        {
+          "id": "u-08",
+          "speaker": "Leo Hartman",
+          "speakerRole": "Frontend Engineer",
+          "timestamp": "04:40",
+          "text": "Can we also talk about the transcript search? Right now it's all in client state. For very long transcripts that could get slow. Should we consider server-side filtering?"
+        },
+        {
+          "id": "u-09",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "05:15",
+          "text": "Let's defer server-side search until transcripts actually get long. Right now average is under 50 utterances. Flag it for Commit 4."
+        },
+        {
+          "id": "u-10",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Backend Infrastructure Lead",
+          "timestamp": "05:50",
+          "text": "Sounds like a plan. I'll update the infrastructure notes with the RSC adoption decision. Let's move fast."
+        }
       ],
       "analysis": null
     },
@@ -37,44 +109,161 @@
       "date": "October 11, 2026",
       "durationMinutes": 50,
       "participants": [
-        { "name": "Alex Rivera", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" },
-        { "name": "Leo Hartman", "role": "Frontend Engineer", "avatarColor": "bg-teal-500" },
-        { "name": "Priya Nair", "role": "Senior Product Designer", "avatarColor": "bg-fuchsia-500" },
-        { "name": "Elena Rostova", "role": "Product Marketing Manager", "avatarColor": "bg-rose-500" }
+        {
+          "name": "Alex Rivera",
+          "role": "Lead Frontend Engineer",
+          "avatarColor": "bg-indigo-500"
+        },
+        {
+          "name": "Leo Hartman",
+          "role": "Frontend Engineer",
+          "avatarColor": "bg-teal-500"
+        },
+        {
+          "name": "Priya Nair",
+          "role": "Senior Product Designer",
+          "avatarColor": "bg-fuchsia-500"
+        },
+        {
+          "name": "Elena Rostova",
+          "role": "Product Marketing Manager",
+          "avatarColor": "bg-rose-500"
+        }
       ],
       "transcript": [
-        { "id": "u-01", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "00:05", "text": "Sprint 18 retrospective. Let's go round — what went well, what didn't, and what we improve. Leo, kick us off." },
-        { "id": "u-02", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "00:38", "text": "Went well: we shipped the AI analysis panel on time and it's getting great feedback in internal testing. Didn't go well: I got blocked waiting for API contract alignment for two days mid-sprint." },
-        { "id": "u-03", "speaker": "Priya Nair", "speakerRole": "Senior Product Designer", "timestamp": "01:20", "text": "Designs are moving faster now that we have the component system. The blocker for me was late design feedback — approval cycles took longer than estimated." },
-        { "id": "u-04", "speaker": "Elena Rostova", "speakerRole": "Product Marketing Manager", "timestamp": "02:05", "text": "From my side, Sprint 18 was great for content. We drafted the launch announcement and got it reviewed. But I need engineering to flag features at least 5 days before release so I can prep materials." },
-        { "id": "u-05", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "02:50", "text": "That's fair Elena. I'll add a 5-day marketing heads-up as a default checklist item in our release process going forward." },
-        { "id": "u-06", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "03:30", "text": "On the API contract thing — can we start doing 15-minute async API alignment sessions at the start of each sprint to prevent mid-sprint blocks?" },
-        { "id": "u-07", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "04:05", "text": "Yes. I'll set up a recurring 15-minute API contract review every Monday morning with Marcus joining async." },
-        { "id": "u-08", "speaker": "Priya Nair", "speakerRole": "Senior Product Designer", "timestamp": "04:50", "text": "For design reviews, let's try a 48-hour feedback SLA. If feedback isn't given in 48 hours, design is considered approved for implementation." },
-        { "id": "u-09", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "05:25", "text": "Love that. Let's document the 48-hour design review SLA in the team handbook. Sprint 19 goal: zero mid-sprint API contract blocks. Let's go." }
+        {
+          "id": "u-01",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "00:05",
+          "text": "Sprint 18 retrospective. Let's go round — what went well, what didn't, and what we improve. Leo, kick us off."
+        },
+        {
+          "id": "u-02",
+          "speaker": "Leo Hartman",
+          "speakerRole": "Frontend Engineer",
+          "timestamp": "00:38",
+          "text": "Went well: we shipped the AI analysis panel on time and it's getting great feedback in internal testing. Didn't go well: I got blocked waiting for API contract alignment for two days mid-sprint."
+        },
+        {
+          "id": "u-03",
+          "speaker": "Priya Nair",
+          "speakerRole": "Senior Product Designer",
+          "timestamp": "01:20",
+          "text": "Designs are moving faster now that we have the component system. The blocker for me was late design feedback — approval cycles took longer than estimated."
+        },
+        {
+          "id": "u-04",
+          "speaker": "Elena Rostova",
+          "speakerRole": "Product Marketing Manager",
+          "timestamp": "02:05",
+          "text": "From my side, Sprint 18 was great for content. We drafted the launch announcement and got it reviewed. But I need engineering to flag features at least 5 days before release so I can prep materials."
+        },
+        {
+          "id": "u-05",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "02:50",
+          "text": "That's fair Elena. I'll add a 5-day marketing heads-up as a default checklist item in our release process going forward."
+        },
+        {
+          "id": "u-06",
+          "speaker": "Leo Hartman",
+          "speakerRole": "Frontend Engineer",
+          "timestamp": "03:30",
+          "text": "On the API contract thing — can we start doing 15-minute async API alignment sessions at the start of each sprint to prevent mid-sprint blocks?"
+        },
+        {
+          "id": "u-07",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "04:05",
+          "text": "Yes. I'll set up a recurring 15-minute API contract review every Monday morning with Marcus joining async."
+        },
+        {
+          "id": "u-08",
+          "speaker": "Priya Nair",
+          "speakerRole": "Senior Product Designer",
+          "timestamp": "04:50",
+          "text": "For design reviews, let's try a 48-hour feedback SLA. If feedback isn't given in 48 hours, design is considered approved for implementation."
+        },
+        {
+          "id": "u-09",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "05:25",
+          "text": "Love that. Let's document the 48-hour design review SLA in the team handbook. Sprint 19 goal: zero mid-sprint API contract blocks. Let's go."
+        }
       ],
       "analysis": {
-        "executiveSummary": "Sprint 18 retrospective surfaced three concrete improvement areas: API contract misalignment causing mid-sprint engineering blocks, design approval cycle delays slowing feature delivery, and insufficient marketing lead time on feature releases. The team agreed on three immediate process changes to address each issue, targeting Sprint 19 execution with zero mid-sprint blocks.",
+        "executiveSummary": "The Sprint 18 retrospective brought together the frontend and product teams to review successes and operational roadblocks. The team successfully delivered the AI analysis panel on schedule, receiving positive internal feedback. However, several friction points were identified, including mid-sprint API contract delays, lengthy design review cycles, and late feature notifications for marketing.\n\nTo resolve these issues, the team established three concrete process improvements: a 5-day marketing advance notification for upcoming features, recurring Monday API alignment sessions to prevent mid-sprint blockers, and a strict 48-hour SLA for design feedback and approvals. These changes form the foundation for Sprint 19, with a primary objective of achieving zero mid-sprint API blocks.",
         "keyTakeaways": [
-          "AI analysis panel shipped on time and is receiving positive internal testing feedback.",
-          "API contract misalignment caused 2-day engineering block — new Monday alignment session added.",
-          "Design 48-hour feedback SLA adopted to prevent approval bottlenecks.",
-          "Marketing requires 5-day advance feature notice — added to release checklist."
+          "The AI analysis panel was shipped on time and received positive internal testing feedback.",
+          "Mid-sprint blockers caused by API contract alignment issues hindered frontend development velocity.",
+          "Delayed design review cycles slowed down implementation progress.",
+          "Marketing requires earlier feature flagging (at least 5 days prior to release) to adequately prepare launch materials.",
+          "New process SLAs and recurring alignment syncs were established to streamline cross-functional collaboration for Sprint 19."
         ],
         "actionItems": [
-          { "id": "act-1", "task": "Add 5-day marketing feature notice as default item in release checklist", "assignee": "Alex Rivera", "context": "Elena needs lead time to prepare launch materials", "completed": false },
-          { "id": "act-2", "task": "Set up recurring 15-minute Monday API contract review with Marcus", "assignee": "Alex Rivera", "context": "To prevent mid-sprint API misalignment blocks like Sprint 18", "completed": false },
-          { "id": "act-3", "task": "Document 48-hour design review SLA in team handbook", "assignee": "Priya Nair", "context": "Implicit approval after 48 hours if no feedback provided", "completed": false }
+          {
+            "id": "act-1",
+            "task": "Add a 5-day marketing heads-up as a default checklist item in the release process",
+            "assignee": "Alex Rivera",
+            "context": "Elena requested feature flagging at least 5 days before release, and Alex agreed to add it to the release process.",
+            "completed": false
+          },
+          {
+            "id": "act-2",
+            "task": "Set up a recurring 15-minute API contract review every Monday morning including Marcus",
+            "assignee": "Alex Rivera",
+            "context": "Leo suggested async API alignment sessions to prevent mid-sprint blocks, and Alex committed to setting up the recurring meeting.",
+            "completed": false
+          },
+          {
+            "id": "act-3",
+            "task": "Document the 48-hour design review SLA in the team handbook",
+            "assignee": "Alex Rivera",
+            "context": "Priya proposed a 48-hour feedback SLA for design approvals, which Alex supported and agreed to document.",
+            "completed": false
+          }
         ],
         "decisions": [
-          { "id": "dec-1", "decision": "48-hour design feedback SLA adopted — silence equals approval for implementation", "rationale": "Prevent design approval bottlenecks from blocking sprint velocity", "madeBy": "Priya Nair & Alex Rivera" },
-          { "id": "dec-2", "decision": "15-minute API contract review added to every Monday morning recurring sprint kickoff", "rationale": "Prevent repeat of Sprint 18 mid-sprint API contract block", "madeBy": "Alex Rivera" }
+          {
+            "id": "dec-1",
+            "decision": "Enforce a 5-day advance marketing heads-up for all releasing features",
+            "rationale": "To give product marketing sufficient time to prepare and review launch announcements and materials.",
+            "madeBy": "Alex Rivera"
+          },
+          {
+            "id": "dec-2",
+            "decision": "Implement recurring 15-minute API contract review sessions at the start of each sprint",
+            "rationale": "To prevent mid-sprint blocking issues caused by misaligned API contracts.",
+            "madeBy": "Alex Rivera"
+          },
+          {
+            "id": "dec-3",
+            "decision": "Adopt a 48-hour design feedback SLA where unreviewed designs default to approved",
+            "rationale": "To eliminate approval bottlenecks and prevent delayed design implementation.",
+            "madeBy": "Alex Rivera"
+          }
         ],
         "highlights": [
-          { "id": "hl-1", "quote": "I got blocked waiting for API contract alignment for two days mid-sprint.", "speaker": "Leo Hartman", "timestamp": "00:38", "significance": "Root cause of the sprint's primary velocity issue — drives new Monday alignment session." },
-          { "id": "hl-2", "quote": "Sprint 19 goal: zero mid-sprint API contract blocks. Let's go.", "speaker": "Alex Rivera", "timestamp": "05:25", "significance": "Clear team commitment with a measurable Sprint 19 success metric." }
+          {
+            "id": "hl-1",
+            "quote": "I got blocked waiting for API contract alignment for two days mid-sprint.",
+            "speaker": "Leo Hartman",
+            "timestamp": "00:38",
+            "significance": "Identified a core technical bottleneck that directly impacted sprint velocity."
+          },
+          {
+            "id": "hl-2",
+            "quote": "If feedback isn't given in 48 hours, design is considered approved for implementation.",
+            "speaker": "Priya Nair",
+            "timestamp": "04:50",
+            "significance": "Established a firm policy to resolve design approval bottlenecks."
+          }
         ],
-        "analyzedAt": "2026-10-11T16:00:00Z"
+        "analyzedAt": "2026-09-26T09:18:50.751Z"
       }
     }
   ]
