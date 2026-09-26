@@ -1,17 +1,23 @@
 /**
  * Repository singletons.
  *
- * To migrate from JSON → PostgreSQL:
- *   1. Create src/lib/repositories/postgresRepository.ts implementing the same interfaces.
- *   2. Replace the two exports below.
- *   3. No changes needed in API routes or UI.
+ * Automatically connects to Neon PostgreSQL when DATABASE_URL is set,
+ * and falls back to JSON file storage when running locally without a database.
  */
 
 import { JsonUserRepository, JsonMeetingRepository } from './jsonRepository';
+import { PostgresUserRepository, PostgresMeetingRepository } from './postgresRepository';
 import type { IUserRepository, IMeetingRepository } from './types';
 
-export const userRepository: IUserRepository = new JsonUserRepository();
-export const meetingRepository: IMeetingRepository = new JsonMeetingRepository();
+const usePostgres = Boolean(process.env.DATABASE_URL);
+
+export const userRepository: IUserRepository = usePostgres
+  ? new PostgresUserRepository()
+  : new JsonUserRepository();
+
+export const meetingRepository: IMeetingRepository = usePostgres
+  ? new PostgresMeetingRepository()
+  : new JsonMeetingRepository();
 
 // Re-export interfaces for convenience
 export type { IUserRepository, IMeetingRepository };

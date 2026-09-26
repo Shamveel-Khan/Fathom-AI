@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { AppNav } from '@/components/AppNav';
+import { MeetingPlayer } from '@/components/MeetingPlayer';
+import { MeetingTimeline } from '@/components/MeetingTimeline';
 import { TranscriptViewer } from '@/components/TranscriptViewer';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
-import { Meeting } from '@/lib/schemas/meeting';
-import { MeetingAnalysis } from '@/lib/schemas/analysis';
+import { HighlightModal } from '@/components/HighlightModal';
+import { Meeting, TranscriptUtterance, MeetingHighlight } from '@/lib/schemas/meeting';
 import {
   ArrowLeft,
   Calendar,
@@ -19,6 +21,7 @@ import {
   AlertCircle,
   Key,
   X,
+  Highlighter,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -38,9 +41,25 @@ export default function MeetingDetailPage() {
   const [error, setError] = useState<{ code?: string; message: string } | null>(null);
   const [highlightedTimestamp, setHighlightedTimestamp] = useState<string | null>(null);
 
+  // Playback state
+  const [currentTimeSeconds, setCurrentTimeSeconds] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
+
+  // Highlight modal state
+  const [isHighlightModalOpen, setIsHighlightModalOpen] = useState<boolean>(false);
+  const [selectedSnippet, setSelectedSnippet] = useState<{
+    quote: string;
+    speaker: string;
+    timestamp: string;
+  } | null>(null);
+
+  // BYOK Credentials
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [model, setModel] = useState('gpt-4o-mini');
+
+  const playbackTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load credentials
   useEffect(() => {
@@ -78,6 +97,29 @@ export default function MeetingDetailPage() {
     if (user) fetchMeeting();
   }, [user, fetchMeeting]);
 
+  // Simulated playback loop
+  useEffect(() => {
+    if (isPlaying) {
+      const intervalMs = 1000 / playbackSpeed;
+      playbackTimerRef.current = setInterval(() => {
+        setCurrentTimeSeconds((prev) => {
+          const maxSeconds = (meeting?.durationMinutes || 30) * 60;
+          if (prev >= maxSeconds) {
+            setIsPlaying(false);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, intervalMs);
+    } else if (playbackTimerRef.current) {
+      clearInterval(playbackTimerRef.current);
+    }
+
+    return () => {
+      if (playbackTimerRef.current) clearInterval(playbackTimerRef.current);
+    };
+  }, [isPlaying, playbackSpeed, meeting?.durationMinutes]);
+
   const handleSaveApiKey = (key: string, newBaseUrl?: string, newModel?: string) => {
     setApiKey(key);
     setBaseUrl(newBaseUrl || '');
@@ -87,6 +129,14 @@ export default function MeetingDetailPage() {
       newBaseUrl ? localStorage.setItem(LOCAL_STORAGE_BASE_URL, newBaseUrl) : localStorage.removeItem(LOCAL_STORAGE_BASE_URL);
       newModel ? localStorage.setItem(LOCAL_STORAGE_MODEL, newModel) : localStorage.removeItem(LOCAL_STORAGE_MODEL);
     } catch {}
+  };
+
+  const handleSeek = (seconds: number) => {
+    setCurrentTimeSeconds(seconds);
+  };
+
+  const handleTogglePlay = () => {
+    setIsPlaying((prev) => !prev);
   };
 
   const handleRunAnalysis = async (useMock = false) => {
@@ -108,7 +158,6 @@ export default function MeetingDetailPage() {
         const msg = typeof data.error === 'object' ? data.error?.message : data.error;
         throw new Error(msg || 'Analysis failed.');
       }
-      // Update meeting with persisted analysis
       setMeeting(data.meeting);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'An unexpected error occurred.';
@@ -128,6 +177,46 @@ export default function MeetingDetailPage() {
     }
   };
 
+  const handleHighlightSnippet = (utterance: TranscriptUtterance) => {
+    setSelectedSnippet({
+      quote: utterance.text,
+      speaker: utterance.speaker,
+      timestamp: utterance.timestamp,
+    });
+    setIsHighlightModalOpen(true);
+  };
+
+  const handleSaveCustomHighlight = async (highlight: MeetingHighlight) => {
+    const res = await fetch(`/api/meetings/${meetingId}/highlights`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(highlight),
+    });
+    const data = await res.json();
+    if (data.success) {
+      // Re-fetch meeting to refresh highlights list
+      await fetchMeeting();
+    }
+  };
+
+  const handleDeleteHighlight = async (highlightId: string) => {
+    const res = await fetch(`/api/meetings/${meetingId}/highlights?highlightId=${highlightId}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    if (data.success) {
+      await fetchMeeting();
+    }
+  };
+
+  const handleToggleActionItem = async (actionId: string, completed: boolean) => {
+    await fetch(`/api/meetings/${meetingId}/action-items/${actionId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ completed }),
+    });
+  };
+
   if (authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -140,7 +229,7 @@ export default function MeetingDetailPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <AppNav apiKey={apiKey} onSaveApiKey={handleSaveApiKey} baseUrl={baseUrl} model={model} />
 
-      {/* Meeting Sub-Header */}
+      {/* Meeting Header */}
       <div className="border-b border-slate-200 bg-white shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link
@@ -177,8 +266,23 @@ export default function MeetingDetailPage() {
                 </div>
               </div>
 
-              {/* Action buttons */}
+              {/* Action Buttons */}
               <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => {
+                    setSelectedSnippet({
+                      quote: meeting.transcript[0]?.text || '',
+                      speaker: meeting.transcript[0]?.speaker || 'Speaker',
+                      timestamp: '00:00',
+                    });
+                    setIsHighlightModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors"
+                >
+                  <Highlighter className="w-3.5 h-3.5" />
+                  <span>Highlight</span>
+                </button>
+
                 <button
                   onClick={() => handleRunAnalysis(true)}
                   disabled={isAnalyzing}
@@ -187,6 +291,7 @@ export default function MeetingDetailPage() {
                   <Play className="w-3 h-3 text-indigo-600" />
                   Instant Demo
                 </button>
+
                 <button
                   onClick={() => handleRunAnalysis(false)}
                   disabled={isAnalyzing}
@@ -210,7 +315,7 @@ export default function MeetingDetailPage() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-4">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         {/* Error Banner */}
         {error && (
           <div className="rounded-2xl bg-rose-50 border border-rose-200 p-4 flex items-start justify-between gap-3 text-rose-800">
@@ -238,27 +343,80 @@ export default function MeetingDetailPage() {
           </div>
         )}
 
-        {/* 2-Column Workspace */}
         {meeting && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[620px] pb-8">
-            <div className="lg:col-span-5 h-[650px] lg:h-[calc(100vh-260px)] min-h-[500px]">
-              <TranscriptViewer
-                transcript={meeting.transcript}
+          <>
+            {/* Top Row: Video Player & Visual Timeline */}
+            <div className="space-y-4">
+              <MeetingPlayer
+                durationMinutes={meeting.durationMinutes}
                 participants={meeting.participants}
-                highlightedTimestamp={highlightedTimestamp}
+                transcript={meeting.transcript}
+                currentTimeSeconds={currentTimeSeconds}
+                isPlaying={isPlaying}
+                playbackSpeed={playbackSpeed}
+                onTogglePlay={handleTogglePlay}
+                onSeek={handleSeek}
+                onChangeSpeed={setPlaybackSpeed}
+              />
+
+              <MeetingTimeline
+                durationMinutes={meeting.durationMinutes}
+                participants={meeting.participants}
+                transcript={meeting.transcript}
+                highlights={meeting.analysis?.highlights || []}
+                currentTimeSeconds={currentTimeSeconds}
+                onSeek={handleSeek}
               />
             </div>
-            <div className="lg:col-span-7 h-[650px] lg:h-[calc(100vh-260px)] min-h-[500px]">
-              <AnalysisPanel
-                analysis={meeting.analysis ?? null}
-                isLoading={isAnalyzing}
-                onSelectTimestamp={handleSelectTimestamp}
-                onTriggerAnalyze={() => handleRunAnalysis(false)}
-              />
+
+            {/* Bottom Row: 2-Column Split (Transcript + AI Intelligence) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[620px] pb-8">
+              <div className="lg:col-span-5 h-[650px] lg:h-[calc(100vh-280px)] min-h-[500px]">
+                <TranscriptViewer
+                  transcript={meeting.transcript}
+                  participants={meeting.participants}
+                  highlightedTimestamp={highlightedTimestamp}
+                  currentTimeSeconds={currentTimeSeconds}
+                  onSeek={handleSeek}
+                  onHighlightSnippet={handleHighlightSnippet}
+                />
+              </div>
+              <div className="lg:col-span-7 h-[650px] lg:h-[calc(100vh-280px)] min-h-[500px]">
+                <AnalysisPanel
+                  analysis={meeting.analysis ?? null}
+                  isLoading={isAnalyzing}
+                  onSelectTimestamp={handleSelectTimestamp}
+                  onSeek={handleSeek}
+                  onTriggerAnalyze={() => handleRunAnalysis(false)}
+                  onToggleActionItem={handleToggleActionItem}
+                  onDeleteHighlight={handleDeleteHighlight}
+                  onOpenCreateHighlight={() => {
+                    setSelectedSnippet({
+                      quote: meeting.transcript[0]?.text || '',
+                      speaker: meeting.transcript[0]?.speaker || 'Speaker',
+                      timestamp: '00:00',
+                    });
+                    setIsHighlightModalOpen(true);
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </main>
+
+      {/* Custom Highlight Creation Modal */}
+      <HighlightModal
+        isOpen={isHighlightModalOpen}
+        onClose={() => {
+          setIsHighlightModalOpen(false);
+          setSelectedSnippet(null);
+        }}
+        initialQuote={selectedSnippet?.quote || ''}
+        initialSpeaker={selectedSnippet?.speaker || ''}
+        initialTimestamp={selectedSnippet?.timestamp || '00:00'}
+        onSaveHighlight={handleSaveCustomHighlight}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { MeetingAnalysis } from '@/lib/schemas/analysis';
+import { MeetingAnalysis, Highlight } from '@/lib/schemas/analysis';
 
 export interface Participant {
   name: string;
@@ -11,12 +11,20 @@ export interface TranscriptUtterance {
   id: string;
   speaker: string;
   speakerRole?: string;
-  timestamp: string;
+  timestamp: string; // e.g. "01:24"
+  timestampSeconds?: number; // e.g. 84
   text: string;
 }
 
-export interface StoredMeetingAnalysis extends MeetingAnalysis {
+export interface MeetingHighlight extends Highlight {
+  category?: 'key_moment' | 'decision' | 'action' | 'risk' | 'question' | 'user_saved' | string;
+  isUserSaved?: boolean;
+  createdAt?: string;
+}
+
+export interface StoredMeetingAnalysis extends Omit<MeetingAnalysis, 'highlights'> {
   analyzedAt: string;
+  highlights: MeetingHighlight[];
 }
 
 export interface Meeting {
@@ -24,6 +32,7 @@ export interface Meeting {
   title: string;
   date: string;
   durationMinutes: number;
+  videoUrl?: string;
   participants: Participant[];
   transcript: TranscriptUtterance[];
   analysis?: StoredMeetingAnalysis | null;

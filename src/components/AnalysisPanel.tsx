@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MeetingAnalysis, ActionItem } from '@/lib/schemas/analysis';
+import { StoredMeetingAnalysis, MeetingHighlight } from '@/lib/schemas/meeting';
+import { ActionItem } from '@/lib/schemas/analysis';
+import { timestampToSeconds } from '@/lib/utils/time';
 import {
   Sparkles,
   CheckSquare,
@@ -13,13 +15,23 @@ import {
   Quote,
   Clock,
   ArrowRight,
+  Trash2,
+  Bookmark,
+  AlertTriangle,
+  HelpCircle,
+  Plus,
+  Play,
 } from 'lucide-react';
 
 interface AnalysisPanelProps {
-  analysis: MeetingAnalysis | null;
+  analysis: StoredMeetingAnalysis | null;
   isLoading: boolean;
   onSelectTimestamp?: (timestamp: string) => void;
+  onSeek?: (seconds: number) => void;
   onTriggerAnalyze: () => void;
+  onToggleActionItem?: (actionId: string, completed: boolean) => Promise<void>;
+  onDeleteHighlight?: (highlightId: string) => Promise<void>;
+  onOpenCreateHighlight?: () => void;
 }
 
 type TabType = 'summary' | 'actionItems' | 'decisions' | 'highlights';
@@ -28,23 +40,41 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   analysis,
   isLoading,
   onSelectTimestamp,
+  onSeek,
   onTriggerAnalyze,
+  onToggleActionItem,
+  onDeleteHighlight,
+  onOpenCreateHighlight,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('summary');
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
+  const [highlightFilter, setHighlightFilter] = useState<string>('all');
   const [actionItemsState, setActionItemsState] = useState<ActionItem[]>([]);
 
-  // Synchronize local action items state when analysis updates
   React.useEffect(() => {
     if (analysis?.actionItems) {
       setActionItemsState(analysis.actionItems);
     }
   }, [analysis]);
 
-  const toggleActionItem = (id: string) => {
+  const handleToggleAction = async (id: string, currentCompleted: boolean) => {
+    const nextCompleted = !currentCompleted;
+    // Optimistic UI update
     setActionItemsState((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, completed: !item.completed } : item))
+      prev.map((item) => (item.id === id ? { ...item, completed: nextCompleted } : item))
     );
+    // Call server to persist
+    if (onToggleActionItem) {
+      try {
+        await onToggleActionItem(id, nextCompleted);
+      } catch (err) {
+        console.error('Failed to toggle action item:', err);
+        // Rollback on error
+        setActionItemsState((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, completed: currentCompleted } : item))
+        );
+      }
+    }
   };
 
   const handleCopyMarkdown = () => {
@@ -74,7 +104,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
     md += `\n`;
 
     md += `## Key Highlights\n`;
-    analysis.highlights.forEach((h) => {
+    (analysis.highlights || []).forEach((h) => {
       md += `* [${h.timestamp}] *"${h.quote}"* — **${h.speaker}** (${h.significance})\n`;
     });
 
@@ -83,7 +113,32 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
     setTimeout(() => setCopiedMarkdown(false), 2000);
   };
 
-  // Loading Skeleton State
+  // Filter highlights
+  const highlightsList = analysis?.highlights || [];
+  const filteredHighlights = highlightsList.filter((h) => {
+    if (highlightFilter === 'all') return true;
+    if (highlightFilter === 'user_saved') return h.isUserSaved;
+    return h.category === highlightFilter;
+  });
+
+  const getCategoryBadge = (cat?: string, isUserSaved?: boolean) => {
+    switch (cat) {
+      case 'decision':
+        return { label: 'Decision', bg: 'bg-amber-50 text-amber-700 border-amber-200' };
+      case 'action':
+        return { label: 'Action Item', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+      case 'risk':
+        return { label: 'Risk', bg: 'bg-rose-50 text-rose-700 border-rose-200' };
+      case 'question':
+        return { label: 'Question', bg: 'bg-sky-50 text-sky-700 border-sky-200' };
+      case 'user_saved':
+      default:
+        return isUserSaved
+          ? { label: 'User Saved', bg: 'bg-indigo-50 text-indigo-700 border-indigo-200' }
+          : { label: 'Key Moment', bg: 'bg-purple-50 text-purple-700 border-purple-200' };
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-6">
@@ -99,17 +154,11 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
           <div className="h-4 bg-slate-200 rounded-md w-full animate-pulse" />
           <div className="h-4 bg-slate-200 rounded-md w-5/6 animate-pulse" />
           <div className="h-24 bg-slate-100 rounded-xl animate-pulse" />
-          <div className="space-y-2 pt-2">
-            <div className="h-10 bg-slate-100 rounded-lg animate-pulse" />
-            <div className="h-10 bg-slate-100 rounded-lg animate-pulse" />
-            <div className="h-10 bg-slate-100 rounded-lg animate-pulse" />
-          </div>
         </div>
       </div>
     );
   }
 
-  // Empty State
   if (!analysis) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center">
@@ -190,7 +239,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
             <Highlighter className="w-3.5 h-3.5 text-rose-600" />
             <span>Highlights</span>
             <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">
-              {analysis.highlights.length}
+              {highlightsList.length}
             </span>
           </button>
         </div>
@@ -216,7 +265,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
       </div>
 
       {/* Tab Contents */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-6">
+      <div className="flex-1 overflow-y-auto p-5 space-y-5">
         {/* SUMMARY TAB */}
         {activeTab === 'summary' && (
           <div className="space-y-6 animate-in fade-in duration-200">
@@ -257,11 +306,12 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Action Items ({actionItemsState.filter((a) => a.completed).length}/{actionItemsState.length} done)
               </h3>
+              <span className="text-[11px] text-slate-400">Click to toggle & save</span>
             </div>
             {actionItemsState.map((item) => (
               <div
                 key={item.id}
-                onClick={() => toggleActionItem(item.id)}
+                onClick={() => handleToggleAction(item.id, item.completed)}
                 className={`flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer ${
                   item.completed
                     ? 'bg-slate-50/80 border-slate-200 opacity-60'
@@ -271,7 +321,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
                 <input
                   type="checkbox"
                   checked={item.completed}
-                  onChange={() => {}} // handled by parent div onClick
+                  onChange={() => {}}
                   className="w-4 h-4 mt-0.5 rounded-sm text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
                 <div className="flex-1 min-w-0">
@@ -335,38 +385,105 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
 
         {/* HIGHLIGHTS TAB */}
         {activeTab === 'highlights' && (
-          <div className="space-y-3.5 animate-in fade-in duration-200">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-              Key Quotes & Pivotal Moments
-            </h3>
-            {analysis.highlights.map((hl) => (
-              <div
-                key={hl.id}
-                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all space-y-2.5 shadow-2xs"
-              >
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-900 flex items-center gap-1.5">
-                    <Quote className="w-3.5 h-3.5 text-indigo-500" />
-                    {hl.speaker}
-                  </span>
+          <div className="space-y-4 animate-in fade-in duration-200">
+            {/* Filter Pills & Add Highlight button */}
+            <div className="flex items-center justify-between gap-2 flex-wrap pb-1">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {['all', 'key_moment', 'decision', 'action', 'risk', 'user_saved'].map((f) => (
                   <button
-                    onClick={() => onSelectTimestamp?.(hl.timestamp)}
-                    className="flex items-center gap-1 text-[11px] font-mono text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded-md transition-colors"
-                    title="Jump to utterance in transcript"
+                    key={f}
+                    onClick={() => setHighlightFilter(f)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium capitalize transition-all ${
+                      highlightFilter === f
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
                   >
-                    <Clock className="w-3 h-3" />
-                    {hl.timestamp}
+                    {f.replace('_', ' ')}
                   </button>
-                </div>
-                <blockquote className="text-xs sm:text-sm italic text-slate-700 border-l-2 border-indigo-400 pl-3 py-0.5">
-                  &quot;{hl.quote}&quot;
-                </blockquote>
-                <p className="text-[11px] text-slate-500 leading-normal">
-                  <strong className="font-medium text-slate-700">Significance: </strong>
-                  {hl.significance}
-                </p>
+                ))}
               </div>
-            ))}
+
+              {onOpenCreateHighlight && (
+                <button
+                  onClick={onOpenCreateHighlight}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-colors ml-auto"
+                >
+                  <Plus className="w-3 h-3" />
+                  Add Highlight
+                </button>
+              )}
+            </div>
+
+            {/* Highlight Cards */}
+            {filteredHighlights.length === 0 ? (
+              <div className="text-center py-10 text-slate-400 text-xs">
+                No highlights found in this category.
+              </div>
+            ) : (
+              filteredHighlights.map((hl) => {
+                const badge = getCategoryBadge(hl.category, hl.isUserSaved);
+                const hSecs = timestampToSeconds(hl.timestamp);
+
+                return (
+                  <div
+                    key={hl.id}
+                    className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all space-y-2.5 shadow-2xs group"
+                  >
+                    <div className="flex items-center justify-between text-xs gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-900 flex items-center gap-1.5">
+                          <Quote className="w-3.5 h-3.5 text-indigo-500" />
+                          {hl.speaker}
+                        </span>
+                        <span
+                          className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${badge.bg}`}
+                        >
+                          {badge.label}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        {/* Seek button */}
+                        <button
+                          onClick={() => {
+                            onSeek?.(hSecs);
+                            onSelectTimestamp?.(hl.timestamp);
+                          }}
+                          className="flex items-center gap-1 text-[11px] font-mono text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded-md transition-colors"
+                          title="Jump playback to this timestamp"
+                        >
+                          <Play className="w-2.5 h-2.5 fill-current" />
+                          {hl.timestamp}
+                        </button>
+
+                        {/* Delete User Highlight */}
+                        {hl.isUserSaved && onDeleteHighlight && (
+                          <button
+                            onClick={() => onDeleteHighlight(hl.id)}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all"
+                            title="Delete custom highlight"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <blockquote className="text-xs sm:text-sm italic text-slate-700 border-l-2 border-indigo-400 pl-3 py-0.5">
+                      &quot;{hl.quote}&quot;
+                    </blockquote>
+
+                    {hl.significance && (
+                      <p className="text-[11px] text-slate-500 leading-normal">
+                        <strong className="font-medium text-slate-700">Significance: </strong>
+                        {hl.significance}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         )}
       </div>

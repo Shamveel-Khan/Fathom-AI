@@ -1,5 +1,5 @@
 import { User, UserAccount } from '@/lib/auth/types';
-import { Meeting, MeetingSummary } from '@/lib/schemas/meeting';
+import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
 
 // -------------------------------------------------------
@@ -22,4 +22,20 @@ export interface IMeetingRepository {
     meetingId: string,
     analysis: MeetingAnalysis
   ): Promise<Meeting>;
+  addHighlight(
+    userId: string,
+    meetingId: string,
+    highlight: MeetingHighlight
+  ): Promise<MeetingHighlight>;
+  deleteHighlight(
+    userId: string,
+    meetingId: string,
+    highlightId: string
+  ): Promise<boolean>;
+  toggleActionItem(
+    userId: string,
+    meetingId: string,
+    actionItemId: string,
+    completed: boolean
+  ): Promise<boolean>;
 }
