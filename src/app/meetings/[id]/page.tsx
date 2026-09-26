@@ -9,6 +9,10 @@ import { MeetingTimeline } from '@/components/MeetingTimeline';
 import { TranscriptViewer } from '@/components/TranscriptViewer';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
 import { HighlightModal } from '@/components/HighlightModal';
+import { ShareModal } from '@/components/ShareModal';
+import { ExportModal } from '@/components/ExportModal';
+import { MeetingDetailSkeleton } from '@/components/Skeletons';
+import { getTemplateDefinition } from '@/lib/templates/definitions';
 import { Meeting, TranscriptUtterance, MeetingHighlight } from '@/lib/schemas/meeting';
 import {
   ArrowLeft,
@@ -23,9 +27,10 @@ import {
   X,
   Highlighter,
   Share2,
+  Download,
+  ShieldAlert,
 } from 'lucide-react';
 import Link from 'next/link';
-import { ShareModal } from '@/components/ShareModal';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
@@ -41,6 +46,7 @@ function MeetingDetailPageContent() {
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isReviewLoading, setIsReviewLoading] = useState(false);
   const [error, setError] = useState<{ code?: string; message: string } | null>(null);
   const [highlightedTimestamp, setHighlightedTimestamp] = useState<string | null>(null);
 
@@ -60,16 +66,15 @@ function MeetingDetailPageContent() {
     }
   }, [initialT]);
 
-  // Highlight modal state
+  // Modal states
   const [isHighlightModalOpen, setIsHighlightModalOpen] = useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [selectedSnippet, setSelectedSnippet] = useState<{
     quote: string;
     speaker: string;
     timestamp: string;
   } | null>(null);
-
-  // Share modal state
-  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // BYOK Credentials
   const [apiKey, setApiKey] = useState('');
@@ -245,6 +250,30 @@ function MeetingDetailPageContent() {
     });
   };
 
+  const handleRunReview = async () => {
+    if (!meeting) return;
+    setIsReviewLoading(true);
+    try {
+      const res = await fetch(`/api/meetings/${meetingId}/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(apiKey ? { 'x-api-key': apiKey } : {}),
+          ...(baseUrl ? { 'x-base-url': baseUrl } : {}),
+        },
+        body: JSON.stringify({ model, useMock: false }),
+      });
+      const data = await res.json();
+      if (data.success && data.review) {
+        setMeeting((prev) => (prev ? { ...prev, review: data.review } : prev));
+      }
+    } catch (err) {
+      console.error('Failed to run AI review:', err);
+    } finally {
+      setIsReviewLoading(false);
+    }
+  };
+
   if (authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -252,6 +281,12 @@ function MeetingDetailPageContent() {
       </div>
     );
   }
+
+  if (isFetching && !meeting) {
+    return <MeetingDetailSkeleton />;
+  }
+
+  const tpl = getTemplateDefinition(meeting?.template);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -267,15 +302,15 @@ function MeetingDetailPageContent() {
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Meetings
           </Link>
 
-          {isFetching ? (
-            <div className="space-y-2">
-              <div className="h-6 w-80 bg-slate-200 rounded animate-pulse" />
-              <div className="h-4 w-56 bg-slate-100 rounded animate-pulse" />
-            </div>
-          ) : meeting ? (
+          {meeting ? (
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-xl font-bold text-slate-900">{meeting.title}</h1>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="text-xl font-bold text-slate-900">{meeting.title}</h1>
+                  <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${tpl.bgLight} ${tpl.color} ${tpl.borderLight}`}>
+                    {tpl.badge}
+                  </span>
+                </div>
                 <div className="flex flex-wrap items-center gap-4 mt-1.5 text-xs text-slate-500">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" /> {meeting.date}
@@ -295,7 +330,16 @@ function MeetingDetailPageContent() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                <button
+                  onClick={() => setIsExportModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+                  title="Export report, transcript, or markdown"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Export</span>
+                </button>
+
                 <button
                   onClick={() => {
                     setSelectedSnippet({
@@ -317,7 +361,7 @@ function MeetingDetailPageContent() {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors"
                   >
                     <Share2 className="w-3.5 h-3.5" />
-                    Share
+                    <span>Share</span>
                   </button>
                 )}
 
@@ -327,23 +371,23 @@ function MeetingDetailPageContent() {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors disabled:opacity-50"
                 >
                   <Play className="w-3 h-3 text-indigo-600" />
-                  Instant Demo
+                  <span>Demo Mode</span>
                 </button>
 
                 <button
                   onClick={() => handleRunAnalysis(false)}
                   disabled={isAnalyzing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isAnalyzing ? (
                     <>
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      Analyzing…
+                      <span>Analyzing…</span>
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-3.5 h-3.5" />
-                      {meeting.analysis ? 'Re-generate' : 'Generate AI Summary'}
+                      <span>{meeting.analysis ? 'Re-analyze' : 'Analyze AI'}</span>
                     </>
                   )}
                 </button>
@@ -422,10 +466,15 @@ function MeetingDetailPageContent() {
               <div className="lg:col-span-7 h-[650px] lg:h-[calc(100vh-280px)] min-h-[500px]">
                 <AnalysisPanel
                   analysis={meeting.analysis ?? null}
+                  review={meeting.review ?? null}
                   isLoading={isAnalyzing}
+                  isReviewLoading={isReviewLoading}
+                  isOwner={meeting.isOwner !== false}
                   onSelectTimestamp={handleSelectTimestamp}
                   onSeek={handleSeek}
                   onTriggerAnalyze={() => handleRunAnalysis(false)}
+                  onTriggerReview={handleRunReview}
+                  onOpenExportModal={() => setIsExportModalOpen(true)}
                   onToggleActionItem={handleToggleActionItem}
                   onUpdateActionItem={handleUpdateActionItem}
                   onDeleteHighlight={handleDeleteHighlight}
@@ -463,6 +512,15 @@ function MeetingDetailPageContent() {
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
       />
+
+      {/* Export Modal */}
+      {meeting && (
+        <ExportModal
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+          meeting={meeting}
+        />
+      )}
     </div>
   );
 }

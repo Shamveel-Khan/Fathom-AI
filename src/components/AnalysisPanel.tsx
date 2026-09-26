@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { StoredMeetingAnalysis, MeetingHighlight } from '@/lib/schemas/meeting';
 import { ActionItem } from '@/lib/schemas/analysis';
+import { AIReview } from '@/lib/schemas/review';
+import { AIReviewTab } from './AIReviewTab';
 import { timestampToSeconds } from '@/lib/utils/time';
 import {
   Sparkles,
@@ -21,28 +23,42 @@ import {
   HelpCircle,
   Plus,
   Play,
+  ShieldAlert,
+  Download,
 } from 'lucide-react';
 
 interface AnalysisPanelProps {
   analysis: StoredMeetingAnalysis | null;
+  review?: AIReview | null;
   isLoading: boolean;
+  isReviewLoading?: boolean;
+  isOwner?: boolean;
+  readOnly?: boolean;
   onSelectTimestamp?: (timestamp: string) => void;
   onSeek?: (seconds: number) => void;
   onTriggerAnalyze: () => void;
+  onTriggerReview?: () => void;
+  onOpenExportModal?: () => void;
   onToggleActionItem?: (actionId: string, completed: boolean) => Promise<void>;
   onUpdateActionItem?: (actionId: string, updates: { completed?: boolean; assignee?: string; dueDate?: string }) => Promise<void>;
   onDeleteHighlight?: (highlightId: string) => Promise<void>;
   onOpenCreateHighlight?: () => void;
 }
 
-type TabType = 'summary' | 'actionItems' | 'decisions' | 'highlights';
+type TabType = 'summary' | 'review' | 'actionItems' | 'decisions' | 'highlights';
 
 export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   analysis,
+  review,
   isLoading,
+  isReviewLoading = false,
+  isOwner = true,
+  readOnly = false,
   onSelectTimestamp,
   onSeek,
   onTriggerAnalyze,
+  onTriggerReview,
+  onOpenExportModal,
   onToggleActionItem,
   onUpdateActionItem,
   onDeleteHighlight,
@@ -63,6 +79,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   }, [analysis]);
 
   const handleToggleAction = async (id: string, currentCompleted: boolean) => {
+    if (readOnly) return;
     const nextCompleted = !currentCompleted;
     // Optimistic UI update
     setActionItemsState((prev) =>
@@ -83,6 +100,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   };
 
   const handleStartEditAction = (e: React.MouseEvent, item: ActionItem) => {
+    if (readOnly) return;
     e.stopPropagation();
     setEditingActionId(item.id);
     setEditAssignee(item.assignee || '');
@@ -205,13 +223,15 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
         <p className="text-xs text-slate-500 max-w-sm mb-6 leading-relaxed">
           Extract structured executive summaries, actionable checklists, core decisions, and timestamped highlights in seconds.
         </p>
-        <button
-          onClick={onTriggerAnalyze}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all hover:shadow-indigo-200 hover:shadow-md cursor-pointer"
-        >
-          <span>Run AI Analysis</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        {!readOnly && (
+          <button
+            onClick={onTriggerAnalyze}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all hover:shadow-indigo-200 hover:shadow-md cursor-pointer"
+          >
+            <span>Run AI Analysis</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
     );
   }
@@ -221,10 +241,10 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
       {/* Header Tabs & Export */}
       <div className="border-b border-slate-200 bg-slate-50/50 p-2 sm:px-4 sm:py-2.5 flex items-center justify-between gap-2 flex-wrap">
         {/* Tab Controls */}
-        <div className="flex items-center gap-1 bg-slate-200/60 p-1 rounded-xl">
+        <div className="flex items-center gap-1 bg-slate-200/60 p-1 rounded-xl overflow-x-auto max-w-full">
           <button
             onClick={() => setActiveTab('summary')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
               activeTab === 'summary'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -235,8 +255,27 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('review')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
+              activeTab === 'review'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-indigo-600" />
+            <span>AI Review</span>
+            {review && (
+              <span className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                review.overallScore >= 85 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {review.overallScore}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setActiveTab('actionItems')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
               activeTab === 'actionItems'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -251,7 +290,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
 
           <button
             onClick={() => setActiveTab('decisions')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
               activeTab === 'decisions'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -266,7 +305,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
 
           <button
             onClick={() => setActiveTab('highlights')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
               activeTab === 'highlights'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -280,28 +319,52 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
           </button>
         </div>
 
-        {/* Copy Markdown Button */}
-        <button
-          onClick={handleCopyMarkdown}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-200/70 border border-slate-200 bg-white transition-all ml-auto"
-          title="Copy markdown export"
-        >
-          {copiedMarkdown ? (
-            <>
-              <Check className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-emerald-700 font-semibold">Copied Markdown</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3.5 h-3.5" />
-              <span>Copy All</span>
-            </>
+        {/* Action buttons: Export Modal & Quick Copy */}
+        <div className="flex items-center gap-1.5 ml-auto">
+          {onOpenExportModal && (
+            <button
+              onClick={onOpenExportModal}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-200/70 border border-slate-200 bg-white transition-all shadow-2xs cursor-pointer"
+              title="Export report, transcript, or markdown"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Export</span>
+            </button>
           )}
-        </button>
+
+          <button
+            onClick={handleCopyMarkdown}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-200/70 border border-slate-200 bg-white transition-all shadow-2xs cursor-pointer"
+            title="Copy markdown summary"
+          >
+            {copiedMarkdown ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-700 font-semibold">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5 text-slate-500" />
+                <span className="hidden sm:inline">Copy All</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Tab Contents */}
       <div className="flex-1 overflow-y-auto p-5 space-y-5">
+        {/* REVIEW TAB */}
+        {activeTab === 'review' && (
+          <AIReviewTab
+            review={review}
+            isLoading={isReviewLoading}
+            isOwner={isOwner && !readOnly}
+            onGenerateReview={onTriggerReview}
+            onSelectTimestamp={onSelectTimestamp}
+          />
+        )}
+
         {/* SUMMARY TAB */}
         {activeTab === 'summary' && (
           <div className="space-y-6 animate-in fade-in duration-200">

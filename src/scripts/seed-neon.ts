@@ -112,18 +112,20 @@ export async function seedDatabase() {
         // Upsert Meeting
         await queryClient(
           client,
-          `INSERT INTO meetings (id, user_id, title, meeting_date, duration_minutes)
-           VALUES ($1, $2, $3, $4, $5)
+          `INSERT INTO meetings (id, user_id, title, meeting_date, duration_minutes, template)
+           VALUES ($1, $2, $3, $4, $5, $6)
            ON CONFLICT (id) DO UPDATE SET
              title = EXCLUDED.title,
              meeting_date = EXCLUDED.meeting_date,
-             duration_minutes = EXCLUDED.duration_minutes`,
+             duration_minutes = EXCLUDED.duration_minutes,
+             template = EXCLUDED.template`,
           [
             meeting.id,
             userAccount.id,
             meeting.title,
             meeting.date,
             meeting.durationMinutes || 30,
+            meeting.template || 'general',
           ]
         );
 
@@ -134,6 +136,7 @@ export async function seedDatabase() {
         await queryClient(client, `DELETE FROM action_items WHERE meeting_id = $1`, [meeting.id]);
         await queryClient(client, `DELETE FROM decisions WHERE meeting_id = $1`, [meeting.id]);
         await queryClient(client, `DELETE FROM highlights WHERE meeting_id = $1`, [meeting.id]);
+        await queryClient(client, `DELETE FROM ai_reviews WHERE meeting_id = $1`, [meeting.id]);
 
         // Insert Participants with meeting-scoped IDs
         for (let i = 0; i < (meeting.participants || []).length; i++) {
@@ -196,7 +199,6 @@ export async function seedDatabase() {
           for (let i = 0; i < (meeting.analysis.actionItems || []).length; i++) {
             const a = meeting.analysis.actionItems[i];
             const actionId = `${meeting.id}-act-${a.id || i + 1}`;
-            // Sample due date if not present for realistic seed data
             const sampleDueDates = ['Oct 15, 2026', 'Oct 20, 2026', 'Nov 1, 2026'];
             const dueDate = a.dueDate || sampleDueDates[i % sampleDueDates.length];
 
@@ -220,7 +222,6 @@ export async function seedDatabase() {
           for (let i = 0; i < (meeting.analysis.decisions || []).length; i++) {
             const d = meeting.analysis.decisions[i];
             const decisionId = `${meeting.id}-dec-${d.id || i + 1}`;
-            // Seed a matching timestamp from transcript if present
             const matchingUtt = meeting.transcript?.[Math.min(i * 2 + 1, (meeting.transcript?.length || 1) - 1)];
             const ts = d.timestamp || matchingUtt?.timestamp || '02:15';
             const tsSecs = d.timestampSeconds ?? timestampToSeconds(ts);
@@ -255,6 +256,33 @@ export async function seedDatabase() {
               ]
             );
           }
+        }
+
+        // Insert AI Review if present
+        if (meeting.review) {
+          const rev = meeting.review;
+          const reviewId = `rev-${meeting.id}`;
+          await queryClient(
+            client,
+            `INSERT INTO ai_reviews (
+               id, meeting_id, overall_score, summary, unresolved_questions,
+               unassigned_responsibilities, missing_deadlines, missing_dependencies,
+               contradictions, potential_risks, reviewed_at
+             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+            [
+              reviewId,
+              meeting.id,
+              rev.overallScore ?? 85,
+              rev.summary || '',
+              JSON.stringify(rev.unresolvedQuestions || []),
+              JSON.stringify(rev.unassignedResponsibilities || []),
+              JSON.stringify(rev.missingDeadlines || []),
+              JSON.stringify(rev.missingDependencies || []),
+              JSON.stringify(rev.contradictions || []),
+              JSON.stringify(rev.potentialRisks || []),
+              rev.reviewedAt || new Date().toISOString(),
+            ]
+          );
         }
       }
     }

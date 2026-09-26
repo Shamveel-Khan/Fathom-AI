@@ -1,4 +1,5 @@
 import { MeetingAnalysis, Highlight } from '@/lib/schemas/analysis';
+import { AIReview } from '@/lib/schemas/review';
 
 export interface Participant {
   name: string;
@@ -33,9 +34,11 @@ export interface Meeting {
   date: string;
   durationMinutes: number;
   videoUrl?: string;
+  template?: string; // 'general' | 'one_on_one' | 'sales' | 'interview' | 'project'
   participants: Participant[];
   transcript: TranscriptUtterance[];
   analysis?: StoredMeetingAnalysis | null;
+  review?: AIReview | null;
   isOwner?: boolean;
   isShared?: boolean;
   sharedBy?: {
@@ -53,8 +56,10 @@ export interface MeetingSummary {
   title: string;
   date: string;
   durationMinutes: number;
+  template?: string;
   participants: Participant[];
   hasAnalysis: boolean;
+  hasReview?: boolean;
   actionItemsCount: number;
   decisionsCount: number;
   isShared?: boolean;

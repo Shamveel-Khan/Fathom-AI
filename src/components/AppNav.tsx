@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from './AuthProvider';
-import { LogOut, Key, ChevronDown, Users, Sparkles, Search } from 'lucide-react';
+import { LogOut, Key, ChevronDown, Users, Sparkles, Search, Sliders } from 'lucide-react';
 import { ApiKeyModal } from './ApiKeyModal';
 import { SearchModal } from './SearchModal';
 
@@ -55,11 +55,21 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
               href="/dashboard"
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 pathname === '/dashboard'
-                  ? 'bg-indigo-50 text-indigo-700'
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
               Meetings
+            </Link>
+            <Link
+              href="/settings"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                pathname === '/settings'
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              Settings
             </Link>
           </div>
 
@@ -166,10 +176,18 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
                       </button>
                     </div>
 
-                    <div className="p-2 border-t border-slate-100">
+                    <div className="p-2 border-t border-slate-100 space-y-1">
+                      <Link
+                        href="/settings"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors"
+                      >
+                        <Sliders className="w-3.5 h-3.5 text-slate-400" />
+                        Settings
+                      </Link>
                       <button
                         onClick={() => { setIsUserMenuOpen(false); logout(); }}
-                        className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-rose-50 text-rose-600 text-xs font-medium transition-colors"
+                        className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-rose-50 text-rose-600 text-xs font-medium transition-colors cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         Sign Out

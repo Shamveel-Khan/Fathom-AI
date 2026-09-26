@@ -10,6 +10,7 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   quickLogin: (userId: string) => Promise<void>;
   logout: () => Promise<void>;
+  mutateUser: (newUser?: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -19,16 +20,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+      }
+    } catch {}
+  }, []);
+
   // On mount, check current session
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setUser(data.user);
-      })
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }, []);
+    fetchCurrentUser().finally(() => setIsLoading(false));
+  }, [fetchCurrentUser]);
+
+  const mutateUser = useCallback(
+    (newUser?: User | null) => {
+      if (newUser !== undefined) {
+        setUser(newUser);
+      } else {
+        fetchCurrentUser();
+      }
+    },
+    [fetchCurrentUser]
+  );
 
   const login = useCallback(
     async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
@@ -69,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, quickLogin, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, quickLogin, logout, mutateUser }}>
       {children}
     </AuthContext.Provider>
   );

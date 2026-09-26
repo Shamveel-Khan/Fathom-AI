@@ -3,7 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { MeetingSummary } from '@/lib/schemas/meeting';
-import { Calendar, Clock, Users, CheckSquare, Scale, ChevronRight, Sparkles } from 'lucide-react';
+import { getTemplateDefinition } from '@/lib/templates/definitions';
+import { Calendar, Clock, Users, CheckSquare, Scale, ChevronRight, Sparkles, ShieldAlert } from 'lucide-react';
 
 interface MeetingCardProps {
   meeting: MeetingSummary;
@@ -11,6 +12,7 @@ interface MeetingCardProps {
 
 export function MeetingCard({ meeting }: MeetingCardProps) {
   const hasAnalysis = meeting.hasAnalysis;
+  const tpl = getTemplateDefinition(meeting.template);
 
   return (
     <Link
@@ -25,6 +27,19 @@ export function MeetingCard({ meeting }: MeetingCardProps) {
       />
 
       <div className="p-4 pl-5">
+        {/* Top badge row */}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${tpl.bgLight} ${tpl.color} ${tpl.borderLight}`}>
+            {tpl.badge}
+          </span>
+          {meeting.hasReview && (
+            <span className="flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+              <ShieldAlert className="w-2.5 h-2.5" />
+              Reviewed
+            </span>
+          )}
+        </div>
+
         {/* Title row */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">

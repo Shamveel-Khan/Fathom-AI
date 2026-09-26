@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS meetings (
     meeting_date VARCHAR(255) NOT NULL,
     duration_minutes INTEGER NOT NULL DEFAULT 30,
     video_url VARCHAR(500),
+    template VARCHAR(64) NOT NULL DEFAULT 'general',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -107,6 +108,21 @@ CREATE TABLE IF NOT EXISTS highlights (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- AI Reviews table (Deep gap analysis & risk assessment, 1:1 with meetings)
+CREATE TABLE IF NOT EXISTS ai_reviews (
+    id VARCHAR(128) PRIMARY KEY,
+    meeting_id VARCHAR(64) UNIQUE NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+    overall_score INTEGER NOT NULL DEFAULT 85,
+    summary TEXT NOT NULL,
+    unresolved_questions JSONB NOT NULL DEFAULT '[]'::jsonb,
+    unassigned_responsibilities JSONB NOT NULL DEFAULT '[]'::jsonb,
+    missing_deadlines JSONB NOT NULL DEFAULT '[]'::jsonb,
+    missing_dependencies JSONB NOT NULL DEFAULT '[]'::jsonb,
+    contradictions JSONB NOT NULL DEFAULT '[]'::jsonb,
+    potential_risks JSONB NOT NULL DEFAULT '[]'::jsonb,
+    reviewed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Public Shares table (Maps unpredictable public tokens to real meetings)
 CREATE TABLE IF NOT EXISTS meeting_public_shares (
     id VARCHAR(128) PRIMARY KEY,
@@ -136,6 +152,7 @@ CREATE INDEX IF NOT EXISTS idx_action_items_meeting_id ON action_items(meeting_i
 CREATE INDEX IF NOT EXISTS idx_decisions_meeting_id ON decisions(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_id ON highlights(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id, timestamp_seconds);
+CREATE INDEX IF NOT EXISTS idx_ai_reviews_meeting_id ON ai_reviews(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_text_search ON transcript_utterances USING gin(to_tsvector('english', text));
 CREATE INDEX IF NOT EXISTS idx_meetings_title_search ON meetings USING gin(to_tsvector('english', title));

@@ -1,6 +1,7 @@
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
+import { AIReview } from '@/lib/schemas/review';
 import { SearchResultItem } from '@/lib/schemas/search';
 
 export interface GoogleProfile {
@@ -19,6 +20,7 @@ export interface IUserRepository {
   listAll(): Promise<User[]>;
   searchUsers(query: string, excludeUserId: string): Promise<User[]>;
   createUser(data: CreateUserInput): Promise<User>;
+  updateProfile(userId: string, data: { name?: string; role?: string; avatarColor?: string }): Promise<User>;
   findOrCreateOAuthUser(
     provider: string,
     providerAccountId: string,
@@ -42,6 +44,20 @@ export interface IMeetingRepository {
     meetingId: string,
     analysis: MeetingAnalysis
   ): Promise<Meeting>;
+  saveMeetingReview(
+    userId: string,
+    meetingId: string,
+    review: AIReview
+  ): Promise<AIReview>;
+  getMeetingReview(
+    userId: string,
+    meetingId: string
+  ): Promise<AIReview | null>;
+  updateMeetingTemplate(
+    userId: string,
+    meetingId: string,
+    template: string
+  ): Promise<boolean>;
   addHighlight(
     userId: string,
     meetingId: string,

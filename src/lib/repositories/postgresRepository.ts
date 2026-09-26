@@ -12,7 +12,21 @@ import {
   StoredMeetingAnalysis,
 } from '@/lib/schemas/meeting';
 import { MeetingAnalysis, ActionItem, Decision } from '@/lib/schemas/analysis';
+import { AIReview } from '@/lib/schemas/review';
 import { timestampToSeconds } from '@/lib/utils/time';
+
+function parseJsonField<T>(val: unknown, fallback: T): T {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === 'object') return val as T;
+  if (typeof val === 'string') {
+    try {
+      return JSON.parse(val) as T;
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+}
 
 // -------------------------------------------------------
 // Postgres User Repository
@@ -149,6 +163,52 @@ export class PostgresUserRepository implements IUserRepository {
     };
   }
 
+  async updateProfile(
+    userId: string,
+    data: { name?: string; role?: string; avatarColor?: string }
+  ): Promise<User> {
+    const updates: string[] = [];
+    const values: unknown[] = [userId];
+    let idx = 2;
+
+    if (data.name !== undefined) {
+      updates.push(`name = $${idx++}`);
+      values.push(data.name.trim());
+    }
+    if (data.role !== undefined) {
+      updates.push(`role = $${idx++}`);
+      values.push(data.role.trim());
+    }
+    if (data.avatarColor !== undefined) {
+      updates.push(`avatar_color = $${idx++}`);
+      values.push(data.avatarColor);
+    }
+    updates.push(`updated_at = NOW()`);
+
+    const rows = await query<{
+      id: string;
+      name: string;
+      email: string;
+      role: string | null;
+      avatar_color: string | null;
+      avatar_url: string | null;
+    }>(
+      `UPDATE users SET ${updates.join(', ')} WHERE id = $1 RETURNING id, name, email, role, avatar_color, avatar_url`,
+      values
+    );
+
+    if (rows.length === 0) throw new Error('User not found');
+    const r = rows[0];
+    return {
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      role: r.role || undefined,
+      avatarColor: r.avatar_color || undefined,
+      avatarUrl: r.avatar_url || undefined,
+    };
+  }
+
   async findOrCreateOAuthUser(
     provider: string,
     providerAccountId: string,
@@ -227,7 +287,9 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       title: string;
       meeting_date: string;
       duration_minutes: number;
+      template: string;
       has_analysis: boolean;
+      has_review: boolean;
       action_items_count: string | number;
       decisions_count: string | number;
       is_owner: boolean;
@@ -242,7 +304,9 @@ export class PostgresMeetingRepository implements IMeetingRepository {
          m.title,
          m.meeting_date,
          m.duration_minutes,
+         COALESCE(m.template, 'general') AS template,
          (a.id IS NOT NULL) AS has_analysis,
+         (rev.id IS NOT NULL) AS has_review,
          COALESCE((SELECT COUNT(*) FROM action_items WHERE meeting_id = m.id), 0) AS action_items_count,
          COALESCE((SELECT COUNT(*) FROM decisions WHERE meeting_id = m.id), 0) AS decisions_count,
          TRUE AS is_owner,
@@ -253,6 +317,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
          NULL::text AS shared_by_avatar_url
        FROM meetings m
        LEFT JOIN analyses a ON a.meeting_id = m.id
+       LEFT JOIN ai_reviews rev ON rev.meeting_id = m.id
        WHERE m.user_id = $1
        UNION ALL
        SELECT
@@ -260,7 +325,9 @@ export class PostgresMeetingRepository implements IMeetingRepository {
          m.title,
          m.meeting_date,
          m.duration_minutes,
+         COALESCE(m.template, 'general') AS template,
          (a.id IS NOT NULL) AS has_analysis,
+         (rev.id IS NOT NULL) AS has_review,
          COALESCE((SELECT COUNT(*) FROM action_items WHERE meeting_id = m.id), 0) AS action_items_count,
          COALESCE((SELECT COUNT(*) FROM decisions WHERE meeting_id = m.id), 0) AS decisions_count,
          FALSE AS is_owner,
@@ -272,6 +339,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
        FROM meeting_user_shares mus
        JOIN meetings m ON m.id = mus.meeting_id
        LEFT JOIN analyses a ON a.meeting_id = m.id
+       LEFT JOIN ai_reviews rev ON rev.meeting_id = m.id
        JOIN users u ON u.id = mus.shared_by_user_id
        WHERE mus.shared_with_user_id = $1
        ORDER BY meeting_date DESC, id ASC`,
@@ -314,8 +382,10 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       title: m.title,
       date: m.meeting_date,
       durationMinutes: Number(m.duration_minutes),
+      template: m.template || 'general',
       participants: participantsByMeeting[m.id] || [],
       hasAnalysis: Boolean(m.has_analysis),
+      hasReview: Boolean(m.has_review),
       actionItemsCount: Number(m.action_items_count),
       decisionsCount: Number(m.decisions_count),
       isShared: !m.is_owner,
@@ -339,6 +409,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       meeting_date: string;
       duration_minutes: number;
       video_url: string | null;
+      template: string | null;
       is_owner: boolean;
       shared_by_id: string | null;
       shared_by_name: string | null;
@@ -347,6 +418,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       shared_by_avatar_url: string | null;
     }>(
       `SELECT m.id, m.user_id, m.title, m.meeting_date, m.duration_minutes, m.video_url,
+              COALESCE(m.template, 'general') AS template,
               (m.user_id = $2) AS is_owner,
               NULL::text AS shared_by_id, NULL::text AS shared_by_name,
               NULL::text AS shared_by_email, NULL::text AS shared_by_avatar_color, NULL::text AS shared_by_avatar_url
@@ -354,6 +426,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
        WHERE m.id = $1 AND m.user_id = $2
        UNION ALL
        SELECT m.id, m.user_id, m.title, m.meeting_date, m.duration_minutes, m.video_url,
+              COALESCE(m.template, 'general') AS template,
               FALSE AS is_owner,
               u.id AS shared_by_id, u.name AS shared_by_name,
               u.email AS shared_by_email, u.avatar_color AS shared_by_avatar_color, u.avatar_url AS shared_by_avatar_url
@@ -482,14 +555,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         [meetingId]
       );
 
-      let keyTakeaways: string[] = [];
-      if (Array.isArray(a.key_takeaways)) {
-        keyTakeaways = a.key_takeaways as string[];
-      } else if (typeof a.key_takeaways === 'string') {
-        try {
-          keyTakeaways = JSON.parse(a.key_takeaways);
-        } catch {}
-      }
+      const keyTakeaways = parseJsonField<string[]>(a.key_takeaways, []);
 
       analysis = {
         executiveSummary: a.executive_summary,
@@ -530,15 +596,55 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       };
     }
 
+    // 4. AI Review (if exists)
+    const reviewRows = await query<{
+      overall_score: number;
+      summary: string;
+      unresolved_questions: unknown;
+      unassigned_responsibilities: unknown;
+      missing_deadlines: unknown;
+      missing_dependencies: unknown;
+      contradictions: unknown;
+      potential_risks: unknown;
+      reviewed_at: Date | string;
+    }>(
+      `SELECT overall_score, summary, unresolved_questions, unassigned_responsibilities,
+              missing_deadlines, missing_dependencies, contradictions, potential_risks, reviewed_at
+       FROM ai_reviews
+       WHERE meeting_id = $1`,
+      [meetingId]
+    );
+
+    let review: AIReview | null = null;
+    if (reviewRows.length > 0) {
+      const rev = reviewRows[0];
+      review = {
+        overallScore: Number(rev.overall_score),
+        summary: rev.summary,
+        unresolvedQuestions: parseJsonField(rev.unresolved_questions, []),
+        unassignedResponsibilities: parseJsonField(rev.unassigned_responsibilities, []),
+        missingDeadlines: parseJsonField(rev.missing_deadlines, []),
+        missingDependencies: parseJsonField(rev.missing_dependencies, []),
+        contradictions: parseJsonField(rev.contradictions, []),
+        potentialRisks: parseJsonField(rev.potential_risks, []),
+        reviewedAt:
+          rev.reviewed_at instanceof Date
+            ? rev.reviewed_at.toISOString()
+            : String(rev.reviewed_at),
+      };
+    }
+
     return {
       id: m.id,
       title: m.title,
       date: m.meeting_date,
       durationMinutes: Number(m.duration_minutes),
       videoUrl: m.video_url || undefined,
+      template: m.template || 'general',
       participants,
       transcript,
       analysis,
+      review,
       isOwner: Boolean(m.is_owner),
       isShared: !m.is_owner,
       sharedBy: m.shared_by_id
@@ -769,6 +875,73 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       values
     );
     return true;
+  }
+
+  async saveMeetingReview(
+    userId: string,
+    meetingId: string,
+    review: AIReview
+  ): Promise<AIReview> {
+    const meeting = await this.getMeetingById(userId, meetingId);
+    if (!meeting) throw new Error('Meeting not found or access denied');
+    if (!meeting.isOwner) throw new Error('Forbidden: Only meeting owner can save AI review');
+
+    const reviewId = `rev-${meetingId}`;
+    const reviewedAt = new Date().toISOString();
+
+    await query(
+      `INSERT INTO ai_reviews (
+         id, meeting_id, overall_score, summary, unresolved_questions,
+         unassigned_responsibilities, missing_deadlines, missing_dependencies,
+         contradictions, potential_risks, reviewed_at
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+       ON CONFLICT (meeting_id) DO UPDATE SET
+         overall_score = EXCLUDED.overall_score,
+         summary = EXCLUDED.summary,
+         unresolved_questions = EXCLUDED.unresolved_questions,
+         unassigned_responsibilities = EXCLUDED.unassigned_responsibilities,
+         missing_deadlines = EXCLUDED.missing_deadlines,
+         missing_dependencies = EXCLUDED.missing_dependencies,
+         contradictions = EXCLUDED.contradictions,
+         potential_risks = EXCLUDED.potential_risks,
+         reviewed_at = EXCLUDED.reviewed_at`,
+      [
+        reviewId,
+        meetingId,
+        review.overallScore ?? 85,
+        review.summary,
+        JSON.stringify(review.unresolvedQuestions || []),
+        JSON.stringify(review.unassignedResponsibilities || []),
+        JSON.stringify(review.missingDeadlines || []),
+        JSON.stringify(review.missingDependencies || []),
+        JSON.stringify(review.contradictions || []),
+        JSON.stringify(review.potentialRisks || []),
+        reviewedAt,
+      ]
+    );
+
+    return {
+      ...review,
+      reviewedAt,
+    };
+  }
+
+  async getMeetingReview(userId: string, meetingId: string): Promise<AIReview | null> {
+    const meeting = await this.getMeetingById(userId, meetingId);
+    if (!meeting) return null;
+    return meeting.review || null;
+  }
+
+  async updateMeetingTemplate(
+    userId: string,
+    meetingId: string,
+    template: string
+  ): Promise<boolean> {
+    const rows = await query<{ id: string }>(
+      `UPDATE meetings SET template = $1 WHERE id = $2 AND user_id = $3 RETURNING id`,
+      [template, meetingId, userId]
+    );
+    return rows.length > 0;
   }
 }
 

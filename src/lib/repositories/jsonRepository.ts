@@ -93,6 +93,10 @@ export class JsonUserRepository implements IUserRepository {
     throw new Error('createUser is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
   }
 
+  async updateProfile(_userId: string, _data: { name?: string; role?: string; avatarColor?: string }): Promise<User> {
+    throw new Error('updateProfile is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
+  }
+
   async findOrCreateOAuthUser(_provider: string, _id: string, _profile: GoogleProfile): Promise<User> {
     throw new Error('OAuth is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
   }
@@ -255,6 +259,29 @@ export class JsonMeetingRepository implements IMeetingRepository {
     if (updates.dueDate !== undefined) item.dueDate = updates.dueDate;
 
     await writeJson(filePath, userData);
+    return true;
+  }
+
+  async saveMeetingReview(
+    _userId: string,
+    _meetingId: string,
+    _review: import('@/lib/schemas/review').AIReview
+  ): Promise<import('@/lib/schemas/review').AIReview> {
+    throw new Error('saveMeetingReview is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
+  }
+
+  async getMeetingReview(
+    _userId: string,
+    _meetingId: string
+  ): Promise<import('@/lib/schemas/review').AIReview | null> {
+    return null;
+  }
+
+  async updateMeetingTemplate(
+    _userId: string,
+    _meetingId: string,
+    _template: string
+  ): Promise<boolean> {
     return true;
   }
 }

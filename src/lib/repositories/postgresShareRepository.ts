@@ -61,9 +61,9 @@ export class PostgresShareRepository implements IShareRepository {
     const meetingId = rows[0].meeting_id;
 
     const meetingRows = await query<{
-      id: string; user_id: string; title: string; meeting_date: string; duration_minutes: number; video_url: string | null;
+      id: string; user_id: string; title: string; meeting_date: string; duration_minutes: number; video_url: string | null; template: string | null;
     }>(
-      `SELECT id, user_id, title, meeting_date, duration_minutes, video_url FROM meetings WHERE id = $1`,
+      `SELECT id, user_id, title, meeting_date, duration_minutes, video_url, COALESCE(template, 'general') as template FROM meetings WHERE id = $1`,
       [meetingId]
     );
     if (meetingRows.length === 0) return null;
@@ -110,15 +110,49 @@ export class PostgresShareRepository implements IShareRepository {
       };
     }
 
+    // AI Review
+    const reviewRows = await query<{
+      overall_score: number; summary: string; unresolved_questions: unknown; unassigned_responsibilities: unknown;
+      missing_deadlines: unknown; missing_dependencies: unknown; contradictions: unknown; potential_risks: unknown; reviewed_at: Date | string;
+    }>(
+      `SELECT overall_score, summary, unresolved_questions, unassigned_responsibilities,
+              missing_deadlines, missing_dependencies, contradictions, potential_risks, reviewed_at
+       FROM ai_reviews WHERE meeting_id = $1`,
+      [meetingId]
+    );
+
+    let review = null;
+    if (reviewRows.length > 0) {
+      const rev = reviewRows[0];
+      const parseJson = (val: unknown) => {
+        if (!val) return [];
+        if (typeof val === 'object') return val;
+        try { return JSON.parse(String(val)); } catch { return []; }
+      };
+      review = {
+        overallScore: Number(rev.overall_score),
+        summary: rev.summary,
+        unresolvedQuestions: parseJson(rev.unresolved_questions),
+        unassignedResponsibilities: parseJson(rev.unassigned_responsibilities),
+        missingDeadlines: parseJson(rev.missing_deadlines),
+        missingDependencies: parseJson(rev.missing_dependencies),
+        contradictions: parseJson(rev.contradictions),
+        potentialRisks: parseJson(rev.potential_risks),
+        reviewedAt: rev.reviewed_at instanceof Date ? rev.reviewed_at.toISOString() : String(rev.reviewed_at),
+      };
+    }
+
     return {
       id: m.id,
       title: m.title,
       date: m.meeting_date,
       durationMinutes: Number(m.duration_minutes),
       videoUrl: m.video_url || undefined,
+      template: m.template || 'general',
       participants: participantRows.map((p) => ({ name: p.name, email: p.email || undefined, role: p.role || undefined, avatarColor: p.avatar_color || undefined })),
       transcript: utteranceRows.map((u) => ({ id: u.id, speaker: u.speaker, speakerRole: u.speaker_role || undefined, timestamp: u.timestamp, timestampSeconds: Number(u.timestamp_seconds), text: u.text })),
       analysis,
+      review,
       isOwner: false,
       isShared: true,
     };

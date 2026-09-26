@@ -111,6 +111,23 @@ ALTER TABLE action_items ADD COLUMN IF NOT EXISTS due_date VARCHAR(64);
 ALTER TABLE decisions ADD COLUMN IF NOT EXISTS timestamp VARCHAR(32);
 ALTER TABLE decisions ADD COLUMN IF NOT EXISTS timestamp_seconds INTEGER NOT NULL DEFAULT 0;
 
+-- Add Final Functionality columns and tables (idempotent)
+ALTER TABLE meetings ADD COLUMN IF NOT EXISTS template VARCHAR(64) NOT NULL DEFAULT 'general';
+
+CREATE TABLE IF NOT EXISTS ai_reviews (
+    id VARCHAR(128) PRIMARY KEY,
+    meeting_id VARCHAR(64) UNIQUE NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+    overall_score INTEGER NOT NULL DEFAULT 85,
+    summary TEXT NOT NULL,
+    unresolved_questions JSONB NOT NULL DEFAULT '[]'::jsonb,
+    unassigned_responsibilities JSONB NOT NULL DEFAULT '[]'::jsonb,
+    missing_deadlines JSONB NOT NULL DEFAULT '[]'::jsonb,
+    missing_dependencies JSONB NOT NULL DEFAULT '[]'::jsonb,
+    contradictions JSONB NOT NULL DEFAULT '[]'::jsonb,
+    potential_risks JSONB NOT NULL DEFAULT '[]'::jsonb,
+    reviewed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS meeting_public_shares (
     id VARCHAR(128) PRIMARY KEY,
     token VARCHAR(64) UNIQUE NOT NULL,
@@ -137,6 +154,7 @@ CREATE INDEX IF NOT EXISTS idx_action_items_meeting_id ON action_items(meeting_i
 CREATE INDEX IF NOT EXISTS idx_decisions_meeting_id ON decisions(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_id ON highlights(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id, timestamp_seconds);
+CREATE INDEX IF NOT EXISTS idx_ai_reviews_meeting_id ON ai_reviews(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_text_search ON transcript_utterances USING gin(to_tsvector('english', text));
 CREATE INDEX IF NOT EXISTS idx_meetings_title_search ON meetings USING gin(to_tsvector('english', title));

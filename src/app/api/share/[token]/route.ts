@@ -22,9 +22,12 @@ export async function GET(
       title: meeting.title,
       date: meeting.date,
       durationMinutes: meeting.durationMinutes,
+      videoUrl: meeting.videoUrl,
+      template: meeting.template || 'general',
       participants: meeting.participants,
       transcript: meeting.transcript,
       analysis: meeting.analysis,
+      review: meeting.review,
     },
   });
 }
