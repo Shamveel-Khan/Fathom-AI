@@ -258,6 +258,25 @@ export async function seedDatabase() {
         }
       }
     }
+
+    // 3. Seed sample user share (Sarah user-1 shares mtg-101 with Alex user-2)
+    console.log('Seeding sample shares...');
+    await queryClient(
+      client,
+      `INSERT INTO meeting_user_shares (id, meeting_id, shared_with_user_id, shared_by_user_id, created_at)
+       VALUES ($1, $2, $3, $4, NOW())
+       ON CONFLICT (meeting_id, shared_with_user_id) DO NOTHING`,
+      ['seed-ushare-1', 'mtg-101', 'user-2', 'user-1']
+    );
+
+    // 4. Seed sample public share for mtg-101
+    await queryClient(
+      client,
+      `INSERT INTO meeting_public_shares (id, token, meeting_id, created_by, created_at)
+       VALUES ($1, $2, $3, $4, NOW())
+       ON CONFLICT (token) DO NOTHING`,
+      ['seed-pshare-1', 'q3-product-launch-demo', 'mtg-101', 'user-1']
+    );
   });
 
   console.log('✅ Neon PostgreSQL seed transaction committed successfully with zero errors.');
@@ -271,7 +290,9 @@ if (require.main === module || process.argv[1]?.includes('seed-neon')) {
       process.exit(0);
     })
     .catch((err) => {
-      console.error('FATAL Database seed error:', err);
+    console.error('FATAL Database seed error:', err);
+    console.error('Error details:', JSON.stringify(err, null, 2));
+    console.error('Stack:', err instanceof Error ? err.stack : 'No stack');
       process.exit(1);
     });
 }

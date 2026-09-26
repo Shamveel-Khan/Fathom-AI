@@ -22,8 +22,10 @@ import {
   Key,
   X,
   Highlighter,
+  Share2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ShareModal } from '@/components/ShareModal';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
@@ -65,6 +67,9 @@ function MeetingDetailPageContent() {
     speaker: string;
     timestamp: string;
   } | null>(null);
+
+  // Share modal state
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // BYOK Credentials
   const [apiKey, setApiKey] = useState('');
@@ -306,6 +311,16 @@ function MeetingDetailPageContent() {
                   <span>Highlight</span>
                 </button>
 
+                {meeting.isOwner !== false && (
+                  <button
+                    onClick={() => setIsShareModalOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    Share
+                  </button>
+                )}
+
                 <button
                   onClick={() => handleRunAnalysis(true)}
                   disabled={isAnalyzing}
@@ -440,6 +455,13 @@ function MeetingDetailPageContent() {
         initialSpeaker={selectedSnippet?.speaker || ''}
         initialTimestamp={selectedSnippet?.timestamp || '00:00'}
         onSaveHighlight={handleSaveCustomHighlight}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        meetingId={meetingId}
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
       />
     </div>
   );

@@ -36,6 +36,15 @@ export interface Meeting {
   participants: Participant[];
   transcript: TranscriptUtterance[];
   analysis?: StoredMeetingAnalysis | null;
+  isOwner?: boolean;
+  isShared?: boolean;
+  sharedBy?: {
+    id: string;
+    name: string;
+    email: string;
+    avatarColor?: string;
+    avatarUrl?: string;
+  };
 }
 
 // Lightweight meeting summary for list views — no transcript, no full analysis
@@ -48,4 +57,13 @@ export interface MeetingSummary {
   hasAnalysis: boolean;
   actionItemsCount: number;
   decisionsCount: number;
+  isShared?: boolean;
+  sharedBy?: {
+    id: string;
+    name: string;
+    email: string;
+    avatarColor?: string;
+    avatarUrl?: string;
+  };
 }
+

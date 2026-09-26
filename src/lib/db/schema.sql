@@ -107,6 +107,26 @@ CREATE TABLE IF NOT EXISTS highlights (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Public Shares table (Maps unpredictable public tokens to real meetings)
+CREATE TABLE IF NOT EXISTS meeting_public_shares (
+    id VARCHAR(128) PRIMARY KEY,
+    token VARCHAR(64) UNIQUE NOT NULL,
+    meeting_id VARCHAR(64) NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+    created_by VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    revoked_at TIMESTAMPTZ
+);
+
+-- User-to-User Shares table (Person-to-person meeting sharing)
+CREATE TABLE IF NOT EXISTS meeting_user_shares (
+    id VARCHAR(128) PRIMARY KEY,
+    meeting_id VARCHAR(64) NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+    shared_with_user_id VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    shared_by_user_id VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (meeting_id, shared_with_user_id)
+);
+
 -- Performance & Search Indexes
 CREATE INDEX IF NOT EXISTS idx_meetings_user_id ON meetings(user_id);
 CREATE INDEX IF NOT EXISTS idx_participants_meeting_id ON participants(meeting_id);
@@ -119,4 +139,9 @@ CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id,
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_text_search ON transcript_utterances USING gin(to_tsvector('english', text));
 CREATE INDEX IF NOT EXISTS idx_meetings_title_search ON meetings USING gin(to_tsvector('english', title));
+CREATE INDEX IF NOT EXISTS idx_meeting_public_shares_token ON meeting_public_shares(token);
+CREATE INDEX IF NOT EXISTS idx_meeting_public_shares_meeting ON meeting_public_shares(meeting_id);
+CREATE INDEX IF NOT EXISTS idx_meeting_user_shares_shared_with ON meeting_user_shares(shared_with_user_id);
+CREATE INDEX IF NOT EXISTS idx_meeting_user_shares_meeting ON meeting_user_shares(meeting_id);
+
 

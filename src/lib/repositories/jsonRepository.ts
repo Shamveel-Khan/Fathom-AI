@@ -3,7 +3,7 @@ import path from 'path';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
-import { IUserRepository, IMeetingRepository, ISearchRepository, GoogleProfile } from './types';
+import { IUserRepository, IMeetingRepository, ISearchRepository, IShareRepository, PublicShareRecord, SharedUserRecord, GoogleProfile } from './types';
 import { SearchResultItem } from '@/lib/schemas/search';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -82,6 +82,10 @@ export class JsonUserRepository implements IUserRepository {
   async listAll(): Promise<User[]> {
     const users = await this.readLegacyUsers();
     return users.map((u) => ({ id: u.id, name: u.name, email: u.email, role: u.role, avatarColor: u.avatarColor }));
+  }
+
+  async searchUsers(_query: string, _excludeUserId: string): Promise<User[]> {
+    throw new Error('searchUsers is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
   }
 
   // Not implemented for JSON repo — only the Postgres repo supports auth mutations
@@ -350,3 +354,27 @@ export class JsonSearchRepository implements ISearchRepository {
   }
 }
 
+
+export class JsonShareRepository implements IShareRepository {
+  async getPublicShare(_meetingId: string): Promise<PublicShareRecord | null> {
+    return null;
+  }
+  async createPublicShare(_userId: string, _meetingId: string): Promise<PublicShareRecord> {
+    throw new Error('Sharing is not supported by the JSON repository. Set DATABASE_URL.');
+  }
+  async revokePublicShare(_userId: string, _meetingId: string): Promise<boolean> {
+    return false;
+  }
+  async getMeetingByPublicToken(_token: string): Promise<Meeting | null> {
+    return null;
+  }
+  async listSharedUsers(_meetingId: string): Promise<SharedUserRecord[]> {
+    return [];
+  }
+  async shareWithUser(_sharedByUserId: string, _meetingId: string, _sharedWithUserId: string): Promise<void> {
+    throw new Error('Sharing is not supported by the JSON repository. Set DATABASE_URL.');
+  }
+  async removeUserShare(_sharedByUserId: string, _meetingId: string, _sharedWithUserId: string): Promise<boolean> {
+    return false;
+  }
+}

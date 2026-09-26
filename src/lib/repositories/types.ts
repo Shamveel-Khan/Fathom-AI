@@ -17,6 +17,7 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<UserAccount | null>;
   findById(id: string): Promise<User | null>;
   listAll(): Promise<User[]>;
+  searchUsers(query: string, excludeUserId: string): Promise<User[]>;
   createUser(data: CreateUserInput): Promise<User>;
   findOrCreateOAuthUser(
     provider: string,
@@ -71,4 +72,36 @@ export interface IMeetingRepository {
 export interface ISearchRepository {
   search(userId: string, query: string): Promise<SearchResultItem[]>;
 }
+
+// -------------------------------------------------------
+// Share Repository Interface
+// -------------------------------------------------------
+export interface PublicShareRecord {
+  id: string;
+  token: string;
+  meetingId: string;
+  createdAt: string;
+  revokedAt?: string | null;
+}
+
+export interface SharedUserRecord {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  avatarColor?: string;
+  avatarUrl?: string;
+  sharedAt: string;
+}
+
+export interface IShareRepository {
+  getPublicShare(meetingId: string): Promise<PublicShareRecord | null>;
+  createPublicShare(userId: string, meetingId: string): Promise<PublicShareRecord>;
+  revokePublicShare(userId: string, meetingId: string): Promise<boolean>;
+  getMeetingByPublicToken(token: string): Promise<Meeting | null>;
+  listSharedUsers(meetingId: string): Promise<SharedUserRecord[]>;
+  shareWithUser(sharedByUserId: string, meetingId: string, sharedWithUserId: string): Promise<void>;
+  removeUserShare(sharedByUserId: string, meetingId: string, sharedWithUserId: string): Promise<boolean>;
+}
+
 

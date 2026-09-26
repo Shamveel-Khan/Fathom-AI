@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { query, withTransaction, queryClient } from '@/lib/db/client';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
-import { IUserRepository, IMeetingRepository, ISearchRepository, GoogleProfile } from './types';
+import { IUserRepository, IMeetingRepository, ISearchRepository, IShareRepository, PublicShareRecord, SharedUserRecord, GoogleProfile } from './types';
 import { SearchResultItem } from '@/lib/schemas/search';
 import {
   Meeting,
@@ -85,6 +85,34 @@ export class PostgresUserRepository implements IUserRepository {
       avatar_url: string | null;
     }>(`SELECT id, name, email, role, avatar_color, avatar_url FROM users ORDER BY name ASC`);
 
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      role: r.role || undefined,
+      avatarColor: r.avatar_color || undefined,
+      avatarUrl: r.avatar_url || undefined,
+    }));
+  }
+
+  async searchUsers(searchQuery: string, excludeUserId: string): Promise<User[]> {
+    const pattern = `%${searchQuery.trim()}%`;
+    const rows = await query<{
+      id: string;
+      name: string;
+      email: string;
+      role: string | null;
+      avatar_color: string | null;
+      avatar_url: string | null;
+    }>(
+      `SELECT id, name, email, role, avatar_color, avatar_url
+       FROM users
+       WHERE id != $1
+         AND (name ILIKE $2 OR email ILIKE $2)
+       ORDER BY name ASC
+       LIMIT 10`,
+      [excludeUserId, pattern]
+    );
     return rows.map((r) => ({
       id: r.id,
       name: r.name,
@@ -193,6 +221,7 @@ export class PostgresUserRepository implements IUserRepository {
 
 export class PostgresMeetingRepository implements IMeetingRepository {
   async listMeetingsForUser(userId: string): Promise<MeetingSummary[]> {
+    // Fetch owned meetings + meetings shared with user via UNION
     const meetingRows = await query<{
       id: string;
       title: string;
@@ -201,6 +230,12 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       has_analysis: boolean;
       action_items_count: string | number;
       decisions_count: string | number;
+      is_owner: boolean;
+      shared_by_id: string | null;
+      shared_by_name: string | null;
+      shared_by_email: string | null;
+      shared_by_avatar_color: string | null;
+      shared_by_avatar_url: string | null;
     }>(
       `SELECT
          m.id,
@@ -209,17 +244,44 @@ export class PostgresMeetingRepository implements IMeetingRepository {
          m.duration_minutes,
          (a.id IS NOT NULL) AS has_analysis,
          COALESCE((SELECT COUNT(*) FROM action_items WHERE meeting_id = m.id), 0) AS action_items_count,
-         COALESCE((SELECT COUNT(*) FROM decisions WHERE meeting_id = m.id), 0) AS decisions_count
+         COALESCE((SELECT COUNT(*) FROM decisions WHERE meeting_id = m.id), 0) AS decisions_count,
+         TRUE AS is_owner,
+         NULL::text AS shared_by_id,
+         NULL::text AS shared_by_name,
+         NULL::text AS shared_by_email,
+         NULL::text AS shared_by_avatar_color,
+         NULL::text AS shared_by_avatar_url
        FROM meetings m
        LEFT JOIN analyses a ON a.meeting_id = m.id
        WHERE m.user_id = $1
-       ORDER BY m.created_at DESC, m.id ASC`,
+       UNION ALL
+       SELECT
+         m.id,
+         m.title,
+         m.meeting_date,
+         m.duration_minutes,
+         (a.id IS NOT NULL) AS has_analysis,
+         COALESCE((SELECT COUNT(*) FROM action_items WHERE meeting_id = m.id), 0) AS action_items_count,
+         COALESCE((SELECT COUNT(*) FROM decisions WHERE meeting_id = m.id), 0) AS decisions_count,
+         FALSE AS is_owner,
+         u.id AS shared_by_id,
+         u.name AS shared_by_name,
+         u.email AS shared_by_email,
+         u.avatar_color AS shared_by_avatar_color,
+         u.avatar_url AS shared_by_avatar_url
+       FROM meeting_user_shares mus
+       JOIN meetings m ON m.id = mus.meeting_id
+       LEFT JOIN analyses a ON a.meeting_id = m.id
+       JOIN users u ON u.id = mus.shared_by_user_id
+       WHERE mus.shared_with_user_id = $1
+       ORDER BY meeting_date DESC, id ASC`,
       [userId]
     );
 
     if (meetingRows.length === 0) return [];
 
-    // Fetch participants for all user's meetings in one query
+    const meetingIds = meetingRows.map((m) => m.id);
+    // Fetch participants for all meetings in one query
     const participantRows = await query<{
       meeting_id: string;
       name: string;
@@ -229,9 +291,9 @@ export class PostgresMeetingRepository implements IMeetingRepository {
     }>(
       `SELECT meeting_id, name, email, role, avatar_color
        FROM participants
-       WHERE meeting_id IN (SELECT id FROM meetings WHERE user_id = $1)
+       WHERE meeting_id = ANY($1::text[])
        ORDER BY id ASC`,
-      [userId]
+      [meetingIds]
     );
 
     const participantsByMeeting: Record<string, Participant[]> = {};
@@ -256,6 +318,16 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       hasAnalysis: Boolean(m.has_analysis),
       actionItemsCount: Number(m.action_items_count),
       decisionsCount: Number(m.decisions_count),
+      isShared: !m.is_owner,
+      sharedBy: m.shared_by_id
+        ? {
+            id: m.shared_by_id,
+            name: m.shared_by_name!,
+            email: m.shared_by_email!,
+            avatarColor: m.shared_by_avatar_color || undefined,
+            avatarUrl: m.shared_by_avatar_url || undefined,
+          }
+        : undefined,
     }));
   }
 
@@ -267,10 +339,29 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       meeting_date: string;
       duration_minutes: number;
       video_url: string | null;
+      is_owner: boolean;
+      shared_by_id: string | null;
+      shared_by_name: string | null;
+      shared_by_email: string | null;
+      shared_by_avatar_color: string | null;
+      shared_by_avatar_url: string | null;
     }>(
-      `SELECT id, user_id, title, meeting_date, duration_minutes, video_url
-       FROM meetings
-       WHERE id = $1 AND user_id = $2`,
+      `SELECT m.id, m.user_id, m.title, m.meeting_date, m.duration_minutes, m.video_url,
+              (m.user_id = $2) AS is_owner,
+              NULL::text AS shared_by_id, NULL::text AS shared_by_name,
+              NULL::text AS shared_by_email, NULL::text AS shared_by_avatar_color, NULL::text AS shared_by_avatar_url
+       FROM meetings m
+       WHERE m.id = $1 AND m.user_id = $2
+       UNION ALL
+       SELECT m.id, m.user_id, m.title, m.meeting_date, m.duration_minutes, m.video_url,
+              FALSE AS is_owner,
+              u.id AS shared_by_id, u.name AS shared_by_name,
+              u.email AS shared_by_email, u.avatar_color AS shared_by_avatar_color, u.avatar_url AS shared_by_avatar_url
+       FROM meeting_user_shares mus
+       JOIN meetings m ON m.id = mus.meeting_id
+       JOIN users u ON u.id = mus.shared_by_user_id
+       WHERE mus.meeting_id = $1 AND mus.shared_with_user_id = $2
+       LIMIT 1`,
       [meetingId, userId]
     );
 
@@ -448,6 +539,17 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       participants,
       transcript,
       analysis,
+      isOwner: Boolean(m.is_owner),
+      isShared: !m.is_owner,
+      sharedBy: m.shared_by_id
+        ? {
+            id: m.shared_by_id,
+            name: m.shared_by_name!,
+            email: m.shared_by_email!,
+            avatarColor: m.shared_by_avatar_color || undefined,
+            avatarUrl: m.shared_by_avatar_url || undefined,
+          }
+        : undefined,
     };
   }
 

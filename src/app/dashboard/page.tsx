@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [meetings, setMeetings] = useState<MeetingSummary[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [dashboardFilter, setDashboardFilter] = useState<'all' | 'mine' | 'shared'>('all');
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [model, setModel] = useState('gpt-4o-mini');
@@ -68,10 +69,15 @@ export default function DashboardPage() {
 
   const filteredMeetings = meetings.filter((m) => {
     const q = searchQuery.toLowerCase();
-    return (
+    const matchesSearch = (
       m.title.toLowerCase().includes(q) ||
       m.participants.some((p) => p.name.toLowerCase().includes(q))
     );
+    const matchesTab =
+      dashboardFilter === 'all' ||
+      (dashboardFilter === 'mine' && !m.isShared) ||
+      (dashboardFilter === 'shared' && m.isShared);
+    return matchesSearch && matchesTab;
   });
 
   const analyzedCount = meetings.filter((m) => m.hasAnalysis).length;
@@ -128,8 +134,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Search & Filters */}
-        <div className="flex items-center justify-between gap-4 mb-5">
-          <div className="relative flex-1 max-w-xs">
+        <div className="flex flex-wrap items-center gap-3 mb-5">
+          <div className="relative flex-1 min-w-[200px] max-w-xs">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -138,6 +144,21 @@ export default function DashboardPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl placeholder:text-slate-400 focus:outline-hidden focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all"
             />
+          </div>
+          <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+            {(['all', 'mine', 'shared'] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setDashboardFilter(f)}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                  dashboardFilter === f
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                {f === 'all' ? 'All' : f === 'mine' ? 'My Meetings' : 'Shared with Me'}
+              </button>
+            ))}
           </div>
           {pendingCount > 0 && (
             <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl font-medium">

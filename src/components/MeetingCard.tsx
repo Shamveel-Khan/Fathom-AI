@@ -49,6 +49,11 @@ export function MeetingCard({ meeting }: MeetingCardProps) {
             <Users className="w-3 h-3" />
             {meeting.participants.length}
           </span>
+          {meeting.isShared && meeting.sharedBy && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-medium text-[10px] border border-indigo-100">
+              Shared by {meeting.sharedBy.name.split(' ')[0]}
+            </span>
+          )}
         </div>
 
         {/* Participants avatars */}
