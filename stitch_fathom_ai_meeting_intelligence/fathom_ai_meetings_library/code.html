@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meetings Library — Fathom AI</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#5d5f5f",
+            "tertiary-container": "#dfe0ff",
+            "on-primary": "#2f3131",
+            "outline-variant": "#444748",
+            "surface": "#1c1c1f",
+            "surface-container-highest": "#343536",
+            "surface-container": "#1f2021",
+            "on-secondary-fixed": "#000965",
+            "primary-fixed-dim": "#c6c6c7",
+            "inverse-surface": "#e3e2e3",
+            "on-tertiary": "#0e1d90",
+            "plan-green": "#68cc58",
+            "secondary-fixed-dim": "#bdc2ff",
+            "primary-container": "#e2e2e2",
+            "surface-bright": "#38393a",
+            "surface-container-low": "#1b1c1d",
+            "surface-tint": "#c6c6c7",
+            "tertiary-fixed": "#dfe0ff",
+            "on-surface": "#e3e2e3",
+            "ink-muted": "#8a8f98",
+            "canvas": "#08090a",
+            "hairline-bright": "#3e3e44",
+            "tertiary": "#ffffff",
+            "secondary": "#bdc2ff",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "on-primary-container": "#636565",
+            "surface-container-lowest": "#0d0e0f",
+            "on-error": "#690005",
+            "ink": "#f7f8f8",
+            "surface-dim": "#121315",
+            "ink-body": "#d0d6e0",
+            "surface-variant": "#343536",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "security-slate": "#7a7fad",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "error": "#ffb4ab",
+            "on-secondary": "#121f8b",
+            "hairline": "#23252a",
+            "error-container": "#93000a",
+            "accent-electric": "#7170ff",
+            "primary-fixed": "#e2e2e2",
+            "on-background": "#e3e2e3",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "on-secondary-container": "#a7afff",
+            "hairline-strong": "#34343a",
+            "on-tertiary-fixed": "#000964",
+            "ink-quiet": "#62666d",
+            "background": "#121315",
+            "canvas-deep": "#010102",
+            "primary": "#ffffff",
+            "on-primary-fixed": "#1a1c1c",
+            "accent-tint": "#18182f",
+            "status-success": "#27a644",
+            "on-primary-fixed-variant": "#454747",
+            "inverse-on-surface": "#303032",
+            "surface-high": "#28282c",
+            "status-error": "#eb5757",
+            "surface-raised": "#232326",
+            "on-tertiary-container": "#4c59c6",
+            "surface-container-high": "#292a2b",
+            "on-surface-variant": "#c4c7c8",
+            "outline": "#8e9192",
+            "build-yellow": "#d4b144",
+            "secondary-container": "#2e3aa2",
+            "surface-panel": "#0f1011",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "secondary-fixed": "#dfe0ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.75rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2rem",
+            "space-xs": "0.5rem"
+          },
+          "fontFamily": {
+            "button-label": ["Inter"],
+            "display-xl": ["Inter"],
+            "title-sm": ["Inter"],
+            "caption": ["Inter"],
+            "display-md": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "body-md": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "title-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "display-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-md": ["Inter"],
+            "display-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "button-label": ["15px", { "lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510" }],
+            "display-xl": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "title-sm": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510" }],
+            "display-md": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-xl-mobile": ["36px", { "lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "code-telemetry": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-lg": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "keyboard-shortcut": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "display-lg": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "display-sm": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-canvas text-ink antialiased min-h-screen flex flex-col font-body-md selection:bg-accent-electric selection:text-primary">
+<!-- Top Navigation Bar (Shared Component: TopNavBar with Active State 'Meetings') -->
+<header class="bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md border-b border-hairline flex justify-between items-center w-full px-6 h-14 sticky top-0 z-50">
+<div class="flex items-center gap-6">
+<!-- Product Brand -->
+<a class="flex items-center gap-2.5" href="#">
+<div class="w-6 h-6 rounded bg-primary flex items-center justify-center text-canvas font-bold font-display-sm text-xs">F</div>
+<span class="font-title-md text-title-md text-ink font-semibold tracking-tight">Fathom AI</span>
+</a>
+<!-- Workspace Selector -->
+<div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded bg-surface border border-hairline cursor-pointer hover:border-hairline-bright transition-colors">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span class="font-caption text-caption text-ink font-medium">Acme Corp</span>
+<span class="font-code-telemetry text-[11px] text-ink-quiet">Enterprise Tier</span>
+<span class="material-symbols-outlined text-[16px] text-ink-muted leading-none">unfold_more</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 ml-2">
+<a class="px-3 py-1.5 rounded font-button-label text-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" href="#">Dashboard</a>
+<!-- Active Nav: Meetings -->
+<a class="px-3 py-1.5 rounded font-button-label text-button-label text-ink font-medium bg-overlay-soft transition-colors duration-150 flex items-center gap-1.5" href="#">
+<span>Meetings</span>
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric"></span>
+</a>
+<a class="px-3 py-1.5 rounded font-button-label text-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" href="#">Action Items</a>
+<a class="px-3 py-1.5 rounded font-button-label text-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" href="#">Decisions</a>
+<a class="px-3 py-1.5 rounded font-button-label text-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" href="#">Settings</a>
+</nav>
+</div>
+<!-- Trailing Actions & Search -->
+<div class="flex items-center gap-3">
+<!-- Search Trigger with ⌘K -->
+<div class="hidden lg:flex items-center gap-3 bg-surface border border-hairline-strong px-3 py-1.5 rounded-lg w-64 hover:border-hairline-bright transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-[18px] text-ink-quiet group-hover:text-ink transition-colors">search</span>
+<span class="font-body-sm text-body-sm text-ink-quiet flex-1">Search transcripts...</span>
+<span class="bg-surface-raised border border-hairline-bright text-ink-body font-keyboard-shortcut text-keyboard-shortcut px-1.5 py-0.5 rounded shadow-sm">⌘K</span>
+</div>
+<!-- Quick Trailing Icons -->
+<button class="w-8 h-8 rounded flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors" title="Notifications">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors" title="Help &amp; Docs">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+<!-- Primary CTA: Import Meeting -->
+<button class="h-9 px-4 rounded-lg bg-primary hover:bg-opacity-90 text-canvas font-button-label text-button-label flex items-center gap-2 active:scale-[0.98] transition-transform shadow-sm">
+<span class="material-symbols-outlined text-[18px] leading-none">upload_file</span>
+<span>Import Meeting</span>
+</button>
+<!-- User Avatar -->
+<div class="w-8 h-8 rounded-full border border-hairline-bright overflow-hidden bg-surface-raised flex items-center justify-center ml-1">
+<img class="w-full h-full object-cover" data-alt="High contrast executive headshot portrait of an engineer looking thoughtfully at a multi-monitor technical trading interface, framed by dark ambient studio lighting with subtle graphite rim lighting, shot in crisp cinematic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADjB9cwLHlOJH932pNuwNz2fy-5EC9ij2B1llfgM3Ksu9XKljDXdT5IA7q2hotkd5SbhwMf6aNd0UdCFkjzZSY3TJjNPWYxBkDUY808wM75KUd_qW9bJYO1XvXWDli3s5PKAARLFGgOs6xJgVZwif8529kj_8gKUo9gA3MYYprwhFJpu56KFJih98iFJ0d8rTYNOxlKZmCPhBNQSp_cQXoxHp5VeX1chXrzbO_89a1jjemoy_5z1UX"/>
+</div>
+</div>
+</header>
+<!-- Main Content Stage -->
+<main class="flex-1 w-full max-w-[1240px] mx-auto px-6 py-8 flex flex-col gap-8">
+<!-- Title Area & Quick Statistics -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-hairline">
+<div>
+<div class="flex items-center gap-2.5 mb-1.5">
+<span class="px-2 py-0.5 rounded bg-accent-tint border border-hairline-veil text-secondary font-code-telemetry text-[11px] uppercase tracking-wider font-semibold">Workspace Registry</span>
+<span class="text-ink-quiet text-xs">•</span>
+<span class="text-ink-muted font-code-telemetry text-xs">Live Sync Operational</span>
+</div>
+<h1 class="font-display-md text-display-md text-ink tracking-tight font-bold">Meetings Library</h1>
+<p class="font-body-md text-body-md text-ink-muted mt-1 max-w-2xl">
+          Browse, search, and manage verified transcripts and AI syntheses across your workspace.
+        </p>
+</div>
+<!-- Quick Statistics Badges -->
+<div class="flex items-center gap-3">
+<div class="bg-surface-panel border border-hairline rounded-lg px-3 py-2 flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-accent-electric"></span>
+<div class="flex flex-col">
+<span class="font-code-telemetry text-[11px] text-ink-quiet uppercase leading-none">Total</span>
+<span class="font-code-telemetry text-sm text-ink font-semibold leading-tight">42 Meetings</span>
+</div>
+</div>
+<div class="bg-surface-panel border border-hairline rounded-lg px-3 py-2 flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<div class="flex flex-col">
+<span class="font-code-telemetry text-[11px] text-ink-quiet uppercase leading-none">Synthesized</span>
+<span class="font-code-telemetry text-sm text-ink font-semibold leading-tight">38 AI Analyzed</span>
+</div>
+</div>
+<div class="bg-surface-panel border border-hairline rounded-lg px-3 py-2 flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-build-yellow"></span>
+<div class="flex flex-col">
+<span class="font-code-telemetry text-[11px] text-ink-quiet uppercase leading-none">Queued</span>
+<span class="font-code-telemetry text-sm text-ink font-semibold leading-tight">4 Ingestion</span>
+</div>
+</div>
+</div>
+</div>
+<!-- High-Density Control & Search Toolbar -->
+<div class="flex flex-col gap-4">
+<!-- Primary Search Input -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-quiet text-[20px]">search</span>
+<input class="w-full h-11 pl-11 pr-28 bg-surface-panel border border-hairline-strong rounded-xl text-ink font-body-md placeholder:text-ink-quiet focus:outline-none focus:border-accent-electric transition-colors" placeholder="Search meetings by title, transcript keywords, participants, or tags..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
+<span class="text-ink-quiet text-xs font-code-telemetry">Filter shortcut</span>
+<span class="bg-surface-raised border border-hairline-bright text-ink-muted font-keyboard-shortcut text-keyboard-shortcut px-1.5 py-0.5 rounded">F</span>
+</div>
+</div>
+<!-- Segmented Ownership Tabs + Views & Sorting -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<!-- Segmented Ownership Control -->
+<div class="flex items-center bg-surface-panel border border-hairline p-1 rounded-lg w-fit">
+<button class="px-3 py-1.5 rounded-md bg-surface-raised text-ink font-button-label text-button-label shadow-sm flex items-center gap-2">
+<span>All Meetings</span>
+<span class="font-code-telemetry text-xs px-1.5 py-0.2 bg-canvas rounded text-ink-muted">42</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-ink-muted hover:text-ink font-button-label text-button-label transition-colors flex items-center gap-2">
+<span>My Meetings</span>
+<span class="font-code-telemetry text-xs px-1.5 py-0.2 bg-surface rounded text-ink-quiet">18</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-ink-muted hover:text-ink font-button-label text-button-label transition-colors flex items-center gap-2">
+<span>Shared with Me</span>
+<span class="font-code-telemetry text-xs px-1.5 py-0.2 bg-surface rounded text-ink-quiet">24</span>
+</button>
+</div>
+<!-- Secondary Controls: Sort & Layout Toggle -->
+<div class="flex items-center gap-3 self-end lg:self-auto">
+<!-- Sort Dropdown -->
+<div class="flex items-center gap-2 bg-surface-panel border border-hairline px-3 py-1.5 rounded-lg text-ink font-body-sm cursor-pointer hover:border-hairline-bright transition-colors">
+<span class="text-ink-quiet font-caption text-caption">Sort:</span>
+<span class="font-medium text-ink flex items-center gap-1">
+              Date (Newest first)
+              <span class="material-symbols-outlined text-[18px] text-ink-muted">expand_more</span>
+</span>
+</div>
+<!-- View Mode Toggle -->
+<div class="flex items-center bg-surface-panel border border-hairline p-1 rounded-lg">
+<button class="p-1 rounded bg-surface-raised text-ink shadow-sm" title="Grid View">
+<span class="material-symbols-outlined text-[18px] block">grid_view</span>
+</button>
+<button class="p-1 rounded text-ink-muted hover:text-ink transition-colors" title="List View">
+<span class="material-symbols-outlined text-[18px] block">view_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Template Pill Filters -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+<span class="text-ink-quiet font-caption text-caption whitespace-nowrap mr-1">Templates:</span>
+<button class="px-3 py-1 rounded-full bg-surface-raised border border-hairline-bright text-ink font-caption text-caption font-medium whitespace-nowrap">
+          All Templates
+        </button>
+<button class="px-3 py-1 rounded-full bg-surface-panel hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink font-caption text-caption transition-colors whitespace-nowrap">
+          1:1 Reviews
+        </button>
+<button class="px-3 py-1 rounded-full bg-surface-panel hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink font-caption text-caption transition-colors whitespace-nowrap">
+          Engineering / Architecture
+        </button>
+<button class="px-3 py-1 rounded-full bg-surface-panel hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink font-caption text-caption transition-colors whitespace-nowrap">
+          Product &amp; Design
+        </button>
+<button class="px-3 py-1 rounded-full bg-surface-panel hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink font-caption text-caption transition-colors whitespace-nowrap">
+          Customer Onboarding
+        </button>
+<button class="px-3 py-1 rounded-full bg-surface-panel hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink font-caption text-caption transition-colors whitespace-nowrap">
+          Executive / Board
+        </button>
+</div>
+</div>
+<!-- Meetings Library Grid (6 Engineered High-Density Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- Card 1: H2 Engineering Roadmap & Tech Debt Review -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-accent-tint border border-hairline-veil text-accent-electric font-code-telemetry text-[11px] font-medium tracking-tight">
+              Engineering
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 96</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            H2 Engineering Roadmap &amp; Tech Debt Review
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Today, 10:00 AM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">45m duration</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">Owned by Elena V.</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">EV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">MB</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">SC</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-hairline flex items-center justify-center font-caption text-[10px] text-ink-muted">+1</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">Elena V., Marcus B., Sofia C., +1</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Consensus reached on gRPC microservice migration before Q4 sprint freeze."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>4 Actions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-plan-green">balance</span>
+<span>2 Decisions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>0 Risks</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Customer Onboarding: Stripe Integration Deep-dive -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-raised border border-hairline text-ink-body font-code-telemetry text-[11px] font-medium tracking-tight">
+              Customer / Sales
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 88</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            Customer Onboarding: Stripe Integration Deep-dive
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Yesterday, 2:30 PM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">32m</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">Shared by David K.</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">EV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">DK</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">JL</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">Elena V., David K., Jessica L.</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Confirmed sandbox webhook provisioning and SLA guarantees locked at 99.95%."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>2 Actions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-plan-green">balance</span>
+<span>1 Decision</span>
+</div>
+<div class="flex items-center gap-1.5 text-build-yellow bg-build-yellow/10 px-1.5 py-0.5 rounded border border-build-yellow/20">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span>1 Blocker</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Product Strategy & Feature Prioritization Sync -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container/30 border border-secondary/20 text-secondary font-code-telemetry text-[11px] font-medium tracking-tight">
+              Product &amp; Design
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 94</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            Product Strategy &amp; Feature Prioritization Sync
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Oct 22, 11:00 AM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">50m</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">Owned by Maya P.</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">MP</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">DL</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">RT</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-hairline flex items-center justify-center font-caption text-[10px] text-ink-muted">+3</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">6 participants</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Consolidating secondary card elevations and migrating to zero-radius shortcut tags."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>5 Actions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-plan-green">balance</span>
+<span>1 Decision</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>0 Risks</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4: Bi-Weekly Architecture RFC: Postgres Partitioning -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-accent-tint border border-hairline-veil text-accent-electric font-code-telemetry text-[11px] font-medium tracking-tight">
+              Architecture
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 91</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            Bi-Weekly Architecture RFC: Postgres Partitioning
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Oct 20, 4:00 PM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">58m</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">Owned by Liam V.</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">LV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">SC</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">AN</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">RK</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">4 participants</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Approved declarative range-based table partitioning on audit events with zero downtime window."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>3 Actions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-plan-green">balance</span>
+<span>3 Decisions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>0 Risks</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 5: Executive Staff Sync: Q3 Revenue & Headcount Review -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-raised border border-hairline text-ink-body font-code-telemetry text-[11px] font-medium tracking-tight">
+              Executive
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 98</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            Executive Staff Sync: Q3 Revenue &amp; Headcount Review
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Oct 18, 9:00 AM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">40m</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">Shared with Me</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">CEO</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">CTO</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">CFO</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-hairline flex items-center justify-center font-caption text-[10px] text-ink-muted">+2</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">5 executive members</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Approved 4 senior backend engineering requisitions for Q4 pipeline acceleration."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>6 Actions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-plan-green">balance</span>
+<span>4 Decisions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>0 Risks</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 6: 1:1 Weekly Sync: Sarah Chen & Alex Rivera -->
+<div class="bg-surface-panel border border-hairline hover:border-hairline-bright rounded-xl p-5 flex flex-col justify-between transition-all duration-200 group">
+<div>
+<!-- Header Meta & Tag -->
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-raised border border-hairline text-ink-body font-code-telemetry text-[11px] font-medium tracking-tight">
+              1:1 Review
+            </span>
+<div class="flex items-center gap-1 text-plan-green font-code-telemetry text-[12px] bg-plan-green/10 px-2 py-0.5 rounded border border-plan-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>AI Analyzed 95</span>
+</div>
+</div>
+<!-- Title & Ownership -->
+<h3 class="font-title-sm text-title-sm font-semibold text-ink group-hover:text-primary transition-colors line-clamp-1 mb-1">
+            1:1 Weekly Sync: Sarah Chen &amp; Alex Rivera
+          </h3>
+<div class="flex items-center gap-2 text-ink-muted font-body-sm text-xs mb-3">
+<span>Oct 17, 3:15 PM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry">25m</span>
+<span class="text-ink-quiet">•</span>
+<span class="text-ink-body font-medium">My Meeting</span>
+</div>
+<!-- Participants Stack -->
+<div class="flex items-center gap-2 mb-4">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">SC</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised flex items-center justify-center font-caption text-[10px] text-ink">AR</div>
+</div>
+<span class="text-ink-quiet text-xs font-body-sm">Sarah Chen, Alex Rivera</span>
+</div>
+<!-- Key Takeaway Snippet -->
+<div class="p-3 bg-canvas border border-hairline rounded-lg mb-4">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px] text-accent-electric">lightbulb</span>
+<span class="font-code-telemetry text-[11px] text-ink-muted uppercase">Key AI Synthesis</span>
+</div>
+<p class="font-body-sm text-xs text-ink-body leading-relaxed line-clamp-2">
+              "Aligned on quarterly personal performance objectives and technical leadership mentorship cadence."
+            </p>
+</div>
+</div>
+<!-- Metrics Strip & Card Footer Actions -->
+<div>
+<div class="flex items-center justify-between py-2.5 border-t border-hairline font-code-telemetry text-xs text-ink-muted mb-3">
+<div class="flex items-center gap-1.5 text-ink">
+<span class="material-symbols-outlined text-[16px] text-accent-electric">check_circle</span>
+<span>1 Action</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">balance</span>
+<span>0 Decisions</span>
+</div>
+<div class="flex items-center gap-1.5 text-ink-quiet">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>0 Risks</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-overlay-soft hover:bg-hairline-bright border border-hairline-veil text-ink font-button-label text-xs flex items-center justify-center gap-1.5 transition-colors">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-raised text-ink-muted hover:text-ink transition-colors" title="More options">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State / Filter Clear Helper Notice Banner -->
+<div class="bg-surface-panel border border-hairline rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-muted text-[22px]">tune</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-ink font-medium">Looking for specific past sessions or historical audio recordings?</span>
+<span class="font-caption text-ink-muted">If filters yield 0 results: Clear filters or Import new meeting directly via audio or video file.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<button class="px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-ink font-button-label text-xs transition-colors">
+          Clear filters
+        </button>
+<button class="px-3 py-1.5 rounded-lg bg-accent-tint hover:bg-opacity-80 border border-hairline-veil text-secondary font-button-label text-xs transition-colors">
+          Import new meeting
+        </button>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component: Footer) -->
+<footer class="bg-canvas-deep border-t border-hairline w-full mt-12">
+<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6 font-body-sm text-body-sm text-ink-body">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+<span class="font-title-sm text-title-sm text-ink font-semibold">Fathom AI</span>
+<span class="hidden sm:inline text-ink-quiet">•</span>
+<span class="text-ink-quiet">© 2025 Fathom AI Systems Inc. Engineered for high-density analysis.</span>
+</div>
+<!-- Links & System Status Indicator -->
+<div class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#">Security</a>
+<a class="text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#">Documentation</a>
+<a class="text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#">API</a>
+<div class="flex items-center gap-2 px-2.5 py-1 rounded bg-surface border border-hairline text-xs font-code-telemetry">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span class="text-ink">Status: Systems Operational</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

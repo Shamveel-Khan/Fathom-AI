@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fathom AI — Shared Meeting // H2 Architecture Pivot</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "ink-muted": "#8a8f98",
+            "surface-high": "#28282c",
+            "inverse-on-surface": "#303032",
+            "surface-container-low": "#1b1c1d",
+            "on-secondary-container": "#a7afff",
+            "on-surface": "#e3e2e3",
+            "secondary-fixed-dim": "#bdc2ff",
+            "surface": "#1c1c1f",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "canvas": "#08090a",
+            "accent-tint": "#18182f",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "primary-fixed": "#e2e2e2",
+            "accent-electric": "#7170ff",
+            "surface-container-high": "#292a2b",
+            "build-yellow": "#d4b144",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "on-tertiary-container": "#4c59c6",
+            "hairline-bright": "#3e3e44",
+            "error-container": "#93000a",
+            "surface-tint": "#141516",
+            "ink-body": "#d0d6e0",
+            "primary": "#ffffff",
+            "outline-variant": "#444748",
+            "canvas-deep": "#010102",
+            "inverse-surface": "#e3e2e3",
+            "background": "#121315",
+            "on-primary": "#2f3131",
+            "on-error": "#690005",
+            "on-primary-fixed": "#1a1c1c",
+            "surface-container": "#1f2021",
+            "ink-quiet": "#62666d",
+            "on-secondary": "#121f8b",
+            "secondary-fixed": "#dfe0ff",
+            "plan-green": "#68cc58",
+            "tertiary-fixed": "#dfe0ff",
+            "error": "#ffb4ab",
+            "surface-variant": "#343536",
+            "on-tertiary-fixed": "#000964",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "surface-dim": "#121315",
+            "surface-raised": "#232326",
+            "hairline": "#23252a",
+            "status-success": "#27a644",
+            "tertiary": "#ffffff",
+            "status-error": "#eb5757",
+            "on-secondary-fixed": "#000965",
+            "primary-container": "#e2e2e2",
+            "surface-panel": "#0f1011",
+            "tertiary-container": "#dfe0ff",
+            "surface-container-lowest": "#0d0e0f",
+            "outline": "#8e9192",
+            "hairline-strong": "#34343a",
+            "security-slate": "#7a7fad",
+            "secondary": "#bdc2ff",
+            "on-primary-fixed-variant": "#454747",
+            "on-primary-container": "#636565",
+            "on-surface-variant": "#c4c7c8",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-error-container": "#ffdad6",
+            "inverse-primary": "#5d5f5f",
+            "on-background": "#e3e2e3",
+            "ink": "#f7f8f8",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "surface-container-highest": "#343536",
+            "on-tertiary": "#0e1d90",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "surface-bright": "#38393a",
+            "secondary-container": "#2e3aa2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "margin-desktop": "3rem",
+            "space-xs": "0.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-md": "1rem",
+            "margin-tablet": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "gutter": "1rem",
+            "space-sm": "0.75rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "title-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "button-label": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "display-xl-mobile": ["Inter"],
+            "caption": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "title-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "title-md": ["Inter"],
+            "display-sm": ["Inter"],
+            "display-xl": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "title-lg": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590"}],
+            "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "button-label": ["15px", {"lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510"}],
+            "keyboard-shortcut": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "display-xl-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510"}],
+            "code-telemetry": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "title-sm": ["17px", {"lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-md": ["40px", {"lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-lg": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "display-sm": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-xl": ["56px", {"lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+      display: inline-block;
+      line-height: 1;
+    }
+    /* Custom scrollbar for high density look */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23252a;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3e3e44;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-ink-body font-body-md antialiased selection:bg-accent-electric/20 selection:text-ink min-h-screen flex flex-col justify-between">
+<!-- ================= TOP APP BAR (Shared Guest Navigation) ================= -->
+<header class="bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md border-b border-hairline sticky top-0 z-50 flex justify-between items-center w-full px-6 h-14">
+<!-- Brand / Context Left -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-canvas font-bold text-base shadow-[0_0_12px_rgba(255,255,255,0.2)]">
+<span class="material-symbols-outlined text-canvas !text-[18px]">grain</span>
+</span>
+<span class="font-title-md text-title-md text-ink font-semibold tracking-tight">Fathom AI</span>
+</div>
+<div class="h-4 w-px bg-hairline"></div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent-tint text-accent-electric text-caption font-caption border border-accent-electric/20">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric animate-pulse"></span>
+          Shared Meeting
+        </span>
+<span class="text-ink-muted text-body-sm hidden sm:inline-block">Acme Workspace / H2 Roadmap</span>
+</div>
+</div>
+<!-- Center / Expiring Link Status Preview Simulator Toggle -->
+<div class="hidden lg:flex items-center gap-3">
+<button class="flex items-center gap-2 px-2.5 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline text-caption font-caption text-ink-muted hover:text-ink transition-colors duration-150" onclick="toggleExpiredModal()">
+<span class="material-symbols-outlined text-build-yellow !text-[15px]">shield</span>
+<span>Preview Revoked State</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-high text-keyboard-shortcut font-keyboard-shortcut text-ink-muted">Alt+R</span>
+</button>
+</div>
+<!-- Actions Right -->
+<div class="flex items-center gap-3">
+<!-- Read-only badge -->
+<div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface border border-hairline text-ink-muted font-caption text-caption">
+<span class="material-symbols-outlined !text-[14px]">lock</span>
+<span>Read-Only Access</span>
+</div>
+<!-- Export Brief action -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-overlay-soft hover:bg-surface-raised border border-hairline-veil text-ink font-button-label text-button-label transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined !text-[16px]">file_download</span>
+<span class="hidden sm:inline">Export Brief</span>
+</button>
+<!-- Primary CTA: Sign up / Try Free -->
+<button class="flex items-center gap-1 px-4 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-on-primary-fixed font-button-label text-button-label transition-transform duration-100 active:scale-[0.98]">
+<span>Try Fathom Free</span>
+<span class="material-symbols-outlined !text-[16px]">arrow_forward</span>
+</button>
+</div>
+</header>
+<!-- ================= SUB-BANNER / PERMISSION CONTEXT STRIP ================= -->
+<aside class="bg-surface-tint border-b border-hairline py-2 px-6">
+<div class="max-w-[1400px] mx-auto flex flex-wrap items-center justify-between gap-3 text-caption font-caption">
+<div class="flex items-center gap-2.5 text-ink-muted">
+<span class="material-symbols-outlined text-plan-green !text-[15px]">verified_user</span>
+<span>Shared via secure expiring link (token: <code class="font-code-telemetry text-code-telemetry text-ink-body px-1 py-0.5 rounded bg-surface border border-hairline">#sh-9428x-vault</code>)</span>
+<span class="text-hairline-bright">•</span>
+<span class="text-ink-body">Expires in 47 hours</span>
+<span class="text-hairline-bright hidden sm:inline">•</span>
+<span class="hidden sm:inline text-ink-muted">Guest permissions granted by Maya Patel</span>
+</div>
+<div class="flex items-center gap-4 text-ink-muted">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+          Telemetry Live Sync
+        </span>
+<a class="hover:text-ink transition-colors flex items-center gap-0.5" href="#transcript">
+<span>Jump to transcript</span>
+<span class="material-symbols-outlined !text-[14px]">arrow_downward</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- ================= MAIN CONTENT CANVAS ================= -->
+<main class="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-6 flex-1 flex flex-col gap-6">
+<!-- Top Meta Strip & Meeting Title -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-hairline">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-ink-muted text-caption font-caption">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]">calendar_today</span>
+            Oct 24, 2025
+          </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]">schedule</span>
+            48m 12s Duration
+          </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]">groups</span>
+            3 Participants
+          </span>
+</div>
+<h1 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+          H2 Architecture Pivot // Distributed Vector Cache Migration
+        </h1>
+</div>
+<!-- Quick Action Utilities -->
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink transition-colors duration-150" onclick="navigator.clipboard.writeText(window.location.href); alert('Secure share link copied to clipboard.');" title="Copy Link">
+<span class="material-symbols-outlined !text-[18px]">share</span>
+</button>
+<button class="p-2 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink transition-colors duration-150" title="Full Screen Presentation">
+<span class="material-symbols-outlined !text-[18px]">fullscreen</span>
+</button>
+<div class="h-5 w-px bg-hairline"></div>
+<div class="flex items-center -space-x-1.5 overflow-hidden pl-1">
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface-high border border-hairline text-ink font-semibold text-caption" title="Maya Patel (Lead Architect)">MP</span>
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-accent-tint border border-hairline text-accent-electric font-semibold text-caption" title="Alex Chen (VP Eng)">AC</span>
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface-container border border-hairline text-build-yellow font-semibold text-caption" title="Liam Vance (Staff Eng)">LV</span>
+</div>
+</div>
+</div>
+<!-- ================= MEDIA / WAVEFORM STAGE ================= -->
+<section class="bg-surface-panel border border-hairline rounded-xl overflow-hidden flex flex-col shadow-none">
+<!-- Video Screen / Presentation Slide Deck Visualizer -->
+<div class="relative w-full aspect-video md:aspect-[21/9] max-h-[460px] bg-canvas-deep flex items-center justify-center overflow-hidden border-b border-hairline">
+<!-- Presentation Slide Mock -->
+<div class="w-full h-full p-6 sm:p-10 flex flex-col justify-between bg-gradient-to-tr from-surface-tint via-canvas-deep to-surface-panel/40">
+<!-- Slide Header Telemetry -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface border border-hairline text-caption font-caption text-ink-muted font-code-telemetry">
+                SLIDE 14/28
+              </span>
+<span class="text-caption font-caption text-ink-muted font-code-telemetry uppercase tracking-wider">
+                CONFIDENTIAL • ACME INTERNAL
+              </span>
+</div>
+<!-- Active Speaker Pill on Stage -->
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-canvas/90 border border-accent-electric/40 backdrop-blur-md shadow-lg">
+<span class="w-2 h-2 rounded-full bg-accent-electric animate-ping"></span>
+<span class="text-caption font-caption text-ink font-medium">Maya Patel speaking...</span>
+</div>
+</div>
+<!-- Slide Presentation Body Content -->
+<div class="max-w-2xl space-y-4 my-auto">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-accent-tint text-accent-electric text-caption font-caption border border-accent-electric/30">
+<span class="material-symbols-outlined !text-[14px]">alt_route</span>
+              Phase 2 Target Architecture
+            </div>
+<h2 class="font-display-sm text-display-sm text-ink font-semibold tracking-tight">
+              Sharding Distributed Embedding Nodes Across Region us-east-2
+            </h2>
+<p class="font-body-md text-body-md text-ink-muted max-w-xl">
+              Eliminating latency spikes in real-time context retrieval by pairing local NVMe tier storage with peer-to-peer gossip protocol synchronization.
+            </p>
+</div>
+<!-- Slide Footer Telemetry & Metrics -->
+<div class="grid grid-cols-3 gap-4 max-w-lg border-t border-hairline pt-3">
+<div>
+<div class="text-caption font-caption text-ink-quiet">p99 Latency Target</div>
+<div class="font-title-sm text-title-sm text-plan-green font-code-telemetry">&lt; 14.2ms</div>
+</div>
+<div>
+<div class="text-caption font-caption text-ink-quiet">Read Replicas</div>
+<div class="font-title-sm text-title-sm text-ink font-code-telemetry">12 Nodes</div>
+</div>
+<div>
+<div class="text-caption font-caption text-ink-quiet">Est. Cloud Delta</div>
+<div class="font-title-sm text-title-sm text-accent-electric font-code-telemetry">-28.4% cost</div>
+</div>
+</div>
+</div>
+<!-- Watermark Overlay -->
+<div class="absolute bottom-3 right-4 pointer-events-none opacity-40">
+<span class="font-code-telemetry text-caption text-ink-quiet">Fathom AI • Session Token #sh-9428x</span>
+</div>
+</div>
+<!-- High-Density Audio Waveform & Scrubber Controller -->
+<div class="p-4 sm:p-5 bg-surface-panel flex flex-col gap-3">
+<!-- Scrubber Track & Waveform -->
+<div class="relative w-full group">
+<!-- Timeline time stamps above -->
+<div class="flex items-center justify-between text-caption font-code-telemetry text-ink-quiet mb-1">
+<span class="text-ink font-medium">18:42</span>
+<div class="flex items-center gap-6">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-accent-electric"></span>Maya (48%)</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-plan-green"></span>Alex (36%)</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-build-yellow"></span>Liam (16%)</span>
+</div>
+<span>48:12</span>
+</div>
+<!-- Waveform SVG Visualization Container -->
+<div class="relative h-10 w-full bg-surface-tint rounded-lg border border-hairline overflow-hidden cursor-pointer flex items-center px-1">
+<!-- Simulated Audio Bars (CSS flex dynamic) -->
+<div class="absolute inset-0 flex items-center justify-between px-2 gap-[2px] opacity-75">
+<!-- Render 64 waveform amplitude bars -->
+<span class="w-1 h-3 bg-hairline-bright rounded-sm"></span>
+<span class="w-1 h-5 bg-hairline-bright rounded-sm"></span>
+<span class="w-1 h-7 bg-hairline-bright rounded-sm"></span>
+<span class="w-1 h-4 bg-hairline-bright rounded-sm"></span>
+<span class="w-1 h-8 bg-hairline-bright rounded-sm"></span>
+<span class="w-1 h-6 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-9 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-4 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-7 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-5 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-8 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-9 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-6 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-4 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-7 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-5 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-8 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-9 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-8 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-6 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-7 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-9 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-5 bg-accent-electric rounded-sm"></span>
+<span class="w-1 h-8 bg-accent-electric rounded-sm"></span>
+<!-- Scrubber head marker position ~38% -->
+<span class="w-1 h-7 bg-plan-green rounded-sm"></span>
+<span class="w-1 h-4 bg-plan-green rounded-sm"></span>
+<span class="w-1 h-8 bg-plan-green rounded-sm"></span>
+<span class="w-1 h-6 bg-plan-green rounded-sm"></span>
+<span class="w-1 h-5 bg-plan-green rounded-sm"></span>
+<span class="w-1 h-8 bg-hairline rounded-sm"></span>
+<span class="w-1 h-6 bg-hairline rounded-sm"></span>
+<span class="w-1 h-4 bg-hairline rounded-sm"></span>
+<span class="w-1 h-7 bg-hairline rounded-sm"></span>
+<span class="w-1 h-5 bg-hairline rounded-sm"></span>
+<span class="w-1 h-3 bg-hairline rounded-sm"></span>
+<span class="w-1 h-7 bg-hairline rounded-sm"></span>
+<span class="w-1 h-8 bg-hairline rounded-sm"></span>
+<span class="w-1 h-6 bg-hairline rounded-sm"></span>
+<span class="w-1 h-4 bg-hairline rounded-sm"></span>
+<span class="w-1 h-8 bg-hairline rounded-sm"></span>
+<span class="w-1 h-6 bg-hairline rounded-sm"></span>
+<span class="w-1 h-7 bg-hairline rounded-sm"></span>
+<span class="w-1 h-5 bg-hairline rounded-sm"></span>
+<span class="w-1 h-3 bg-hairline rounded-sm"></span>
+<span class="w-1 h-8 bg-hairline rounded-sm"></span>
+<span class="w-1 h-6 bg-hairline rounded-sm"></span>
+<span class="w-1 h-4 bg-hairline rounded-sm"></span>
+<span class="w-1 h-7 bg-hairline rounded-sm"></span>
+<span class="w-1 h-5 bg-hairline rounded-sm"></span>
+<span class="w-1 h-3 bg-hairline rounded-sm"></span>
+</div>
+<!-- Played Progress Overlay -->
+<div class="absolute left-0 top-0 bottom-0 bg-accent-electric/15 border-r-2 border-accent-electric pointer-events-none" style="width: 38.8%;">
+<div class="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_#7170ff]"></div>
+</div>
+<!-- Speaker segment distribution underline bar -->
+<div class="absolute bottom-0 left-0 right-0 h-1 flex">
+<div class="bg-accent-electric" style="width: 48%;" title="Maya Patel"></div>
+<div class="bg-plan-green" style="width: 36%;" title="Alex Chen"></div>
+<div class="bg-build-yellow" style="width: 16%;" title="Liam Vance"></div>
+</div>
+</div>
+</div>
+<!-- Controls Toolbar: Playback, Rate, Chapters, Volume -->
+<div class="flex items-center justify-between flex-wrap gap-4 pt-1">
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-ink flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined !text-[18px]">replay_10</span>
+</button>
+<button class="w-9 h-9 rounded-lg bg-white text-canvas flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined !text-[20px] font-bold" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-ink flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined !text-[18px]">forward_10</span>
+</button>
+<div class="h-4 w-px bg-hairline mx-1"></div>
+<!-- Speed Selector -->
+<div class="flex items-center rounded-lg bg-surface border border-hairline p-0.5 text-caption font-caption">
+<button class="px-2 py-0.5 rounded text-ink-muted hover:text-ink">1x</button>
+<button class="px-2 py-0.5 rounded bg-surface-high text-ink font-medium">1.25x</button>
+<button class="px-2 py-0.5 rounded text-ink-muted hover:text-ink">1.5x</button>
+</div>
+</div>
+<!-- Right Telemetry and Seeking Badges -->
+<div class="flex items-center gap-3">
+<span class="text-caption font-caption text-ink-muted hidden md:inline">Chapter: <span class="text-ink">Vector Cache Migration Strategy</span></span>
+<div class="h-4 w-px bg-hairline hidden md:inline"></div>
+<button class="flex items-center gap-1.5 text-caption font-caption text-ink-muted hover:text-ink">
+<span class="material-symbols-outlined !text-[18px]">volume_up</span>
+</button>
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline text-caption font-caption text-ink-muted hover:text-ink">
+<span class="material-symbols-outlined !text-[15px]">closed_caption</span>
+<span>CC</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= SPLIT TWO-COLUMN WORKSPACE ================= -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- ================= LEFT COLUMN: Searchable Guest Transcript ================= -->
+<div class="lg:col-span-7 flex flex-col gap-4">
+<!-- Transcript Header & Search -->
+<div class="bg-surface-panel border border-hairline rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-electric !text-[20px]">format_quote</span>
+<h2 class="font-title-sm text-title-sm text-ink font-semibold">Spoken Transcript</h2>
+<span class="px-2 py-0.5 rounded bg-surface border border-hairline text-caption font-caption text-ink-muted font-code-telemetry">142 utterances • Diarized</span>
+</div>
+<!-- Auto-scroll lock toggle -->
+<label class="flex items-center gap-2 cursor-pointer text-caption font-caption text-ink-muted hover:text-ink">
+<input checked="" class="rounded border-hairline bg-surface text-accent-electric focus:ring-0 w-3.5 h-3.5" type="checkbox"/>
+<span>Auto-sync with audio</span>
+</label>
+</div>
+<!-- Search Input Field -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-ink-quiet !text-[16px]">search</span>
+<input class="w-full h-9 pl-9 pr-16 bg-surface border border-hairline-strong rounded-lg text-ink font-body-sm text-body-sm placeholder:text-ink-quiet focus:border-accent-electric focus:ring-1 focus:ring-accent-electric transition-colors" placeholder="Search spoken keywords, terms, or speakers..." type="text"/>
+<span class="absolute right-2.5 top-2 px-1.5 py-0.5 rounded bg-surface-raised border border-hairline-bright text-keyboard-shortcut font-keyboard-shortcut text-ink-muted">⌘K</span>
+</div>
+</div>
+<!-- Utterance Feed -->
+<div class="space-y-3" id="transcript">
+<!-- Utterance 1: Maya Patel -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-4 hover:border-hairline-bright transition-colors">
+<div class="flex items-start justify-between gap-3 mb-2">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-surface-high border border-hairline text-ink font-semibold text-caption flex items-center justify-center">MP</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-caption font-title-sm text-ink font-medium">Maya Patel</span>
+<span class="text-caption font-caption text-ink-quiet">Lead Architect</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<a class="font-code-telemetry text-caption text-accent-electric hover:underline bg-accent-tint/60 px-1.5 py-0.5 rounded border border-accent-electric/20" href="#seek">[17:50]</a>
+<button class="text-ink-quiet hover:text-ink transition-colors p-1" title="Copy Quote">
+<span class="material-symbols-outlined !text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-ink-body pl-9">
+              If we inspect the memory footprint on our primary ingest pipeline, we see 70% of overhead is redundant vector deserialization. That is why moving to a shared memory memory-mapped buffer in Rust eliminates the garbage collection pause entirely.
+            </p>
+</article>
+<!-- Utterance 2: Active / Highlighted Segment (Alex Chen) -->
+<article class="bg-surface-panel border-l-2 border-l-accent-electric border-y border-r border-hairline rounded-xl p-4 bg-accent-electric/[0.03] shadow-sm">
+<div class="flex items-start justify-between gap-3 mb-2">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-accent-tint border border-hairline text-accent-electric font-semibold text-caption flex items-center justify-center">AC</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-caption font-title-sm text-ink font-medium">Alex Chen</span>
+<span class="text-caption font-caption text-ink-quiet">VP Engineering</span>
+<span class="px-1.5 py-0.2 rounded bg-accent-electric/15 text-accent-electric text-[10px] font-mono uppercase tracking-wide">Playing</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-code-telemetry text-caption text-accent-electric bg-accent-tint px-1.5 py-0.5 rounded border border-accent-electric/30 font-medium">[18:42]</span>
+<button class="text-ink hover:text-ink transition-colors p-1" title="Copy Quote">
+<span class="material-symbols-outlined !text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-ink pl-9 leading-relaxed">
+<mark class="bg-accent-electric/25 text-ink rounded px-1 py-0.5">I agree with the Rust proxy approach,</mark> but how does that affect our failover cluster in EU-central? If the ring loses two nodes during a shard rebalance, does the fallback cache preserve read-through consistency?
+            </p>
+</article>
+<!-- Utterance 3: Liam Vance -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-4 hover:border-hairline-bright transition-colors">
+<div class="flex items-start justify-between gap-3 mb-2">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-surface-container border border-hairline text-build-yellow font-semibold text-caption flex items-center justify-center">LV</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-caption font-title-sm text-ink font-medium">Liam Vance</span>
+<span class="text-caption font-caption text-ink-quiet">Staff Systems Engineer</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<a class="font-code-telemetry text-caption text-ink-muted hover:underline bg-surface px-1.5 py-0.5 rounded border border-hairline" href="#seek">[19:15]</a>
+<button class="text-ink-quiet hover:text-ink transition-colors p-1" title="Copy Quote">
+<span class="material-symbols-outlined !text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-ink-body pl-9">
+              We benchmarked that during the last chaos drill. We configured Raft heartbeat intervals down to 150ms. As long as our quorum stays above two-thirds, read consistency remains linearizable. I’ve already committed the benchmark reproduction script to the repo.
+            </p>
+</article>
+<!-- Utterance 4: Maya Patel (Consensus trigger) -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-4 hover:border-hairline-bright transition-colors">
+<div class="flex items-start justify-between gap-3 mb-2">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-surface-high border border-hairline text-ink font-semibold text-caption flex items-center justify-center">MP</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-caption font-title-sm text-ink font-medium">Maya Patel</span>
+<span class="text-caption font-caption text-ink-quiet">Lead Architect</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<a class="font-code-telemetry text-caption text-ink-muted hover:underline bg-surface px-1.5 py-0.5 rounded border border-hairline" href="#seek">[20:04]</a>
+<button class="text-ink-quiet hover:text-ink transition-colors p-1" title="Copy Quote">
+<span class="material-symbols-outlined !text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-ink-body pl-9">
+              Then it’s settled. We will proceed with the distributed vector cache migration as the primary Q4 deliverable, freezing legacy API deprecations on November 15th.
+            </p>
+</article>
+</div>
+</div>
+<!-- ================= RIGHT COLUMN: Read-Only AI Intelligence Dock ================= -->
+<div class="lg:col-span-5 flex flex-col gap-4">
+<!-- Intelligence Dock Panel -->
+<div class="bg-surface-panel border border-hairline rounded-xl overflow-hidden flex flex-col">
+<!-- Dock Navigation Tabs -->
+<div class="border-b border-hairline bg-surface-tint p-2 flex items-center justify-between overflow-x-auto">
+<div class="flex items-center gap-1">
+<button class="px-3 py-1.5 rounded-lg bg-surface-raised border border-hairline-bright text-ink font-button-label text-caption font-medium shadow-sm">
+                Summary
+              </button>
+<button class="px-3 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface text-caption font-caption transition-colors">
+                Action Items <span class="ml-1 px-1.5 py-0.2 rounded-full bg-accent-tint text-accent-electric text-[11px]">4</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface text-caption font-caption transition-colors">
+                Decisions <span class="ml-1 px-1.5 py-0.2 rounded-full bg-surface-high text-ink text-[11px]">2</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface text-caption font-caption transition-colors">
+                Highlights <span class="ml-1 px-1.5 py-0.2 rounded-full bg-surface-high text-ink text-[11px]">3</span>
+</button>
+</div>
+<span class="text-caption font-caption text-ink-quiet font-code-telemetry px-2 hidden sm:inline">AI v4.2</span>
+</div>
+<!-- Intelligence Content Area -->
+<div class="p-5 space-y-6">
+<!-- 1. Executive Summary Synthesis -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-title-sm text-ink font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-electric !text-[18px]">auto_awesome</span>
+                  Executive Summary
+                </h3>
+<span class="text-caption font-caption text-ink-quiet">Generated at 14:15 UTC</span>
+</div>
+<p class="font-body-md text-body-md text-ink-body">
+                The engineering leadership team finalized the transition from monolith memory caches to a sharded, distributed Rust proxy layer to reduce p99 ingest latency below 15ms.
+              </p>
+<ul class="space-y-2.5 text-body-sm font-body-sm text-ink-body pt-1">
+<li class="flex items-start gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric mt-2 flex-shrink-0"></span>
+<span>
+                    Agreed that garbage collection pauses account for 70% of serialization overhead in Java nodes.
+                    <a class="font-code-telemetry text-accent-electric hover:underline ml-1" href="#t1">[04:15]</a>
+</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric mt-2 flex-shrink-0"></span>
+<span>
+                    Validated Raft quorum resiliency against multi-AZ partition scenarios with 150ms heartbeats.
+                    <a class="font-code-telemetry text-accent-electric hover:underline ml-1" href="#t2">[18:42]</a>
+</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric mt-2 flex-shrink-0"></span>
+<span>
+                    Locked deprecation timeline for legacy v1 API endpoints for November 15th to protect SLA targets.
+                    <a class="font-code-telemetry text-accent-electric hover:underline ml-1" href="#t3">[27:14]</a>
+</span>
+</li>
+</ul>
+</div>
+<div class="h-px bg-hairline"></div>
+<!-- 2. Action Items Preview (View Only) -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-title-sm text-ink font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-plan-green !text-[18px]">task_alt</span>
+                  Verified Action Items
+                </h3>
+<span class="px-2 py-0.5 rounded bg-surface text-ink-quiet text-[11px] font-mono">Guest View-Only</span>
+</div>
+<div class="space-y-2">
+<!-- Action Item 1 -->
+<div class="p-3 rounded-lg bg-surface/50 border border-hairline flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="mt-0.5">
+<input class="rounded border-hairline-bright bg-surface-container text-accent-electric opacity-60 cursor-not-allowed" disabled="" type="checkbox"/>
+</div>
+<div>
+<div class="text-body-sm font-body-sm text-ink">Merge Raft heartbeat parameter tuning PR to staging</div>
+<div class="flex items-center gap-2 text-caption font-caption text-ink-quiet mt-1">
+<span>Assignee: <strong class="text-ink-body font-normal">Liam Vance</strong></span>
+<span>•</span>
+<span>Due: <strong class="text-ink-body font-normal">Oct 28</strong></span>
+</div>
+</div>
+</div>
+<span class="font-code-telemetry text-caption text-ink-quiet">[19:40]</span>
+</div>
+<!-- Action Item 2 -->
+<div class="p-3 rounded-lg bg-surface/50 border border-hairline flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="mt-0.5">
+<input class="rounded border-hairline-bright bg-surface-container text-accent-electric opacity-60 cursor-not-allowed" disabled="" type="checkbox"/>
+</div>
+<div>
+<div class="text-body-sm font-body-sm text-ink">Publish revised SLA docs for EMEA client accounts</div>
+<div class="flex items-center gap-2 text-caption font-caption text-ink-quiet mt-1">
+<span>Assignee: <strong class="text-ink-body font-normal">Alex Chen</strong></span>
+<span>•</span>
+<span>Due: <strong class="text-ink-body font-normal">Nov 02</strong></span>
+</div>
+</div>
+</div>
+<span class="font-code-telemetry text-caption text-ink-quiet">[24:12]</span>
+</div>
+<!-- Action Item 3 -->
+<div class="p-3 rounded-lg bg-surface/50 border border-hairline flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="mt-0.5">
+<input class="rounded border-hairline-bright bg-surface-container text-accent-electric opacity-60 cursor-not-allowed" disabled="" type="checkbox"/>
+</div>
+<div>
+<div class="text-body-sm font-body-sm text-ink">Benchmark memory map deserialization in Rust staging image</div>
+<div class="flex items-center gap-2 text-caption font-caption text-ink-quiet mt-1">
+<span>Assignee: <strong class="text-ink-body font-normal">Maya Patel</strong></span>
+<span>•</span>
+<span>Due: <strong class="text-ink-body font-normal">Nov 05</strong></span>
+</div>
+</div>
+</div>
+<span class="font-code-telemetry text-caption text-ink-quiet">[32:05]</span>
+</div>
+</div>
+</div>
+<div class="h-px bg-hairline"></div>
+<!-- 3. Architectural Decisions -->
+<div class="space-y-3">
+<h3 class="font-title-sm text-title-sm text-ink font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-build-yellow !text-[18px]">lightbulb</span>
+                Architectural Decisions
+              </h3>
+<div class="space-y-2.5">
+<div class="p-3.5 rounded-lg bg-surface border border-hairline space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="text-caption font-caption px-2 py-0.5 rounded-full bg-plan-green/10 text-plan-green border border-plan-green/20">Consensus Reached</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">Decision Owner: Maya Patel</span>
+</div>
+<h4 class="font-body-md text-body-md font-medium text-ink">Adopt Peer-to-Peer Vector Replication</h4>
+<p class="font-body-sm text-body-sm text-ink-muted">
+                    Deprecate centralized master write node in favor of multi-leader gossip topology to guarantee uptime during single zone blackouts.
+                  </p>
+</div>
+</div>
+</div>
+<div class="h-px bg-hairline"></div>
+<!-- 4. Shared Highlights & Category Tags -->
+<div class="space-y-2.5">
+<h3 class="font-title-sm text-title-sm text-ink font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary !text-[18px]">bookmark</span>
+                Meeting Tags &amp; Scope
+              </h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full bg-surface border border-hairline text-caption font-caption text-ink-body flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+                  Architecture Consensus
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-surface border border-hairline text-caption font-caption text-ink-body flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-build-yellow"></span>
+                  Infrastructure Risk
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-surface border border-hairline text-caption font-caption text-ink-body flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric"></span>
+                  Q4 Engineering Goals
+                </span>
+</div>
+</div>
+<!-- Guest Promotional Upgrade Teaser -->
+<div class="p-4 rounded-xl bg-gradient-to-b from-surface to-surface-raised border border-hairline-bright space-y-3">
+<div class="flex items-center gap-2 text-ink font-medium text-body-sm">
+<span class="material-symbols-outlined text-primary !text-[18px]">bolt</span>
+<span>Power your own meetings with Fathom AI</span>
+</div>
+<p class="text-caption font-caption text-ink-muted">
+                Automatically transcribe Zoom, Google Meet, and Teams calls with zero latency and share secure instant links like this.
+              </p>
+<button class="w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-on-primary-fixed font-button-label text-button-label transition-opacity">
+                Create Free Account
+              </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= REVOKED / EXPIRED LINK STATE MODAL (Toggleable Demo) ================= -->
+<div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4" id="expired-modal">
+<div class="max-w-md w-full bg-surface-panel border border-hairline-bright rounded-2xl p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+<!-- Security Icon Header -->
+<div class="flex items-center justify-between">
+<div class="w-10 h-10 rounded-xl bg-error-container/30 border border-status-error/40 flex items-center justify-center text-status-error">
+<span class="material-symbols-outlined !text-[24px]">lock_clock</span>
+</div>
+<button class="text-ink-quiet hover:text-ink p-1" onclick="toggleExpiredModal()">
+<span class="material-symbols-outlined !text-[20px]">close</span>
+</button>
+</div>
+<!-- Revocation Alert Title & Notice -->
+<div class="space-y-2">
+<h2 class="font-title-md text-title-md text-ink font-semibold">
+          This shared meeting link has been revoked or expired
+        </h2>
+<p class="font-body-sm text-body-sm text-ink-muted leading-relaxed">
+          The owner has revoked public access or the token has reached its security TTL. Contact the meeting organizer at Acme Corp to request a new link, or sign in to your workspace.
+        </p>
+</div>
+<!-- Security Telemetry Watermark Box -->
+<div class="p-3 rounded-lg bg-surface border border-hairline text-caption font-code-telemetry space-y-1 text-ink-quiet">
+<div class="flex justify-between">
+<span>TOKEN ID</span>
+<span class="text-ink-body">#sh-9428x-vault</span>
+</div>
+<div class="flex justify-between">
+<span>EVENT</span>
+<span class="text-status-error">Access Revoked (403_TTL)</span>
+</div>
+<div class="flex justify-between">
+<span>TIMESTAMP</span>
+<span class="text-ink-body">14:10:02 UTC by Workspace Admin</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="space-y-2 pt-1">
+<button class="w-full py-2.5 rounded-lg bg-primary text-on-primary-fixed font-button-label text-button-label hover:bg-primary/90 transition-colors" onclick="alert('Access request dispatched to Maya Patel (owner).');">
+          Request Access from Owner
+        </button>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 px-3 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-caption font-button-label text-ink-body transition-colors text-center" onclick="toggleExpiredModal()">
+            Sign in to Fathom AI
+          </button>
+<button class="py-2 px-3 rounded-lg bg-surface hover:bg-surface-raised border border-hairline text-caption font-button-label text-ink-muted transition-colors text-center" onclick="toggleExpiredModal()">
+            Return to Homepage
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= PUBLIC FOOTER (Shared Component Anchor) ================= -->
+<footer class="bg-canvas-deep border-t border-hairline mt-12 w-full">
+<div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-white flex items-center justify-center text-canvas text-xs font-bold">F</span>
+<span class="font-title-sm text-title-sm text-ink font-semibold">Fathom AI</span>
+</div>
+<span class="text-hairline-bright hidden sm:inline">•</span>
+<span class="font-body-sm text-body-sm text-ink-quiet">
+          © 2025 Fathom AI Systems Inc. Engineered for high-density analysis.
+        </span>
+</div>
+<!-- Compliance & Status Links -->
+<div class="flex flex-wrap items-center justify-center gap-6 font-body-sm text-body-sm text-ink-body">
+<span class="flex items-center gap-1.5 text-caption font-caption text-plan-green">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+          Status: Systems Operational
+        </span>
+<a class="hover:text-ink transition-colors duration-150" href="#security">Security</a>
+<a class="hover:text-ink transition-colors duration-150" href="#privacy">Privacy Policy</a>
+<a class="hover:text-ink transition-colors duration-150" href="#terms">Terms of Service</a>
+<a class="hover:text-ink transition-colors duration-150" href="#docs">Documentation</a>
+<a class="hover:text-ink transition-colors duration-150" href="#api">API</a>
+</div>
+</div>
+</footer>
+<!-- Micro-interactions Script -->
+<script>
+    function toggleExpiredModal() {
+      const modal = document.getElementById('expired-modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Keyboard shortcut handler for Alt+R to simulate revoked link
+    window.addEventListener('keydown', (e) => {
+      if (e.altKey && (e.key === 'r' || e.key === 'R')) {
+        e.preventDefault();
+        toggleExpiredModal();
+      }
+    });
+  </script>
+</body></html>

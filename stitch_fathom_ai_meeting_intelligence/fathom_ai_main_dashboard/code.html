@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fathom AI - Executive Intelligence Dashboard</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#121f8b",
+            "on-primary-fixed-variant": "#454747",
+            "primary-fixed": "#e2e2e2",
+            "on-tertiary-fixed": "#000964",
+            "surface-container-high": "#292a2b",
+            "surface-tint": "#c6c6c7",
+            "primary-fixed-dim": "#c6c6c7",
+            "primary-container": "#e2e2e2",
+            "build-yellow": "#d4b144",
+            "ink-quiet": "#62666d",
+            "surface-container-lowest": "#0d0e0f",
+            "on-secondary-fixed": "#000965",
+            "primary": "#ffffff",
+            "canvas": "#08090a",
+            "ink-muted": "#8a8f98",
+            "on-secondary-container": "#a7afff",
+            "secondary-fixed-dim": "#bdc2ff",
+            "error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "surface-container": "#1f2021",
+            "status-success": "#27a644",
+            "surface-raised": "#232326",
+            "inverse-surface": "#e3e2e3",
+            "surface-container-highest": "#343536",
+            "accent-electric": "#7170ff",
+            "inverse-primary": "#5d5f5f",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "hairline-bright": "#3e3e44",
+            "background": "#121315",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "surface-high": "#28282c",
+            "on-primary-container": "#636565",
+            "ink-body": "#d0d6e0",
+            "surface": "#1c1c1f",
+            "status-error": "#eb5757",
+            "outline-variant": "#444748",
+            "outline": "#8e9192",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "secondary": "#bdc2ff",
+            "on-primary": "#2f3131",
+            "on-surface-variant": "#c4c7c8",
+            "on-background": "#e3e2e3",
+            "on-tertiary-container": "#4c59c6",
+            "accent-tint": "#18182f",
+            "error": "#ffb4ab",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "tertiary-fixed": "#dfe0ff",
+            "inverse-on-surface": "#303032",
+            "surface-dim": "#121315",
+            "on-error-container": "#ffdad6",
+            "on-surface": "#e3e2e3",
+            "surface-panel": "#0f1011",
+            "secondary-container": "#2e3aa2",
+            "on-tertiary": "#0e1d90",
+            "tertiary-container": "#dfe0ff",
+            "hairline": "#23252a",
+            "surface-variant": "#343536",
+            "surface-bright": "#38393a",
+            "plan-green": "#68cc58",
+            "secondary-fixed": "#dfe0ff",
+            "hairline-strong": "#34343a",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "surface-container-low": "#1b1c1d",
+            "ink": "#f7f8f8",
+            "on-error": "#690005",
+            "canvas-deep": "#010102",
+            "security-slate": "#7a7fad",
+            "on-primary-fixed": "#1a1c1c",
+            "tertiary": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-desktop": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "display-xl": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "button-label": ["Inter"],
+            "display-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "display-sm": ["Inter"],
+            "caption": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "title-sm": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "title-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-xl": ["56px", {"lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "code-telemetry": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "button-label": ["15px", {"lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510"}],
+            "display-md": ["40px", {"lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-lg": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-sm": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510"}],
+            "display-xl-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "title-sm": ["17px", {"lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "keyboard-shortcut": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "title-lg": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-canvas text-ink antialiased selection:bg-accent-electric selection:text-primary min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md flex justify-between items-center w-full px-6 h-14 sticky top-0 z-50 border-b border-hairline dark:border-hairline shadow-none">
+<div class="flex items-center gap-6">
+<!-- Brand & Workspace Switcher -->
+<div class="flex items-center gap-3">
+<a class="flex items-center gap-2 group" href="#dashboard">
+<div class="w-7 h-7 rounded-lg bg-primary text-canvas flex items-center justify-center font-bold text-sm tracking-tight transition-transform duration-100 group-hover:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="waves" style="font-variation-settings: 'FILL' 1;">waves</span>
+</div>
+<span class="font-title-md text-title-md text-ink dark:text-ink font-semibold tracking-tight">Fathom AI</span>
+</a>
+<div class="h-4 w-px bg-hairline-bright mx-0.5"></div>
+<!-- Workspace badge pill -->
+<button class="flex items-center gap-1.5 px-2 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline text-ink-muted hover:text-ink transition-colors duration-150 active:scale-[0.98]">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span class="font-caption text-caption text-ink font-medium">Acme Corp</span>
+<span class="font-caption text-caption text-ink-quiet">• Enterprise Tier</span>
+<span class="material-symbols-outlined text-[14px] text-ink-quiet" data-icon="unfold_more">unfold_more</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 pl-2">
+<a class="font-button-label text-button-label text-ink dark:text-ink font-medium px-3 py-1.5 rounded-md bg-overlay-soft relative" href="#dashboard">
+          Dashboard
+          <span class="absolute bottom-0 left-3 right-3 h-[1.5px] bg-accent-electric rounded-full"></span>
+</a>
+<a class="font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 px-3 py-1.5 rounded-md active:scale-[0.98]" href="#meetings">
+          Meetings
+        </a>
+<a class="font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 px-3 py-1.5 rounded-md active:scale-[0.98]" href="#action-items">
+          Action Items
+        </a>
+<a class="font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 px-3 py-1.5 rounded-md active:scale-[0.98]" href="#decisions">
+          Decisions
+        </a>
+<a class="font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 px-3 py-1.5 rounded-md active:scale-[0.98]" href="#settings">
+          Settings
+        </a>
+</nav>
+</div>
+<!-- Center/Right Global Search & Actions -->
+<div class="flex items-center gap-3">
+<!-- Search Bar -->
+<div class="relative hidden sm:flex items-center">
+<span class="material-symbols-outlined absolute left-2.5 text-ink-quiet text-[17px] pointer-events-none" data-icon="search">search</span>
+<input class="w-64 lg:w-72 h-9 pl-8 pr-12 rounded-lg bg-surface border border-hairline-strong text-ink placeholder:text-ink-quiet text-body-sm font-body-sm focus:outline-none focus:border-accent-electric focus:ring-1 focus:ring-accent-electric transition-colors" placeholder="Search meetings, transcripts, decisions..." type="text"/>
+<div class="absolute right-2 flex items-center gap-0.5">
+<kbd class="bg-surface-raised border border-hairline-strong border-t-hairline-bright rounded px-1.5 py-0.5 font-keyboard-shortcut text-keyboard-shortcut text-ink-muted">⌘K</kbd>
+</div>
+</div>
+<!-- Icon Actions -->
+<div class="flex items-center gap-1">
+<button class="relative w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors active:scale-[0.98]" title="Notifications">
+<span class="material-symbols-outlined text-[19px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-accent-electric ring-2 ring-canvas"></span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors active:scale-[0.98]" title="Help &amp; Docs">
+<span class="material-symbols-outlined text-[19px]" data-icon="help">help</span>
+</button>
+</div>
+<div class="h-4 w-px bg-hairline-bright mx-1"></div>
+<!-- Trailing Primary Action: Import Meeting -->
+<button class="h-9 px-3.5 bg-primary text-canvas font-button-label text-button-label font-medium rounded-lg flex items-center gap-1.5 hover:opacity-92 transition-opacity active:scale-[0.98] shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>Import Meeting</span>
+</button>
+<!-- User Profile Avatar -->
+<div class="relative ml-1">
+<div class="w-8 h-8 rounded-full bg-surface-raised border border-hairline flex items-center justify-center text-ink font-semibold text-xs tracking-tight overflow-hidden ring-1 ring-hairline-veil">
+<span class="font-code-telemetry text-caption text-ink font-semibold">EV</span>
+</div>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-status-success ring-2 ring-surface-panel"></span>
+</div>
+</div>
+</header>
+<!-- MAIN DASHBOARD CONTENT AREA -->
+<main class="flex-1 w-full max-w-[1240px] mx-auto px-6 py-8">
+<!-- GREETING & WORKSPACE INTELLIGENCE STRIP -->
+<div class="mb-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6">
+<div>
+<div class="flex items-center gap-2 mb-1.5">
+<span class="font-caption text-caption text-accent-electric uppercase tracking-wider font-semibold">Weekly Briefing</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-caption text-caption text-ink-quiet">Synthesized 12m ago</span>
+</div>
+<h1 class="font-title-lg text-title-lg md:font-display-sm md:text-display-sm text-ink tracking-tight font-medium">
+            Good morning, Elena
+          </h1>
+<p class="font-body-md text-body-md text-ink-muted mt-1 max-w-xl">
+            Here is your meeting intelligence digest for this week. Acme Corp has 7 unresolved tasks and 2 key roadmaps underway.
+          </p>
+</div>
+<!-- Telemetry Sync pill -->
+<div class="flex items-center gap-2 self-start md:self-auto px-3 py-1.5 rounded-lg bg-surface-panel border border-hairline text-ink-body font-code-telemetry text-caption">
+<span class="inline-block w-2 h-2 rounded-full bg-plan-green animate-pulse"></span>
+<span>Engine v4.2.0 • 99.8% Sync Rate</span>
+</div>
+</div>
+<!-- 4-CARD METRIC STRIP -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Metric 1: Total Meetings -->
+<div class="p-4 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-center justify-between text-ink-quiet mb-2">
+<span class="font-caption text-caption uppercase tracking-wider text-ink-muted font-medium">Total Meetings</span>
+<span class="material-symbols-outlined text-[18px] text-ink-quiet group-hover:text-ink transition-colors" data-icon="mic">mic</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">42</span>
+<span class="font-code-telemetry text-caption text-plan-green flex items-center font-medium">
+<span class="material-symbols-outlined text-[13px] mr-0.5" data-icon="trending_up">trending_up</span>
+              +8% this week
+            </span>
+</div>
+<div class="w-full bg-hairline h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-plan-green h-full rounded-full" style="width: 72%;"></div>
+</div>
+</div>
+<!-- Metric 2: AI Audits Completed -->
+<div class="p-4 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-center justify-between text-ink-quiet mb-2">
+<span class="font-caption text-caption uppercase tracking-wider text-ink-muted font-medium">AI Audits Completed</span>
+<span class="material-symbols-outlined text-[18px] text-accent-electric" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">38</span>
+<span class="font-code-telemetry text-caption text-ink-muted">
+              avg score <span class="text-ink font-medium">92/100</span>
+</span>
+</div>
+<div class="w-full bg-hairline h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-accent-electric h-full rounded-full" style="width: 92%;"></div>
+</div>
+</div>
+<!-- Metric 3: Open Action Items -->
+<div class="p-4 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-center justify-between text-ink-quiet mb-2">
+<span class="font-caption text-caption uppercase tracking-wider text-ink-muted font-medium">Open Action Items</span>
+<span class="material-symbols-outlined text-[18px] text-build-yellow" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">7</span>
+<span class="font-code-telemetry text-caption text-build-yellow font-medium">
+              2 due today
+            </span>
+</div>
+<div class="w-full bg-hairline h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-build-yellow h-full rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+<!-- Metric 4: Decisions Logged -->
+<div class="p-4 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-center justify-between text-ink-quiet mb-2">
+<span class="font-caption text-caption uppercase tracking-wider text-ink-muted font-medium">Decisions Logged</span>
+<span class="material-symbols-outlined text-[18px] text-security-slate" data-icon="lightbulb">lightbulb</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">14</span>
+<span class="font-code-telemetry text-caption text-ink-muted">
+              across 5 teams
+            </span>
+</div>
+<div class="w-full bg-hairline h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-security-slate h-full rounded-full" style="width: 60%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN TWO-COLUMN DASHBOARD BODY -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT SECTION: Recent Meetings Library (65% -> col-span-8) -->
+<section class="lg:col-span-8 flex flex-col gap-5">
+<!-- Section Header with Category Filters -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-hairline">
+<div class="flex items-center gap-2">
+<h2 class="font-title-md text-title-md text-ink font-semibold">Recent Meetings</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-raised border border-hairline font-code-telemetry text-caption text-ink-muted">42</span>
+</div>
+<!-- Filter Pills -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+<button class="px-2.5 py-1 rounded-lg text-caption font-button-label bg-surface-high border border-hairline-bright text-ink whitespace-nowrap">All</button>
+<button class="px-2.5 py-1 rounded-lg text-caption font-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors whitespace-nowrap">1:1</button>
+<button class="px-2.5 py-1 rounded-lg text-caption font-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors whitespace-nowrap">Product</button>
+<button class="px-2.5 py-1 rounded-lg text-caption font-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors whitespace-nowrap">Architecture</button>
+<button class="px-2.5 py-1 rounded-lg text-caption font-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors whitespace-nowrap">Customer Calls</button>
+<a class="ml-2 font-caption text-caption text-accent-electric hover:underline whitespace-nowrap flex items-center" href="#all-meetings">
+              View All (42) <span class="material-symbols-outlined text-[13px] ml-0.5" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- High-fidelity Meeting Cards -->
+<div class="flex flex-col gap-3.5">
+<!-- Card 1 -->
+<article class="p-5 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright hover:bg-overlay-soft/20 transition-all duration-150 group relative cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-2">
+<span class="px-2 py-0.5 rounded bg-accent-tint text-secondary font-caption text-caption font-medium border border-hairline-veil">Engineering</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">Today, 10:00 AM</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry text-caption text-ink-muted flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="schedule">schedule</span> 45m
+                  </span>
+</div>
+<h3 class="font-title-sm text-title-sm text-ink group-hover:text-primary font-semibold tracking-tight transition-colors">
+                  H2 Engineering Roadmap &amp; Tech Debt Review
+                </h3>
+<p class="font-body-sm text-body-sm text-ink-muted mt-1 line-clamp-2">
+                  Agreed to prioritize database sharding in Q3. Marcus will draft the migration RFC by Friday. Deprecation of legacy analytics pipeline scheduled for Nov 14.
+                </p>
+</div>
+<!-- AI Status Pill -->
+<div class="flex sm:flex-col items-end gap-1.5">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-code-telemetry text-caption">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Analyzed • 96/100</span>
+</div>
+</div>
+</div>
+<!-- Card Bottom Bar: Participants & Indicators -->
+<div class="mt-4 pt-3.5 border-t border-hairline flex flex-wrap items-center justify-between gap-3">
+<!-- Participant Avatars -->
+<div class="flex items-center gap-2">
+<div class="flex -space-x-1.5 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium" title="Elena Vance">EV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-high text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium" title="Marcus Brody">MB</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium" title="Sofia Chen">SC</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-container-high text-[10px] font-code-telemetry flex items-center justify-center text-ink-muted font-medium">+1</div>
+</div>
+<span class="font-caption text-caption text-ink-quiet">4 participants</span>
+</div>
+<!-- Indicators: Actions & Decisions -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span class="font-medium text-ink">4</span> Action Items
+                </div>
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-security-slate"></span>
+<span class="font-medium text-ink">2</span> Decisions
+                </div>
+<span class="material-symbols-outlined text-[16px] text-ink-quiet group-hover:text-ink group-hover:translate-x-0.5 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="p-5 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright hover:bg-overlay-soft/20 transition-all duration-150 group relative cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-2">
+<span class="px-2 py-0.5 rounded bg-surface-raised text-ink-body font-caption text-caption font-medium border border-hairline">Customer Onboarding</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">Yesterday</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry text-caption text-ink-muted flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="schedule">schedule</span> 32m
+                  </span>
+</div>
+<h3 class="font-title-sm text-title-sm text-ink group-hover:text-primary font-semibold tracking-tight transition-colors">
+                  Customer Onboarding: Stripe Integration Deep-dive
+                </h3>
+<p class="font-body-sm text-body-sm text-ink-muted mt-1 line-clamp-2">
+                  Reviewed webhook payload verifications with FinTech leads. Confirmed sandbox environment credentials provisioned and SLA guarantees locked at 99.95%.
+                </p>
+</div>
+<!-- AI Status Pill -->
+<div class="flex sm:flex-col items-end gap-1.5">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-code-telemetry text-caption">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Analyzed • 88/100</span>
+</div>
+</div>
+</div>
+<!-- Card Bottom Bar: Participants & Indicators -->
+<div class="mt-4 pt-3.5 border-t border-hairline flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<div class="flex -space-x-1.5 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">EV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-high text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">DG</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">JL</div>
+</div>
+<span class="font-caption text-caption text-ink-quiet">3 participants</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span class="font-medium text-ink">2</span> Action Items
+                </div>
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-security-slate"></span>
+<span class="font-medium text-ink">1</span> Decision
+                </div>
+<span class="material-symbols-outlined text-[16px] text-ink-quiet group-hover:text-ink group-hover:translate-x-0.5 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="p-5 rounded-xl bg-surface-panel border border-hairline hover:border-hairline-bright hover:bg-overlay-soft/20 transition-all duration-150 group relative cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-2 mb-2">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-secondary-container font-caption text-caption font-medium border border-hairline">Design Systems</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">Oct 22</span>
+<span class="text-ink-quiet">•</span>
+<span class="font-code-telemetry text-caption text-ink-muted flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="schedule">schedule</span> 50m
+                  </span>
+</div>
+<h3 class="font-title-sm text-title-sm text-ink group-hover:text-primary font-semibold tracking-tight transition-colors">
+                  Weekly Product &amp; Design Sync
+                </h3>
+<p class="font-body-sm text-body-sm text-ink-muted mt-1 line-clamp-2">
+                  Evaluated the new dark monochrome token architecture. Team aligned on adopting zero-radius keycaps for desktop shortcut hints and consolidating secondary card elevation.
+                </p>
+</div>
+<!-- AI Status Pill -->
+<div class="flex sm:flex-col items-end gap-1.5">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-code-telemetry text-caption">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Analyzed • 94/100</span>
+</div>
+</div>
+</div>
+<!-- Card Bottom Bar: Participants & Indicators -->
+<div class="mt-4 pt-3.5 border-t border-hairline flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<div class="flex -space-x-1.5 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">EV</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-high text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">TN</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-panel bg-surface-raised text-[10px] font-code-telemetry flex items-center justify-center text-ink-body font-medium">SC</div>
+<div class="inline-block h-6 w-6 rounded-full ring-2 ring-surface-container-high text-[10px] font-code-telemetry flex items-center justify-center text-ink-muted font-medium">+3</div>
+</div>
+<span class="font-caption text-caption text-ink-quiet">6 participants</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span class="font-medium text-ink">5</span> Action Items
+                </div>
+<div class="flex items-center gap-1 font-caption text-caption text-ink-body">
+<span class="w-2 h-2 rounded-full bg-security-slate"></span>
+<span class="font-medium text-ink">0</span> Decisions
+                </div>
+<span class="material-symbols-outlined text-[16px] text-ink-quiet group-hover:text-ink group-hover:translate-x-0.5 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Inline Audio Waveform Telemetry Preview -->
+<div class="p-4 rounded-xl bg-surface-panel border border-hairline mt-1">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-electric text-[18px]" data-icon="graphic_eq">graphic_eq</span>
+<span class="font-title-sm text-title-sm text-ink font-medium">Live Acoustic Synthesis Feed</span>
+</div>
+<span class="font-code-telemetry text-caption text-ink-quiet">Engine Latency: 142ms</span>
+</div>
+<!-- Synthetic Waveform visualization -->
+<div class="h-10 bg-canvas rounded-lg p-2 flex items-center gap-1 border border-hairline overflow-hidden">
+<span class="h-2 w-1 rounded bg-hairline-strong"></span>
+<span class="h-4 w-1 rounded bg-hairline-bright"></span>
+<span class="h-6 w-1 rounded bg-accent-electric"></span>
+<span class="h-8 w-1 rounded bg-accent-electric"></span>
+<span class="h-5 w-1 rounded bg-secondary"></span>
+<span class="h-7 w-1 rounded bg-accent-electric"></span>
+<span class="h-3 w-1 rounded bg-hairline-bright"></span>
+<span class="h-5 w-1 rounded bg-plan-green"></span>
+<span class="h-6 w-1 rounded bg-plan-green"></span>
+<span class="h-4 w-1 rounded bg-hairline-strong"></span>
+<span class="h-7 w-1 rounded bg-accent-electric"></span>
+<span class="h-8 w-1 rounded bg-accent-electric"></span>
+<span class="h-6 w-1 rounded bg-secondary"></span>
+<span class="h-4 w-1 rounded bg-hairline-bright"></span>
+<span class="h-2 w-1 rounded bg-hairline-strong"></span>
+<span class="h-5 w-1 rounded bg-build-yellow"></span>
+<span class="h-7 w-1 rounded bg-build-yellow"></span>
+<span class="h-3 w-1 rounded bg-hairline-bright"></span>
+<span class="h-6 w-1 rounded bg-accent-electric"></span>
+<span class="h-8 w-1 rounded bg-accent-electric"></span>
+<span class="h-7 w-1 rounded bg-accent-electric"></span>
+<span class="h-4 w-1 rounded bg-hairline-bright"></span>
+<span class="h-2 w-1 rounded bg-hairline-strong"></span>
+<span class="h-5 w-1 rounded bg-security-slate"></span>
+<span class="h-8 w-1 rounded bg-security-slate"></span>
+<span class="h-4 w-1 rounded bg-hairline-bright"></span>
+<span class="h-3 w-1 rounded bg-hairline-strong"></span>
+<span class="h-6 w-1 rounded bg-accent-electric"></span>
+<span class="h-7 w-1 rounded bg-accent-electric"></span>
+<span class="h-5 w-1 rounded bg-secondary"></span>
+<span class="h-3 w-1 rounded bg-hairline-bright"></span>
+<span class="h-1 w-1 rounded bg-hairline-strong"></span>
+</div>
+<div class="flex justify-between items-center mt-2 font-code-telemetry text-caption text-ink-quiet">
+<span>00:00:00</span>
+<span class="text-accent-electric">Speaker A: 48% • Speaker B: 34% • Cross-talk: 2.1%</span>
+<span>00:45:12</span>
+</div>
+</div>
+</section>
+<!-- RIGHT SECTION: Intelligence Feed & Action Item Queue (35% -> col-span-4) -->
+<aside class="lg:col-span-4 flex flex-col gap-6">
+<!-- PANEL 1: Pending Action Items -->
+<div class="p-5 rounded-xl bg-surface-panel border border-hairline">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-build-yellow text-[18px]" data-icon="task_alt">task_alt</span>
+<h3 class="font-title-sm text-title-sm text-ink font-semibold">Pending Action Items</h3>
+</div>
+<span class="font-code-telemetry text-caption px-2 py-0.5 rounded bg-surface-raised border border-hairline text-build-yellow font-medium">2 Due Today</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Task 1: Due Today -->
+<div class="p-3 rounded-lg bg-surface border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-start gap-2.5">
+<input class="mt-1 rounded bg-surface-raised border-hairline-strong text-accent-electric focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-ink font-medium leading-snug">
+                    Send updated Stripe payload spec to fintech integration lead
+                  </p>
+<div class="flex flex-wrap items-center gap-2 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-raised border border-hairline font-code-telemetry text-[11px] text-ink-muted">
+                      EV (Elena)
+                    </span>
+<span class="font-caption text-caption text-build-yellow font-medium flex items-center">
+<span class="material-symbols-outlined text-[13px] mr-0.5" data-icon="alarm">alarm</span> Today, 5:00 PM
+                    </span>
+</div>
+<a class="inline-block mt-1 font-caption text-caption text-ink-quiet hover:text-ink truncate max-w-full" href="#meeting-stripe">
+                    via <span class="underline underline-offset-2">Customer Onboarding: Stripe</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Task 2: Due Today -->
+<div class="p-3 rounded-lg bg-surface border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-start gap-2.5">
+<input class="mt-1 rounded bg-surface-raised border-hairline-strong text-accent-electric focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-ink font-medium leading-snug">
+                    Draft Q3 database sharding RFC and distribute to staff engineers
+                  </p>
+<div class="flex flex-wrap items-center gap-2 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-raised border border-hairline font-code-telemetry text-[11px] text-ink-muted">
+                      MB (Marcus)
+                    </span>
+<span class="font-caption text-caption text-build-yellow font-medium flex items-center">
+<span class="material-symbols-outlined text-[13px] mr-0.5" data-icon="alarm">alarm</span> Today, 6:00 PM
+                    </span>
+</div>
+<a class="inline-block mt-1 font-caption text-caption text-ink-quiet hover:text-ink truncate max-w-full" href="#meeting-roadmap">
+                    via <span class="underline underline-offset-2">H2 Engineering Roadmap</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Task 3: Upcoming -->
+<div class="p-3 rounded-lg bg-surface border border-hairline hover:border-hairline-bright transition-colors group">
+<div class="flex items-start gap-2.5">
+<input class="mt-1 rounded bg-surface-raised border-hairline-strong text-accent-electric focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-body-sm text-ink-body leading-snug">
+                    Schedule migration dry-run for secondary replica failover
+                  </p>
+<div class="flex flex-wrap items-center gap-2 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-raised border border-hairline font-code-telemetry text-[11px] text-ink-muted">
+                      SC (Sofia)
+                    </span>
+<span class="font-caption text-caption text-ink-muted">
+                      Oct 28
+                    </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- PANEL 2: Recent Key Decisions -->
+<div class="p-5 rounded-xl bg-surface-panel border border-hairline">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-security-slate text-[18px]" data-icon="gavel">gavel</span>
+<h3 class="font-title-sm text-title-sm text-ink font-semibold">Recent Key Decisions</h3>
+</div>
+<a class="font-caption text-caption text-ink-muted hover:text-ink" href="#decisions">View Log</a>
+</div>
+<div class="flex flex-col gap-3">
+<div class="p-3 rounded-lg bg-surface border-l-2 border-l-security-slate border-y border-r border-hairline">
+<div class="flex items-center justify-between mb-1">
+<span class="px-1.5 py-0.5 rounded bg-accent-tint text-security-slate font-code-telemetry text-[11px] font-medium">Architecture</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">10:42 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-ink font-medium">
+                Mandate TLS 1.3 encryption across internal gRPC microservice bridges.
+              </p>
+<div class="flex items-center justify-between mt-2 pt-1 border-t border-hairline/60">
+<span class="font-caption text-caption text-ink-quiet">Consensus: Unanimous (4/4)</span>
+<a class="font-code-telemetry text-[11px] text-accent-electric hover:underline flex items-center" href="#ts-1042">
+<span class="material-symbols-outlined text-[13px] mr-0.5" data-icon="play_circle">play_circle</span>
+                  18:42
+                </a>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface border-l-2 border-l-security-slate border-y border-r border-hairline">
+<div class="flex items-center justify-between mb-1">
+<span class="px-1.5 py-0.5 rounded bg-accent-tint text-security-slate font-code-telemetry text-[11px] font-medium">Product / Ops</span>
+<span class="font-code-telemetry text-caption text-ink-quiet">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-ink font-medium">
+                Freeze user onboarding batch during database indexing window (Nov 2).
+              </p>
+<div class="flex items-center justify-between mt-2 pt-1 border-t border-hairline/60">
+<span class="font-caption text-caption text-ink-quiet">Recorded by Marcus</span>
+<a class="font-code-telemetry text-[11px] text-accent-electric hover:underline flex items-center" href="#ts-yesterday">
+<span class="material-symbols-outlined text-[13px] mr-0.5" data-icon="play_circle">play_circle</span>
+                  24:10
+                </a>
+</div>
+</div>
+</div>
+</div>
+<!-- PANEL 3: Meeting Quality Insights -->
+<div class="p-5 rounded-xl bg-surface-panel border border-hairline">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-plan-green text-[18px]" data-icon="insights">insights</span>
+<h3 class="font-title-sm text-title-sm text-ink font-semibold">Meeting Quality Insights</h3>
+</div>
+<span class="font-code-telemetry text-caption text-plan-green">94% Index</span>
+</div>
+<div class="space-y-3">
+<div>
+<div class="flex justify-between items-center font-caption text-caption mb-1">
+<span class="text-ink-muted">Agenda Adherence</span>
+<span class="font-code-telemetry text-ink font-medium">96%</span>
+</div>
+<div class="w-full bg-surface-raised h-1.5 rounded-full overflow-hidden">
+<div class="bg-plan-green h-full rounded-full" style="width: 96%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center font-caption text-caption mb-1">
+<span class="text-ink-muted">Monologue Rate (&lt; 2.5m)</span>
+<span class="font-code-telemetry text-ink font-medium">88%</span>
+</div>
+<div class="w-full bg-surface-raised h-1.5 rounded-full overflow-hidden">
+<div class="bg-accent-electric h-full rounded-full" style="width: 88%;"></div>
+</div>
+</div>
+<!-- Unresolved questions notice -->
+<div class="p-2.5 rounded-lg bg-surface border border-hairline flex items-center gap-2.5 mt-2">
+<span class="material-symbols-outlined text-build-yellow text-[18px]" data-icon="contact_support">contact_support</span>
+<div class="min-w-0">
+<p class="font-caption text-caption text-ink font-medium">1 Unresolved Question Alert</p>
+<p class="font-caption text-caption text-ink-quiet truncate">Database failover retry limit during peak ingest</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="bg-canvas-deep dark:bg-canvas-deep border-t border-hairline dark:border-hairline shadow-none w-full mt-auto">
+<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col sm:flex-row items-center gap-3">
+<span class="font-title-sm text-title-sm text-ink dark:text-ink font-semibold">Fathom AI</span>
+<span class="hidden sm:inline text-hairline-bright">•</span>
+<p class="font-body-sm text-body-sm text-ink-quiet dark:text-ink-quiet">
+          © 2025 Fathom AI Systems Inc. Engineered for high-density analysis.
+        </p>
+</div>
+<!-- Footer Navigation Links verbatim from JSON -->
+<nav class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 font-body-sm text-body-sm">
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity" href="#security">
+          Security
+        </a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity" href="#privacy">
+          Privacy Policy
+        </a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity" href="#terms">
+          Terms of Service
+        </a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity flex items-center gap-1.5" href="#status">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+          Status: Systems Operational
+        </a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity" href="#documentation">
+          Documentation
+        </a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 transition-opacity" href="#api">
+          API
+        </a>
+</nav>
+</div>
+</footer>
+</body></html>

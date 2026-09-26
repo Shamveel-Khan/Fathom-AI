@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { AppNav } from '@/components/AppNav';
+import { MeetingHeader } from '@/components/MeetingHeader';
 import { MeetingPlayer } from '@/components/MeetingPlayer';
 import { MeetingTimeline } from '@/components/MeetingTimeline';
 import { TranscriptViewer } from '@/components/TranscriptViewer';
@@ -12,25 +13,8 @@ import { HighlightModal } from '@/components/HighlightModal';
 import { ShareModal } from '@/components/ShareModal';
 import { ExportModal } from '@/components/ExportModal';
 import { MeetingDetailSkeleton } from '@/components/Skeletons';
-import { getTemplateDefinition } from '@/lib/templates/definitions';
 import { Meeting, TranscriptUtterance, MeetingHighlight } from '@/lib/schemas/meeting';
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Users,
-  Sparkles,
-  RefreshCw,
-  Play,
-  AlertCircle,
-  Key,
-  X,
-  Highlighter,
-  Share2,
-  Download,
-  ShieldAlert,
-} from 'lucide-react';
-import Link from 'next/link';
+import { AlertCircle, Key, X } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
@@ -216,7 +200,6 @@ function MeetingDetailPageContent() {
     });
     const data = await res.json();
     if (data.success) {
-      // Re-fetch meeting to refresh highlights list
       await fetchMeeting();
     }
   };
@@ -276,8 +259,8 @@ function MeetingDetailPageContent() {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#08090a' }}>
+        <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#23252a', borderTopColor: '#7170ff' }} />
       </div>
     );
   }
@@ -286,131 +269,52 @@ function MeetingDetailPageContent() {
     return <MeetingDetailSkeleton />;
   }
 
-  const tpl = getTemplateDefinition(meeting?.template);
-
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#08090a' }}>
       <AppNav apiKey={apiKey} onSaveApiKey={handleSaveApiKey} baseUrl={baseUrl} model={model} />
 
-      {/* Meeting Header */}
-      <div className="border-b border-slate-200 bg-white shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 font-medium mb-3 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Meetings
-          </Link>
-
-          {meeting ? (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="text-xl font-bold text-slate-900">{meeting.title}</h1>
-                  <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${tpl.bgLight} ${tpl.color} ${tpl.borderLight}`}>
-                    {tpl.badge}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 mt-1.5 text-xs text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" /> {meeting.date}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> {meeting.durationMinutes}m
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" /> {meeting.participants.length} participants
-                  </span>
-                  {meeting.analysis?.analyzedAt && (
-                    <span className="text-indigo-600 font-medium">
-                      AI analyzed {new Date(meeting.analysis.analyzedAt).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                <button
-                  onClick={() => setIsExportModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-                  title="Export report, transcript, or markdown"
-                >
-                  <Download className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Export</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setSelectedSnippet({
-                      quote: meeting.transcript[0]?.text || '',
-                      speaker: meeting.transcript[0]?.speaker || 'Speaker',
-                      timestamp: '00:00',
-                    });
-                    setIsHighlightModalOpen(true);
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors"
-                >
-                  <Highlighter className="w-3.5 h-3.5" />
-                  <span>Highlight</span>
-                </button>
-
-                {meeting.isOwner !== false && (
-                  <button
-                    onClick={() => setIsShareModalOpen(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors"
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Share</span>
-                  </button>
-                )}
-
-                <button
-                  onClick={() => handleRunAnalysis(true)}
-                  disabled={isAnalyzing}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors disabled:opacity-50"
-                >
-                  <Play className="w-3 h-3 text-indigo-600" />
-                  <span>Demo Mode</span>
-                </button>
-
-                <button
-                  onClick={() => handleRunAnalysis(false)}
-                  disabled={isAnalyzing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Analyzing…</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>{meeting.analysis ? 'Re-analyze' : 'Analyze AI'}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
+      {meeting && (
+        <MeetingHeader
+          meeting={meeting}
+          hasApiKey={Boolean(apiKey)}
+          onOpenApiKeyModal={() => {}}
+          onAnalyze={handleRunAnalysis}
+          isLoading={isAnalyzing}
+          hasAnalysis={Boolean(meeting.analysis)}
+          isReviewLoading={isReviewLoading}
+          hasReview={Boolean(meeting.review)}
+          onGetReview={handleRunReview}
+          onOpenShareModal={() => setIsShareModalOpen(true)}
+          onOpenExportModal={() => setIsExportModalOpen(true)}
+          onOpenHighlightModal={() => {
+            setSelectedSnippet({
+              quote: meeting.transcript[0]?.text || '',
+              speaker: meeting.transcript[0]?.speaker || 'Speaker',
+              timestamp: '00:00',
+            });
+            setIsHighlightModalOpen(true);
+          }}
+        />
+      )}
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         {/* Error Banner */}
         {error && (
-          <div className="rounded-2xl bg-rose-50 border border-rose-200 p-4 flex items-start justify-between gap-3 text-rose-800">
+          <div
+            className="rounded-xl border p-4 flex items-start justify-between gap-3"
+            style={{ background: 'rgba(235,87,87,0.08)', borderColor: 'rgba(235,87,87,0.3)', color: '#eb5757' }}
+          >
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#eb5757' }} />
               <div>
                 <p className="text-sm font-semibold">Analysis Notice</p>
-                <p className="text-xs text-rose-700 mt-0.5">{error.message}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#d0d6e0' }}>{error.message}</p>
                 {error.code === 'NO_API_KEY' && (
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => handleRunAnalysis(true)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold"
+                      style={{ background: '#7170ff', color: '#ffffff' }}
                     >
                       <Key className="w-3.5 h-3.5" />
                       Try Instant Demo
@@ -419,7 +323,13 @@ function MeetingDetailPageContent() {
                 )}
               </div>
             </div>
-            <button onClick={() => setError(null)} className="text-rose-400 hover:text-rose-700 p-1">
+            <button
+              onClick={() => setError(null)}
+              className="p-1 transition-colors"
+              style={{ color: '#62666d' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#f7f8f8')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#62666d')}
+            >
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -452,7 +362,7 @@ function MeetingDetailPageContent() {
             </div>
 
             {/* Bottom Row: 2-Column Split (Transcript + AI Intelligence) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[620px] pb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-[620px] pb-8">
               <div className="lg:col-span-5 h-[650px] lg:h-[calc(100vh-280px)] min-h-[500px]">
                 <TranscriptViewer
                   transcript={meeting.transcript}
@@ -529,8 +439,8 @@ export default function MeetingDetailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-          <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+        <div className="min-h-screen flex items-center justify-center" style={{ background: '#08090a' }}>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#23252a', borderTopColor: '#7170ff' }} />
         </div>
       }
     >

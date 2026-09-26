@@ -1,35 +1,107 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Graphite Luminance Ladder ── */
+  --color-canvas-deep: #010102;
+  --color-canvas: #08090a;
+  --color-surface-panel: #0f1011;
+  --color-surface-tint: #141516;
+  --color-surface-dim: #121315;
+  --color-surface: #1c1c1f;
+  --color-surface-raised: #232326;
+  --color-surface-high: #28282c;
+  --color-surface-bright: #38393a;
+  --color-surface-container-low: #1b1c1d;
+  --color-surface-container: #1f2021;
+  --color-surface-container-high: #292a2b;
+  --color-surface-container-highest: #343536;
+  --color-surface-variant: #343536;
+
+  /* ── Borders & Dividers ── */
+  --color-hairline: #23252a;
+  --color-hairline-bright: #3e3e44;
+  --color-hairline-strong: #34343a;
+  --color-hairline-veil: rgba(255, 255, 255, 0.08);
+
+  /* ── Overlays ── */
+  --color-overlay-soft: rgba(255, 255, 255, 0.05);
+  --color-header-veil: rgba(11, 11, 11, 0.8);
+
+  /* ── Ink Ladder ── */
+  --color-ink: #f7f8f8;
+  --color-ink-body: #d0d6e0;
+  --color-ink-muted: #8a8f98;
+  --color-ink-quiet: #62666d;
+
+  /* ── Primary & Accents ── */
+  --color-primary: #ffffff;
+  --color-accent-electric: #7170ff;
+  --color-accent-bright: #828fff;
+  --color-accent-tint: #18182f;
+  --color-secondary: #bdc2ff;
+  --color-brand: #5e6ad2;
+
+  /* ── Domain Pillars ── */
+  --color-plan-green: #68cc58;
+  --color-build-yellow: #d4b144;
+  --color-security-slate: #7a7fad;
+
+  /* ── Semantic ── */
+  --color-status-success: #27a644;
+  --color-status-error: #eb5757;
+
+  /* ── Material Design semantic (used in Stitch HTML) ── */
+  --color-on-surface: #e3e2e3;
+  --color-on-surface-variant: #c4c7c8;
+  --color-on-background: #e3e2e3;
+  --color-background: #121315;
+  --color-outline: #8e9192;
+  --color-outline-variant: #444748;
+
+  /* ── Fonts ── */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+}
+
+/* ── Base Styles ── */
 @layer base {
-  :root {
-    --background: #f8fafc;
-    --foreground: #0f172a;
-    --card: #ffffff;
-    --card-foreground: #0f172a;
-    --border: #e2e8f0;
-    --primary: #4f46e5;
-    --primary-foreground: #ffffff;
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    -webkit-font-smoothing: antialiased;
+    background-color: var(--color-canvas);
+    color: var(--color-ink-body);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-electric);
+    color: var(--color-primary);
   }
 }
 
-/* Custom scrollbar */
+/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+  background: var(--color-hairline-strong);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-hairline-bright);
+}
+
+/* ── Focus Ring ── */
+:focus-visible {
+  outline: 1px solid var(--color-accent-electric);
+  outline-offset: 2px;
 }

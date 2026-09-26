@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Meeting, TranscriptUtterance } from '@/lib/schemas/meeting';
+import { Meeting } from '@/lib/schemas/meeting';
 import { MeetingPlayer } from '@/components/MeetingPlayer';
 import { MeetingTimeline } from '@/components/MeetingTimeline';
 import { TranscriptViewer } from '@/components/TranscriptViewer';
@@ -11,7 +11,6 @@ import { ExportModal } from '@/components/ExportModal';
 import { MeetingDetailSkeleton } from '@/components/Skeletons';
 import { getTemplateDefinition } from '@/lib/templates/definitions';
 import {
-  Sparkles,
   Calendar,
   Clock,
   Users,
@@ -20,6 +19,14 @@ import {
   Share2,
 } from 'lucide-react';
 import Link from 'next/link';
+
+const TEMPLATE_ACCENT: Record<string, string> = {
+  general:   '#7170ff',
+  one_on_one:'#bdc2ff',
+  sales:     '#68cc58',
+  interview: '#7a7fad',
+  project:   '#d4b144',
+};
 
 function PublicShareContent() {
   const params = useParams();
@@ -58,7 +65,6 @@ function PublicShareContent() {
         const res = await fetch(`/api/share/${token}`);
         const data = await res.json();
         if (data.success && data.meeting) {
-          // Provide a sanitized client-side ID for local UI operations without revealing real DB ID
           setMeeting({
             ...data.meeting,
             id: `shared-${token.slice(0, 8)}`,
@@ -116,20 +122,27 @@ function PublicShareContent() {
 
   if (error || !meeting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-        <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-sm space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 mx-auto">
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#08090a' }}>
+        <div
+          className="max-w-md w-full rounded-2xl border p-8 text-center space-y-4"
+          style={{ background: '#0f1011', borderColor: '#23252a' }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl border flex items-center justify-center mx-auto"
+            style={{ background: 'rgba(235,87,87,0.1)', borderColor: 'rgba(235,87,87,0.3)', color: '#eb5757' }}
+          >
             <AlertCircle className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-base font-bold text-slate-900 mb-1">Shared Link Unavailable</h1>
-            <p className="text-xs text-slate-500">{error || 'This meeting link has expired or been revoked by the owner.'}</p>
+            <h1 className="text-base font-semibold mb-1" style={{ color: '#f7f8f8' }}>Shared Link Unavailable</h1>
+            <p className="text-xs" style={{ color: '#8a8f98' }}>{error || 'This meeting link has expired or been revoked by the owner.'}</p>
           </div>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+            style={{ background: '#ffffff', color: '#08090a' }}
           >
-            Sign in to Fathom
+            Sign in to Fathom AI
           </Link>
         </div>
       </div>
@@ -137,20 +150,38 @@ function PublicShareContent() {
   }
 
   const tpl = getTemplateDefinition(meeting.template);
+  const accent = TEMPLATE_ACCENT[meeting.template || 'general'] || '#7170ff';
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#08090a' }}>
       {/* Public Share Minimal Nav */}
-      <nav className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+      <nav
+        className="sticky top-0 z-40 border-b"
+        style={{
+          background: 'rgba(11, 11, 11, 0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderColor: '#23252a',
+          height: '56px',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-linear-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-black text-xs shadow-xs">
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold"
+              style={{ background: '#ffffff', color: '#08090a' }}
+            >
               F
             </div>
-            <span className="font-bold text-slate-900 text-sm tracking-tight">Fathom</span>
-            <span className="text-slate-300">|</span>
-            <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-              <Share2 className="w-3 h-3 text-indigo-500" />
+            <span className="font-semibold text-sm" style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}>
+              Fathom AI
+            </span>
+            <span style={{ color: '#34343a' }}>/</span>
+            <span
+              className="text-xs font-medium flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border"
+              style={{ background: '#18182f', borderColor: 'rgba(113,112,255,0.2)', color: '#828fff' }}
+            >
+              <Share2 className="w-3 h-3" />
               Shared Meeting View
             </span>
           </div>
@@ -158,33 +189,43 @@ function PublicShareContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsExportModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer"
+              style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#d0d6e0' }}
             >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <Download className="w-3.5 h-3.5" style={{ color: '#8a8f98' }} />
               <span>Export</span>
             </button>
             <Link
               href="/signup"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+              style={{ background: '#ffffff', color: '#08090a' }}
             >
-              Try Fathom Free
+              Get Fathom AI
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Meeting Header */}
-      <div className="border-b border-slate-200 bg-white shadow-xs">
+      <div className="border-b" style={{ background: '#0f1011', borderColor: '#23252a' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{meeting.title}</h1>
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${tpl.bgLight} ${tpl.color} ${tpl.borderLight}`}>
+                <h1 className="text-xl sm:text-2xl font-semibold" style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}>
+                  {meeting.title}
+                </h1>
+                <span
+                  className="text-[11px] font-medium px-2.5 py-0.5 rounded-md border"
+                  style={{ background: `${accent}15`, color: accent, borderColor: `${accent}30` }}
+                >
                   {tpl.badge}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-slate-500">
+              <div
+                className="flex flex-wrap items-center gap-4 mt-2 text-xs"
+                style={{ color: '#8a8f98', fontFamily: "'JetBrains Mono', monospace" }}
+              >
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5" /> {meeting.date}
                 </span>
@@ -204,9 +245,10 @@ function PublicShareContent() {
                   <div
                     key={i}
                     title={`${p.name}${p.role ? ` (${p.role})` : ''}`}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white ring-2 ring-white shadow-2xs ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white ring-2 ${
                       p.avatarColor || 'bg-slate-500'
                     }`}
+                    style={{ ringColor: '#0f1011' } as React.CSSProperties}
                   >
                     {p.name
                       .split(' ')
@@ -216,9 +258,6 @@ function PublicShareContent() {
                   </div>
                 ))}
               </div>
-              <span className="text-xs text-slate-500 font-medium ml-1">
-                {meeting.participants.map((p) => p.name.split(' ')[0]).join(', ')}
-              </span>
             </div>
           </div>
         </div>
@@ -251,7 +290,7 @@ function PublicShareContent() {
         </div>
 
         {/* Bottom: 2-Column Split (Live Synced Transcript + AI Intelligence Panel) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[620px] pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-[620px] pb-8">
           <div className="lg:col-span-5 h-[650px] lg:h-[calc(100vh-280px)] min-h-[500px]">
             <TranscriptViewer
               transcript={meeting.transcript}
@@ -292,8 +331,8 @@ export default function PublicSharePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-          <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+        <div className="min-h-screen flex items-center justify-center" style={{ background: '#08090a' }}>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#23252a', borderTopColor: '#7170ff' }} />
         </div>
       }
     >

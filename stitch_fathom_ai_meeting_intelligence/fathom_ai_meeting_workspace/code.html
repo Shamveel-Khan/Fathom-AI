@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fathom AI - Meeting Workspace</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#121f8b",
+            "on-primary-fixed-variant": "#454747",
+            "primary-fixed": "#e2e2e2",
+            "on-tertiary-fixed": "#000964",
+            "surface-container-high": "#292a2b",
+            "surface-tint": "#c6c6c7",
+            "primary-fixed-dim": "#c6c6c7",
+            "primary-container": "#e2e2e2",
+            "build-yellow": "#d4b144",
+            "ink-quiet": "#62666d",
+            "surface-container-lowest": "#0d0e0f",
+            "on-secondary-fixed": "#000965",
+            "primary": "#ffffff",
+            "canvas": "#08090a",
+            "ink-muted": "#8a8f98",
+            "on-secondary-container": "#a7afff",
+            "secondary-fixed-dim": "#bdc2ff",
+            "error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "surface-container": "#1f2021",
+            "status-success": "#27a644",
+            "surface-raised": "#232326",
+            "inverse-surface": "#e3e2e3",
+            "surface-container-highest": "#343536",
+            "accent-electric": "#7170ff",
+            "inverse-primary": "#5d5f5f",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "hairline-bright": "#3e3e44",
+            "background": "#121315",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "surface-high": "#28282c",
+            "on-primary-container": "#636565",
+            "ink-body": "#d0d6e0",
+            "surface": "#1c1c1f",
+            "status-error": "#eb5757",
+            "outline-variant": "#444748",
+            "outline": "#8e9192",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "secondary": "#bdc2ff",
+            "on-primary": "#2f3131",
+            "on-surface-variant": "#c4c7c8",
+            "on-background": "#e3e2e3",
+            "on-tertiary-container": "#4c59c6",
+            "accent-tint": "#18182f",
+            "error": "#ffb4ab",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "tertiary-fixed": "#dfe0ff",
+            "inverse-on-surface": "#303032",
+            "surface-dim": "#121315",
+            "on-error-container": "#ffdad6",
+            "on-surface": "#e3e2e3",
+            "surface-panel": "#0f1011",
+            "secondary-container": "#2e3aa2",
+            "on-tertiary": "#0e1d90",
+            "tertiary-container": "#dfe0ff",
+            "hairline": "#23252a",
+            "surface-variant": "#343536",
+            "surface-bright": "#38393a",
+            "plan-green": "#68cc58",
+            "secondary-fixed": "#dfe0ff",
+            "hairline-strong": "#34343a",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "surface-container-low": "#1b1c1d",
+            "ink": "#f7f8f8",
+            "on-error": "#690005",
+            "canvas-deep": "#010102",
+            "security-slate": "#7a7fad",
+            "on-primary-fixed": "#1a1c1c",
+            "tertiary": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-desktop": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "display-xl": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "button-label": ["Inter"],
+            "display-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "display-sm": ["Inter"],
+            "caption": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "title-sm": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "title-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-xl": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "code-telemetry": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "button-label": ["15px", { "lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510" }],
+            "display-md": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-lg": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-sm": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510" }],
+            "display-xl-mobile": ["36px", { "lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "title-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "title-sm": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "keyboard-shortcut": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-lg": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Custom scrollbar and subtle glowing states */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23252a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #34343a;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-ink font-body-md antialiased min-h-screen flex flex-col selection:bg-accent-electric selection:text-primary">
+<!-- TOP APPLICATION HEADER (Linear-inspired high density sticky header) -->
+<header class="sticky top-0 z-50 w-full bg-surface-panel/80 backdrop-blur-md border-b border-hairline flex flex-col">
+<!-- Main Bar -->
+<div class="h-14 px-6 flex items-center justify-between gap-4">
+<!-- Left: Logo & Navigation Breadcrumb -->
+<div class="flex items-center gap-3 min-w-0">
+<!-- Logo from JSON Brand Anchor -->
+<div class="flex items-center gap-2 pr-2 border-r border-hairline">
+<div class="w-6 h-6 rounded bg-primary flex items-center justify-center text-canvas font-extrabold text-xs">
+            F
+          </div>
+<span class="font-title-md text-title-md text-ink font-semibold tracking-tight hidden lg:inline">Fathom AI</span>
+</div>
+<!-- Back & Breadcrumb -->
+<a class="flex items-center gap-1.5 text-ink-muted hover:text-ink transition-colors duration-150 font-body-sm text-body-sm group" href="#meetings">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-x-0.5 transition-transform" data-icon="arrow_back">arrow_back</span>
+<span class="font-medium text-ink-muted">Meetings</span>
+</a>
+<span class="text-ink-quiet text-xs">/</span>
+<h1 class="font-title-sm text-title-sm text-ink font-semibold truncate max-w-xs md:max-w-md">
+          Product Strategy &amp; Roadmap H2
+        </h1>
+<!-- Template Badge -->
+<span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-accent-tint border border-hairline-bright/40 text-accent-electric font-caption text-caption tracking-wide">
+          Strategy / 1:1
+        </span>
+</div>
+<!-- Right: Action Buttons Group -->
+<div class="flex items-center gap-2 shrink-0">
+<!-- Demo Mode Toggle -->
+<label class="hidden md:flex items-center gap-2 px-2.5 py-1 rounded bg-overlay-soft border border-hairline-veil cursor-pointer hover:bg-surface-raised transition-colors">
+<span class="font-code-telemetry text-code-telemetry text-ink-muted">Demo</span>
+<input class="rounded border-hairline bg-surface text-accent-electric focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5 cursor-pointer" type="checkbox"/>
+</label>
+<!-- Share Glass Button -->
+<button class="flex items-center gap-1.5 h-9 px-3 rounded-lg bg-overlay-soft hover:bg-surface-raised text-ink border border-hairline-veil transition-colors duration-150 font-button-label text-button-label active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px] text-ink-muted" data-icon="share">share</span>
+<span>Share</span>
+</button>
+<!-- Export Dropdown Button -->
+<div class="relative group">
+<button class="flex items-center gap-1.5 h-9 px-3 rounded-lg bg-overlay-soft hover:bg-surface-raised text-ink border border-hairline-veil transition-colors duration-150 font-button-label text-button-label active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px] text-ink-muted" data-icon="file_download">file_download</span>
+<span>Export</span>
+<span class="material-symbols-outlined text-[16px] text-ink-quiet" data-icon="expand_more">expand_more</span>
+</button>
+<!-- Contextual Dropdown Menu -->
+<div class="absolute right-0 mt-1 w-48 py-1.5 bg-surface-raised border border-hairline rounded-lg shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+<a class="flex items-center gap-2 px-3 py-1.5 text-xs text-ink-body hover:bg-overlay-soft hover:text-ink" href="#">
+<span class="material-symbols-outlined text-[14px] text-plan-green" data-icon="summarize">summarize</span>
+              Executive Report
+            </a>
+<a class="flex items-center gap-2 px-3 py-1.5 text-xs text-ink-body hover:bg-overlay-soft hover:text-ink" href="#">
+<span class="material-symbols-outlined text-[14px] text-accent-electric" data-icon="task_alt">task_alt</span>
+              Action Items (.csv)
+            </a>
+<a class="flex items-center gap-2 px-3 py-1.5 text-xs text-ink-body hover:bg-overlay-soft hover:text-ink" href="#">
+<span class="material-symbols-outlined text-[14px] text-build-yellow" data-icon="subtitles">subtitles</span>
+              Transcript (.vtt)
+            </a>
+</div>
+</div>
+<!-- Re-run AI Analysis Icon Button -->
+<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-overlay-soft hover:bg-surface-raised text-ink-muted hover:text-ink border border-hairline-veil transition-colors duration-150 active:scale-[0.98]" title="Re-run AI Analysis">
+<span class="material-symbols-outlined text-[18px]" data-icon="auto_awesome">auto_awesome</span>
+</button>
+<!-- White Primary CTA: Add Highlight -->
+<button class="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-primary hover:bg-primary/90 text-canvas font-button-label text-button-label font-medium transition-all duration-150 shadow-sm active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px] text-canvas" data-icon="bookmark_add">bookmark_add</span>
+<span>Add Highlight</span>
+</button>
+</div>
+</div>
+<!-- Metadata Strip -->
+<div class="px-6 py-1.5 bg-surface-panel/40 border-t border-hairline flex flex-wrap items-center justify-between text-xs text-ink-muted">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5 text-ink-body">
+<span class="material-symbols-outlined text-[14px] text-ink-quiet" data-icon="calendar_today">calendar_today</span>
+          Oct 24, 2024
+        </span>
+<span class="text-hairline-bright">•</span>
+<span class="flex items-center gap-1.5 font-code-telemetry text-code-telemetry text-ink-body">
+<span class="material-symbols-outlined text-[14px] text-ink-quiet" data-icon="schedule">schedule</span>
+          48m 12s
+        </span>
+<span class="text-hairline-bright">•</span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-ink-quiet" data-icon="group">group</span>
+          4 Participants:
+          <span class="text-ink-body">Alex Chen, Maya Patel, Liam Vance, Sarah Lin</span>
+</span>
+</div>
+<div class="hidden xl:flex items-center gap-3 font-code-telemetry text-[11px] text-ink-quiet">
+<span class="inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></span>
+          AI Indexing Synced
+        </span>
+<span>ID: #mtg-892f-48d</span>
+</div>
+</div>
+</header>
+<!-- WORKSPACE MAIN CANVAS -->
+<main class="flex-1 max-w-[1720px] w-full mx-auto p-4 md:p-6 flex flex-col gap-6">
+<!-- MEDIA SECTION: Video Player & Audio Waveform Engine -->
+<section class="bg-surface-panel rounded-xl border border-hairline overflow-hidden shadow-2xl flex flex-col">
+<!-- Player Viewport / Video Stage -->
+<div class="relative w-full h-72 sm:h-80 lg:h-96 bg-canvas-deep flex items-center justify-center overflow-hidden">
+<!-- Background Ambient Video Stage / Screen Share Simulation -->
+<div class="absolute inset-0 bg-gradient-to-tr from-surface-panel via-canvas-deep to-surface-container-high/40 opacity-70"></div>
+<!-- Presentation Slide Mock View -->
+<div class="relative z-10 w-full max-w-2xl px-6 py-8 rounded-lg bg-surface-panel/90 border border-hairline/80 backdrop-blur-md shadow-2xl flex flex-col gap-4 text-left">
+<div class="flex items-center justify-between border-b border-hairline pb-3">
+<span class="font-code-telemetry text-[11px] text-accent-electric uppercase tracking-wider">H2 Architectural Pivot // Slide 04</span>
+<span class="font-caption text-caption text-ink-quiet">Confidential • Internal Only</span>
+</div>
+<h2 class="font-title-md text-title-md text-ink font-semibold">Decoupling Search Tier from Primary PostgreSQL Cluster</h2>
+<p class="font-body-sm text-body-sm text-ink-muted leading-relaxed">
+            Transitioning low-latency transcript semantic embeddings into distributed vector workers. Projected P99 query latency drops from 420ms to 48ms under peak concurrent indexing.
+          </p>
+<div class="flex items-center gap-6 pt-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-plan-green"></span>
+<span class="font-code-telemetry text-xs text-ink-body">Throughput: +310%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-electric"></span>
+<span class="font-code-telemetry text-xs text-ink-body">Memory Footprint: -40%</span>
+</div>
+</div>
+</div>
+<!-- Active Speaker Floating Card (Maya Patel) -->
+<div class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-raised/90 border border-hairline-bright/60 backdrop-blur-md shadow-lg">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-electric opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-accent-electric"></span>
+</span>
+<span class="font-body-sm text-body-sm text-ink font-medium">Maya Patel</span>
+<span class="font-caption text-caption text-ink-quiet">speaking...</span>
+<!-- Dynamic audio wave bars -->
+<div class="flex items-center gap-0.5 ml-1 h-3">
+<span class="w-0.5 h-2 bg-accent-electric rounded animate-pulse"></span>
+<span class="w-0.5 h-3 bg-accent-electric rounded animate-pulse delay-75"></span>
+<span class="w-0.5 h-1.5 bg-accent-electric rounded animate-pulse delay-150"></span>
+<span class="w-0.5 h-2.5 bg-accent-electric rounded animate-pulse delay-100"></span>
+</div>
+</div>
+<!-- Picture-in-Picture Speaker Feeds -->
+<div class="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+<!-- Mini Speaker 1 -->
+<div class="w-24 h-16 rounded-lg bg-surface-high border border-hairline-bright overflow-hidden relative shadow-lg group">
+<div class="w-full h-full bg-gradient-to-br from-surface to-surface-container flex items-center justify-center">
+<span class="font-code-telemetry text-xs text-ink-muted">Alex C.</span>
+</div>
+<span class="absolute bottom-1 left-1.5 font-caption text-[10px] text-ink-quiet">Host</span>
+</div>
+<!-- Mini Speaker 2 (Active Spotlight) -->
+<div class="w-28 h-18 rounded-lg bg-surface-high border-2 border-accent-electric overflow-hidden relative shadow-lg">
+<div class="w-full h-full bg-gradient-to-br from-accent-tint to-surface-panel flex items-center justify-center">
+<span class="font-code-telemetry text-xs text-ink font-medium">Maya P.</span>
+</div>
+<span class="absolute bottom-1 right-1.5 w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+</div>
+</div>
+<!-- Overlay Action: Fullscreen & Settings -->
+<div class="absolute top-4 right-4 z-20 flex items-center gap-1.5">
+<button class="p-1.5 rounded bg-surface-raised/80 hover:bg-surface-raised text-ink-muted hover:text-ink border border-hairline transition-colors" title="Picture in picture">
+<span class="material-symbols-outlined text-[18px]" data-icon="picture_in_picture_alt">picture_in_picture_alt</span>
+</button>
+<button class="p-1.5 rounded bg-surface-raised/80 hover:bg-surface-raised text-ink-muted hover:text-ink border border-hairline transition-colors" title="Fullscreen">
+<span class="material-symbols-outlined text-[18px]" data-icon="fullscreen">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- Scrub Bar & Waveform Timeline Section -->
+<div class="px-5 py-3.5 bg-surface-panel border-t border-hairline flex flex-col gap-3">
+<!-- Speaker Legend & Decision Marker Tags -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-4">
+<span class="font-caption text-caption text-ink-quiet">Speaker Segments:</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span class="text-ink-body font-body-sm text-xs">Maya (42%)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-accent-electric"></span>
+<span class="text-ink-body font-body-sm text-xs">Alex (35%)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-build-yellow"></span>
+<span class="text-ink-body font-body-sm text-xs">Liam (18%)</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1 text-ink-muted">
+<span class="material-symbols-outlined text-[14px] text-accent-electric" data-icon="flag">flag</span>
+<span class="font-code-telemetry text-[11px]">2 Decisions</span>
+</span>
+<span class="inline-flex items-center gap-1 text-ink-muted">
+<span class="material-symbols-outlined text-[14px] text-build-yellow" data-icon="star">star</span>
+<span class="font-code-telemetry text-[11px]">3 Highlights</span>
+</span>
+</div>
+</div>
+<!-- Interactive Waveform Scrub Container -->
+<div class="relative w-full h-12 bg-canvas rounded-lg border border-hairline p-1 cursor-pointer group flex items-end">
+<!-- Decision / Highlight Flags pinned over timeline -->
+<div class="absolute -top-2 left-[30%] -translate-x-1/2 z-20 group/marker" title="Decision: gRPC Adoption">
+<span class="material-symbols-outlined text-[14px] text-accent-electric drop-shadow" data-icon="flag" data-weight="fill">flag</span>
+</div>
+<div class="absolute -top-2 left-[62%] -translate-x-1/2 z-20 group/marker" title="Highlight: Vector Database Migration">
+<span class="material-symbols-outlined text-[14px] text-build-yellow drop-shadow" data-icon="star" data-weight="fill">star</span>
+</div>
+<!-- Color-coded speaker waveforms (synthetic SVG / bar sequence) -->
+<div class="w-full h-full flex items-end gap-[2px] opacity-80 group-hover:opacity-100 transition-opacity">
+<!-- Alex segment (0% - 28%) -->
+<div class="h-full flex items-end gap-[2px] w-[28%]">
+<div class="w-[3px] h-3 bg-accent-electric/70 rounded-full"></div>
+<div class="w-[3px] h-5 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-7 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-4 bg-accent-electric/80 rounded-full"></div>
+<div class="w-[3px] h-8 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-6 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-3 bg-accent-electric/70 rounded-full"></div>
+<div class="w-[3px] h-9 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-5 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-4 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-6 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-8 bg-accent-electric rounded-full"></div>
+<div class="w-[3px] h-2 bg-accent-electric/60 rounded-full"></div>
+</div>
+<!-- Maya segment (28% - 70%) - Active playback marker is here -->
+<div class="h-full flex items-end gap-[2px] w-[42%] relative">
+<div class="w-[3px] h-5 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-8 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-6 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-9 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-7 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-4 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-8 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-10 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-7 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-5 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-8 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-6 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-9 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-3 bg-plan-green/60 rounded-full"></div>
+<div class="w-[3px] h-7 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-9 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-5 bg-plan-green rounded-full"></div>
+<div class="w-[3px] h-8 bg-plan-green rounded-full"></div>
+</div>
+<!-- Liam segment (70% - 100%) -->
+<div class="h-full flex items-end gap-[2px] w-[30%]">
+<div class="w-[3px] h-4 bg-build-yellow/70 rounded-full"></div>
+<div class="w-[3px] h-6 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-5 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-8 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-3 bg-build-yellow/60 rounded-full"></div>
+<div class="w-[3px] h-7 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-6 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-4 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-7 bg-build-yellow rounded-full"></div>
+<div class="w-[3px] h-3 bg-build-yellow/50 rounded-full"></div>
+<div class="w-[3px] h-2 bg-build-yellow/40 rounded-full"></div>
+</div>
+</div>
+<!-- Active Scrubber Playhead (at 14:32 approx 30%) -->
+<div class="absolute top-0 bottom-0 left-[30.2%] w-0.5 bg-primary z-30 pointer-events-none">
+<div class="w-3 h-3 rounded-full bg-primary -ml-[5px] -mt-1 shadow-[0_0_8px_#ffffff]"></div>
+</div>
+<!-- Played overlay tint -->
+<div class="absolute top-0 bottom-0 left-0 w-[30.2%] bg-accent-electric/10 pointer-events-none rounded-l-md"></div>
+</div>
+<!-- Control Bar: Play / Pause, Jumps, Speed, Volume, Views -->
+<div class="flex flex-wrap items-center justify-between gap-4 pt-1">
+<!-- Playback Actions -->
+<div class="flex items-center gap-3">
+<!-- -10s skip -->
+<button class="p-1.5 text-ink-muted hover:text-ink transition-colors" title="Rewind 10 seconds">
+<span class="material-symbols-outlined text-[20px]" data-icon="replay_10">replay_10</span>
+</button>
+<!-- Play / Pause Compact Button -->
+<button class="w-8 h-8 rounded-full bg-primary text-canvas flex items-center justify-center hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="pause" data-weight="fill">pause</span>
+</button>
+<!-- +10s skip -->
+<button class="p-1.5 text-ink-muted hover:text-ink transition-colors" title="Forward 10 seconds">
+<span class="material-symbols-outlined text-[20px]" data-icon="forward_10">forward_10</span>
+</button>
+<!-- Timestamp Readout -->
+<div class="font-code-telemetry text-code-telemetry ml-2 text-ink">
+<span class="text-ink font-medium">14:32</span>
+<span class="text-ink-quiet"> / 48:12</span>
+</div>
+</div>
+<!-- Center: Speed Selector -->
+<div class="flex items-center gap-1 bg-surface-raised rounded-lg p-0.5 border border-hairline">
+<button class="px-2 py-0.5 rounded text-xs font-code-telemetry text-ink-muted hover:text-ink">0.75x</button>
+<button class="px-2 py-0.5 rounded text-xs font-code-telemetry text-ink-muted hover:text-ink">1.0x</button>
+<button class="px-2 py-0.5 rounded text-xs font-code-telemetry bg-surface-panel text-ink border border-hairline-bright shadow-sm font-medium">1.25x</button>
+<button class="px-2 py-0.5 rounded text-xs font-code-telemetry text-ink-muted hover:text-ink">1.5x</button>
+<button class="px-2 py-0.5 rounded text-xs font-code-telemetry text-ink-muted hover:text-ink">2.0x</button>
+</div>
+<!-- Right: Volume & Mode Toggle -->
+<div class="flex items-center gap-4">
+<!-- Volume slider -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-ink-muted" data-icon="volume_up">volume_up</span>
+<input class="w-20 h-1 bg-surface-raised rounded-lg appearance-none cursor-pointer accent-accent-electric" max="100" min="0" type="range" value="80"/>
+</div>
+<div class="h-4 w-[1px] bg-hairline"></div>
+<!-- Video / Waveform Switcher -->
+<div class="flex items-center gap-1 bg-surface-raised rounded-lg p-0.5 border border-hairline text-xs font-button-label">
+<button class="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-panel text-ink border border-hairline-bright">
+<span class="material-symbols-outlined text-[14px]" data-icon="videocam">videocam</span>
+<span>Video</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1 rounded text-ink-muted hover:text-ink">
+<span class="material-symbols-outlined text-[14px]" data-icon="graphic_eq">graphic_eq</span>
+<span>Audio</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- TWO-COLUMN WORKSPACE (Bottom Half) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN (60% width - approx col-span-7) INTERACTIVE TRANSCRIPT -->
+<section class="lg:col-span-7 bg-surface-panel rounded-xl border border-hairline flex flex-col h-[780px] overflow-hidden shadow-xl">
+<!-- Transcript Header Toolbar -->
+<div class="p-4 border-b border-hairline flex flex-wrap items-center justify-between gap-3 bg-surface-panel/90">
+<div class="flex items-center gap-3">
+<h2 class="font-title-sm text-title-sm text-ink font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-accent-electric" data-icon="notes">notes</span>
+              Interactive Transcript
+            </h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-raised border border-hairline text-ink-muted font-code-telemetry text-xs">
+              142 utterances
+            </span>
+</div>
+<!-- Controls: Search & Speaker Filter -->
+<div class="flex items-center gap-2 flex-1 sm:flex-initial justify-end">
+<!-- Search field -->
+<div class="relative w-full sm:w-56">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-ink-quiet" data-icon="search">search</span>
+<input class="w-full h-8 pl-8 pr-7 bg-surface border border-hairline-strong rounded-lg text-xs text-ink placeholder:text-ink-quiet focus:border-accent-electric focus:ring-0" placeholder="Search transcript..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-keyboard-shortcut text-ink-quiet bg-surface-raised px-1 rounded border border-hairline">⌘F</span>
+</div>
+<!-- Speaker Dropdown Filter -->
+<div class="relative">
+<button class="h-8 px-2.5 rounded-lg bg-surface border border-hairline-strong flex items-center gap-1.5 text-xs text-ink-muted hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-[14px]" data-icon="filter_list">filter_list</span>
+<span>All Speakers</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Transcript Feed Container (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<!-- Utterance 1 -->
+<div class="group flex gap-3.5 p-3 rounded-lg hover:bg-surface-raised/40 transition-colors border border-transparent hover:border-hairline">
+<!-- Speaker Avatar Monogram -->
+<div class="w-8 h-8 rounded-full bg-accent-tint border border-accent-electric/30 flex items-center justify-center text-accent-electric font-semibold text-xs shrink-0">
+              AC
+            </div>
+<div class="flex-1 space-y-1 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-sm font-medium text-ink">Alex Chen</span>
+<span class="font-caption text-[11px] text-ink-quiet">VP Engineering</span>
+</div>
+<button class="font-code-telemetry text-xs text-ink-muted hover:text-accent-electric hover:underline transition-colors" title="Jump to 04:12">
+                  04:12
+                </button>
+</div>
+<p class="font-body-md text-body-md text-ink-body leading-relaxed">
+                Let's review the bottleneck in H1. Right now, every time an engineering team triggers a re-index of the meeting transcripts, we lock the main database row lock for almost three hundred milliseconds. That's unacceptable for our P99 SLA.
+              </p>
+</div>
+</div>
+<!-- Utterance 2: ACTIVE HIGHLIGHTED LINE (Maya Patel with soft glow and inline action pills) -->
+<div class="group relative flex gap-3.5 p-3.5 rounded-lg bg-accent-tint/40 border-l-2 border-l-accent-electric border-y border-r border-hairline/60 shadow-[0_0_24px_rgba(113,112,255,0.06)]">
+<div class="w-8 h-8 rounded-full bg-plan-green/10 border border-plan-green/40 flex items-center justify-center text-plan-green font-semibold text-xs shrink-0">
+              MP
+            </div>
+<div class="flex-1 space-y-1.5 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-sm font-medium text-ink flex items-center gap-1.5">
+                    Maya Patel
+                    <span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+</span>
+<span class="font-caption text-[11px] text-ink-quiet">Lead Architect</span>
+</div>
+<!-- Active timestamp jump -->
+<button class="font-code-telemetry text-xs text-accent-electric font-semibold flex items-center gap-1 bg-surface-panel px-1.5 py-0.5 rounded border border-hairline-bright" title="Active Playback Position">
+<span class="material-symbols-outlined text-[12px] animate-pulse" data-icon="play_arrow" data-weight="fill">play_arrow</span>
+                  14:32
+                </button>
+</div>
+<!-- Spoken text with Linear-grade typographic clarity -->
+<p class="font-body-md text-body-md text-ink leading-relaxed font-normal">
+                I strongly advocate adopting <mark class="bg-accent-electric/25 text-primary px-1 rounded">gRPC for internal microservice transport</mark> alongside isolating the semantic search engine. If we decouple the embedding ingestion queue onto Apache Pulsar, our database load will drop instantaneously.
+              </p>
+<!-- Floating Inline Quick Actions Bar -->
+<div class="pt-2 flex items-center gap-1.5">
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline-bright text-xs text-ink-muted hover:text-ink transition-colors font-button-label">
+<span class="material-symbols-outlined text-[13px]" data-icon="content_copy">content_copy</span>
+<span>Copy text</span>
+</button>
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline-bright text-xs text-build-yellow hover:text-ink transition-colors font-button-label">
+<span class="material-symbols-outlined text-[13px]" data-icon="star">star</span>
+<span>Create highlight</span>
+</button>
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline-bright text-xs text-accent-electric hover:text-ink transition-colors font-button-label">
+<span class="material-symbols-outlined text-[13px]" data-icon="add_task">add_task</span>
+<span>Add as action item</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Utterance 3 -->
+<div class="group flex gap-3.5 p-3 rounded-lg hover:bg-surface-raised/40 transition-colors border border-transparent hover:border-hairline">
+<div class="w-8 h-8 rounded-full bg-build-yellow/10 border border-build-yellow/30 flex items-center justify-center text-build-yellow font-semibold text-xs shrink-0">
+              LV
+            </div>
+<div class="flex-1 space-y-1 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-sm font-medium text-ink">Liam Vance</span>
+<span class="font-caption text-[11px] text-ink-quiet">Head of Infrastructure</span>
+</div>
+<button class="font-code-telemetry text-xs text-ink-muted hover:text-accent-electric hover:underline transition-colors" title="Jump to 18:05">
+                  18:05
+                </button>
+</div>
+<p class="font-body-md text-body-md text-ink-body leading-relaxed">
+                Agreed on the isolation principle. But who handles backwards compatibility for the older legacy webhooks? We need a clear rollout window before Q4 enterprise freezes kick in.
+              </p>
+</div>
+</div>
+<!-- Utterance 4 -->
+<div class="group flex gap-3.5 p-3 rounded-lg hover:bg-surface-raised/40 transition-colors border border-transparent hover:border-hairline">
+<div class="w-8 h-8 rounded-full bg-secondary/10 border border-secondary/30 flex items-center justify-center text-secondary font-semibold text-xs shrink-0">
+              SL
+            </div>
+<div class="flex-1 space-y-1 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-sm font-medium text-ink">Sarah Lin</span>
+<span class="font-caption text-[11px] text-ink-quiet">Product Lead</span>
+</div>
+<button class="font-code-telemetry text-xs text-ink-muted hover:text-accent-electric hover:underline transition-colors" title="Jump to 23:40">
+                  23:40
+                </button>
+</div>
+<p class="font-body-md text-body-md text-ink-body leading-relaxed">
+                Alex, let's make sure the engineering RFC is drafted by Monday so security can sign off before we commit roadmap points for sprint 24.
+              </p>
+</div>
+</div>
+<!-- Utterance 5 -->
+<div class="group flex gap-3.5 p-3 rounded-lg hover:bg-surface-raised/40 transition-colors border border-transparent hover:border-hairline">
+<div class="w-8 h-8 rounded-full bg-accent-tint border border-accent-electric/30 flex items-center justify-center text-accent-electric font-semibold text-xs shrink-0">
+              AC
+            </div>
+<div class="flex-1 space-y-1 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-sm font-medium text-ink">Alex Chen</span>
+<span class="font-caption text-[11px] text-ink-quiet">VP Engineering</span>
+</div>
+<button class="font-code-telemetry text-xs text-ink-muted hover:text-accent-electric hover:underline transition-colors" title="Jump to 27:14">
+                  27:14
+                </button>
+</div>
+<p class="font-body-md text-body-md text-ink-body leading-relaxed">
+                Consider it done. I'll own the RFC drafting for the caching layer and gRPC contracts. We'll target Oct 28 for final architectural sign-off.
+              </p>
+</div>
+</div>
+</div>
+<!-- Transcript Footer / Auto-scroll indicator -->
+<div class="px-4 py-2 border-t border-hairline bg-surface-panel/80 flex items-center justify-between text-xs text-ink-quiet">
+<span class="flex items-center gap-1.5 font-code-telemetry text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+            Syncing live to scrubber (14:32)
+          </span>
+<button class="text-ink-muted hover:text-ink transition-colors flex items-center gap-1">
+<span>Scroll lock enabled</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+</button>
+</div>
+</section>
+<!-- RIGHT COLUMN (40% width - approx col-span-5) DOCKED AI INTELLIGENCE INSPECTOR -->
+<section class="lg:col-span-5 bg-surface-panel rounded-xl border border-hairline flex flex-col h-[780px] overflow-hidden shadow-xl">
+<!-- Inspector Tabs Header Navigation -->
+<div class="border-b border-hairline bg-surface-panel px-3 pt-3 flex items-center gap-1 overflow-x-auto no-scrollbar">
+<!-- Active Tab: Summary -->
+<button class="px-3 py-2 border-b-2 border-accent-electric text-ink font-body-sm text-xs font-semibold shrink-0 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-accent-electric" data-icon="auto_awesome">auto_awesome</span>
+            Summary
+          </button>
+<!-- AI Review Tab -->
+<button class="px-3 py-2 border-b-2 border-transparent text-ink-muted hover:text-ink font-body-sm text-xs shrink-0 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[15px]" data-icon="verified">verified</span>
+            AI Review
+            <span class="px-1.5 py-0.2 bg-plan-green/10 text-plan-green rounded-full font-code-telemetry text-[10px]">Audit</span>
+</button>
+<!-- Action Items Tab -->
+<button class="px-3 py-2 border-b-2 border-transparent text-ink-muted hover:text-ink font-body-sm text-xs shrink-0 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[15px]" data-icon="checklist">checklist</span>
+            Action Items
+            <span class="px-1.5 py-0.2 bg-surface-raised text-ink-muted rounded-full font-code-telemetry text-[10px]">4</span>
+</button>
+<!-- Decisions Tab -->
+<button class="px-3 py-2 border-b-2 border-transparent text-ink-muted hover:text-ink font-body-sm text-xs shrink-0 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[15px]" data-icon="gavel">gavel</span>
+            Decisions
+            <span class="px-1.5 py-0.2 bg-surface-raised text-ink-muted rounded-full font-code-telemetry text-[10px]">2</span>
+</button>
+<!-- Highlights Tab -->
+<button class="px-3 py-2 border-b-2 border-transparent text-ink-muted hover:text-ink font-body-sm text-xs shrink-0 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[15px]" data-icon="bookmark">bookmark</span>
+            Highlights
+            <span class="px-1.5 py-0.2 bg-surface-raised text-ink-muted rounded-full font-code-telemetry text-[10px]">3</span>
+</button>
+</div>
+<!-- Tab Body: Scrollable Insight Feed -->
+<div class="flex-1 overflow-y-auto p-5 space-y-6">
+<!-- SECTION 1: EXECUTIVE BRIEF -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-code-telemetry text-[11px] text-accent-electric uppercase tracking-wider font-medium">Executive Synthesis</span>
+<span class="font-code-telemetry text-[11px] text-ink-quiet">Model: Fathom-4o-Audio</span>
+</div>
+<div class="p-3.5 rounded-lg bg-surface border border-hairline space-y-2">
+<p class="font-body-md text-sm text-ink-body leading-relaxed">
+                The engineering leadership reached definitive consensus on migrating internal transport to gRPC to eliminate latency bottlenecks during peak re-indexing tasks. Alex Chen will lead the caching RFC rollout by Oct 28, whilst Maya Patel oversees the vector ingestion pipeline on Apache Pulsar.
+              </p>
+</div>
+</div>
+<!-- SECTION 2: KEY TAKEAWAYS (with timestamp citation chips) -->
+<div class="space-y-3">
+<h3 class="font-title-sm text-xs font-semibold uppercase tracking-wider text-ink-muted">Key Takeaways</h3>
+<ul class="space-y-2.5">
+<li class="flex items-start gap-2 text-xs text-ink-body leading-relaxed">
+<span class="text-accent-electric mt-1">•</span>
+<div>
+                  PostgreSQL lock saturation resolved via dedicated search cluster decoupling.
+                  <a class="inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.2 bg-surface-raised hover:bg-surface-high border border-hairline rounded font-code-telemetry text-[11px] text-accent-electric transition-colors" href="#">
+                    [04:15]
+                  </a>
+</div>
+</li>
+<li class="flex items-start gap-2 text-xs text-ink-body leading-relaxed">
+<span class="text-accent-electric mt-1">•</span>
+<div>
+                  Formal adoption of gRPC contracts for microservice boundaries before enterprise code freeze.
+                  <a class="inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.2 bg-surface-raised hover:bg-surface-high border border-hairline rounded font-code-telemetry text-[11px] text-accent-electric transition-colors" href="#">
+                    [12:30]
+                  </a>
+</div>
+</li>
+<li class="flex items-start gap-2 text-xs text-ink-body leading-relaxed">
+<span class="text-accent-electric mt-1">•</span>
+<div>
+                  Backward-compatible proxy layer allocated 2 engineering sprints to ensure zero client breakage.
+                  <a class="inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.2 bg-surface-raised hover:bg-surface-high border border-hairline rounded font-code-telemetry text-[11px] text-accent-electric transition-colors" href="#">
+                    [27:14]
+                  </a>
+</div>
+</li>
+</ul>
+</div>
+<!-- SECTION 3: AI REVIEW / AUDIT BANNER -->
+<div class="space-y-3 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-xs font-semibold uppercase tracking-wider text-ink-muted">AI Review &amp; Health</h3>
+<span class="font-code-telemetry text-xs font-medium text-plan-green flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+                Score: 94/100 (Excellent)
+              </span>
+</div>
+<!-- Health Badges Grid -->
+<div class="grid grid-cols-3 gap-2">
+<div class="p-2 rounded bg-surface border border-hairline flex flex-col gap-0.5 text-center">
+<span class="font-code-telemetry text-xs font-semibold text-plan-green">0</span>
+<span class="font-caption text-[10px] text-ink-muted">Contradictions</span>
+</div>
+<div class="p-2 rounded bg-surface border border-hairline flex flex-col gap-0.5 text-center">
+<span class="font-code-telemetry text-xs font-semibold text-build-yellow">1</span>
+<span class="font-caption text-[10px] text-ink-muted">Open Question</span>
+</div>
+<div class="p-2 rounded bg-surface border border-hairline flex flex-col gap-0.5 text-center">
+<span class="font-code-telemetry text-xs font-semibold text-secondary">2</span>
+<span class="font-caption text-[10px] text-ink-muted">Risks Tracked</span>
+</div>
+</div>
+<!-- Risk Mitigation Note -->
+<div class="p-2.5 rounded-lg bg-surface border border-hairline-strong/60 flex items-start gap-2.5 text-xs">
+<span class="material-symbols-outlined text-[16px] text-build-yellow shrink-0 mt-0.5" data-icon="warning">warning</span>
+<p class="text-ink-body leading-normal">
+<strong class="text-ink font-medium">Risk Identified:</strong> Potential webhook regression during migration. Mitigation note logged to Sarah Lin.
+              </p>
+</div>
+</div>
+<!-- SECTION 4: ACTION ITEMS PREVIEW -->
+<div class="space-y-3 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-xs font-semibold uppercase tracking-wider text-ink-muted">Action Items (4)</h3>
+<a class="font-body-sm text-xs text-accent-electric hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-2">
+<!-- Item 1 -->
+<div class="p-3 rounded-lg bg-surface border border-hairline hover:border-hairline-bright transition-all space-y-2 group">
+<div class="flex items-start gap-2.5">
+<input class="mt-0.5 rounded border-hairline-strong bg-surface-raised text-accent-electric focus:ring-0 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-xs font-medium text-ink group-hover:text-primary">Draft RFC for caching layer and gRPC contracts</p>
+<blockquote class="text-[11px] text-ink-quiet italic mt-1 border-l border-hairline pl-2">
+                      "I'll own the RFC drafting for the caching layer..."
+                    </blockquote>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-[11px] text-ink-muted border-t border-hairline/60">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-accent-tint text-[9px] text-accent-electric font-bold flex items-center justify-center">AC</div>
+<span>Alex Chen</span>
+</div>
+<span class="font-code-telemetry text-build-yellow">Due Oct 28</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-3 rounded-lg bg-surface border border-hairline hover:border-hairline-bright transition-all space-y-2 group">
+<div class="flex items-start gap-2.5">
+<input class="mt-0.5 rounded border-hairline-strong bg-surface-raised text-accent-electric focus:ring-0 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-sm text-xs font-medium text-ink group-hover:text-primary">Benchmark Apache Pulsar broker memory spikes</p>
+<blockquote class="text-[11px] text-ink-quiet italic mt-1 border-l border-hairline pl-2">
+                      "If we decouple embedding ingestion onto Apache Pulsar..."
+                    </blockquote>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-[11px] text-ink-muted border-t border-hairline/60">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-plan-green/20 text-[9px] text-plan-green font-bold flex items-center justify-center">MP</div>
+<span>Maya Patel</span>
+</div>
+<span class="font-code-telemetry text-ink-muted">Due Nov 02</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 5: KEY DECISIONS (with security slate accent borders) -->
+<div class="space-y-3 pt-2">
+<h3 class="font-title-sm text-xs font-semibold uppercase tracking-wider text-ink-muted">Key Decisions (2)</h3>
+<div class="p-3 rounded-lg bg-surface border-l-2 border-l-security-slate border-y border-r border-hairline space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-caption text-[11px] text-security-slate font-medium">Architecture Standard</span>
+<span class="font-code-telemetry text-[11px] text-accent-electric">[14:32]</span>
+</div>
+<p class="font-body-sm text-xs font-semibold text-ink">Adopt gRPC for all internal service communication</p>
+<p class="font-body-sm text-[12px] text-ink-muted leading-relaxed">
+                Rationale: Removes JSON serialization overhead and ensures static contract compilation between microservice teams.
+              </p>
+<div class="flex items-center gap-2 pt-1 font-caption text-[11px] text-ink-quiet">
+<span>Decided by: <strong>Maya Patel &amp; Alex Chen</strong></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Inspector Quick Action Footer -->
+<div class="p-3 border-t border-hairline bg-surface-panel/90 flex items-center justify-between text-xs">
+<button class="flex items-center gap-1.5 text-ink-muted hover:text-ink transition-colors font-button-label">
+<span class="material-symbols-outlined text-[15px]" data-icon="tune">tune</span>
+<span>Customize AI Prompts</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1 rounded bg-overlay-soft hover:bg-surface-raised border border-hairline text-ink transition-colors font-button-label">
+<span class="material-symbols-outlined text-[13px] text-accent-electric" data-icon="send">send</span>
+<span>Sync to Linear</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- SHARED FOOTER (Exact specification from Shared Components JSON) -->
+<footer class="w-full bg-canvas-deep border-t border-hairline mt-auto">
+<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+<span class="font-title-sm text-title-sm text-ink font-semibold">Fathom AI</span>
+<span class="font-body-sm text-body-sm text-ink-quiet">
+          © 2025 Fathom AI Systems Inc. Engineered for high-density analysis.
+        </span>
+</div>
+<nav class="flex flex-wrap items-center justify-center gap-6">
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#security">Security</a>
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#privacy">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#terms">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150 flex items-center gap-1.5" href="#status">
+<span class="w-1.5 h-1.5 rounded-full bg-status-success"></span>
+          Status: Systems Operational
+        </a>
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#documentation">Documentation</a>
+<a class="font-body-sm text-body-sm text-ink-quiet hover:text-ink-body transition-colors duration-150" href="#api">API</a>
+</nav>
+</div>
+</footer>
+</body></html>

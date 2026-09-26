@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings Hub - Fathom AI</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#c6c6c7",
+            "surface-container": "#1f2021",
+            "build-yellow": "#d4b144",
+            "tertiary-fixed": "#dfe0ff",
+            "on-tertiary-fixed": "#000964",
+            "accent-electric": "#7170ff",
+            "accent-tint": "#18182f",
+            "on-secondary-fixed": "#000965",
+            "ink-muted": "#8a8f98",
+            "background": "#121315",
+            "surface-raised": "#232326",
+            "on-error": "#690005",
+            "surface-panel": "#0f1011",
+            "on-tertiary-container": "#4c59c6",
+            "plan-green": "#68cc58",
+            "outline-variant": "#444748",
+            "on-surface": "#e3e2e3",
+            "secondary": "#bdc2ff",
+            "surface-container-high": "#292a2b",
+            "on-secondary": "#121f8b",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "on-primary-fixed": "#1a1c1c",
+            "on-primary-fixed-variant": "#454747",
+            "ink": "#f7f8f8",
+            "tertiary-container": "#dfe0ff",
+            "primary-container": "#e2e2e2",
+            "hairline": "#23252a",
+            "tertiary": "#ffffff",
+            "surface-high": "#28282c",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "on-secondary-container": "#a7afff",
+            "secondary-fixed-dim": "#bdc2ff",
+            "surface-container-lowest": "#0d0e0f",
+            "secondary-container": "#2e3aa2",
+            "surface-container-highest": "#343536",
+            "on-error-container": "#ffdad6",
+            "hairline-strong": "#34343a",
+            "status-error": "#eb5757",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "outline": "#8e9192",
+            "surface-variant": "#343536",
+            "ink-body": "#d0d6e0",
+            "surface": "#1c1c1f",
+            "error": "#ffb4ab",
+            "on-tertiary": "#0e1d90",
+            "status-success": "#27a644",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "on-primary-container": "#636565",
+            "surface-bright": "#38393a",
+            "primary": "#ffffff",
+            "security-slate": "#7a7fad",
+            "hairline-bright": "#3e3e44",
+            "secondary-fixed": "#dfe0ff",
+            "error-container": "#93000a",
+            "canvas-deep": "#010102",
+            "surface-dim": "#121315",
+            "on-surface-variant": "#c4c7c8",
+            "inverse-primary": "#5d5f5f",
+            "canvas": "#08090a",
+            "inverse-surface": "#e3e2e3",
+            "primary-fixed": "#e2e2e2",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "on-primary": "#2f3131",
+            "inverse-on-surface": "#303032",
+            "surface-container-low": "#1b1c1d",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "ink-quiet": "#62666d",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-background": "#e3e2e3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-sm": "0.75rem",
+            "margin-tablet": "2rem",
+            "space-xs": "0.5rem",
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "display-md": ["Inter"],
+            "button-label": ["Inter"],
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "title-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "display-sm": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "display-xl-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "caption": ["Inter"],
+            "display-xl": ["Inter"],
+            "display-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "keyboard-shortcut": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "display-md": ["40px", {"lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "button-label": ["15px", {"lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510"}],
+            "title-sm": ["17px", {"lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-lg": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-sm": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "code-telemetry": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-xl-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510"}],
+            "display-xl": ["56px", {"lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-lg": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 9999px;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 0 2px #23252a;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 16px;
+      width: 16px;
+      border-radius: 9999px;
+      background: #ffffff;
+      cursor: pointer;
+      border: 2px solid #23252a;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-ink antialiased min-h-screen selection:bg-accent-tint selection:text-ink">
+<!-- TOP APP BAR -->
+<header class="bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md flex justify-between items-center w-full px-6 h-14 sticky top-0 z-50 border-b border-hairline dark:border-hairline shadow-none">
+<!-- Brand Anchor & Workspace Context -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded bg-tertiary text-canvas flex items-center justify-center font-display-md text-[13px] font-bold">F</div>
+<span class="font-title-md text-title-md text-ink dark:text-ink font-semibold tracking-tight">Fathom AI</span>
+</div>
+<div class="h-4 w-px bg-hairline"></div>
+<!-- Workspace Monogram Picker -->
+<button class="flex items-center gap-2 px-2.5 py-1 rounded bg-surface hover:bg-surface-raised border border-hairline text-ink transition-colors duration-150">
+<span class="w-4 h-4 rounded bg-accent-tint text-secondary font-code-telemetry text-[10px] flex items-center justify-center font-semibold border border-accent-electric/30">AC</span>
+<span class="font-body-sm text-body-sm text-ink-body font-medium">Acme Corp</span>
+<span class="text-hairline-bright">•</span>
+<span class="font-caption text-caption text-ink-muted">Enterprise Tier</span>
+<span class="material-symbols-outlined text-ink-muted ml-0.5">unfold_more</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 font-button-label text-button-label">
+<a class="px-3 py-1.5 rounded-lg text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150" href="#meetings">Meetings</a>
+<a class="px-3 py-1.5 rounded-lg text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150" href="#action-items">Action Items</a>
+<a class="px-3 py-1.5 rounded-lg text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150" href="#decisions">Decisions</a>
+<!-- Active Settings Link per Shared Components & Rules -->
+<a class="px-3 py-1.5 rounded-lg bg-overlay-soft text-ink dark:text-ink font-medium" href="#settings">Settings</a>
+</nav>
+<!-- Trailing Actions & Search -->
+<div class="flex items-center gap-3">
+<!-- Search Shortcut Trigger (⌘K) -->
+<button class="hidden lg:flex items-center justify-between w-56 h-9 px-3 bg-surface border border-hairline-strong rounded-lg text-ink-muted hover:border-hairline-bright hover:text-ink-body transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ink-quiet">search</span>
+<span class="font-body-sm text-body-sm">Search intelligence...</span>
+</div>
+<span class="bg-surface-raised border border-hairline-strong rounded px-1.5 py-0.5 font-keyboard-shortcut text-keyboard-shortcut text-ink-body">⌘K</span>
+</button>
+<!-- Import Meeting Trailing CTA -->
+<button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-overlay-soft hover:bg-surface-raised text-ink border border-hairline-veil rounded-lg font-button-label text-button-label transition-colors">
+<span class="material-symbols-outlined text-ink-muted">upload_file</span>
+<span>Import Meeting</span>
+</button>
+<!-- Notification Action -->
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-overlay-soft text-ink-muted hover:text-ink transition-colors" title="Notifications">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<!-- Help Action -->
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-overlay-soft text-ink-muted hover:text-ink transition-colors" title="Help">
+<span class="material-symbols-outlined">help</span>
+</button>
+<!-- Profile Avatar -->
+<div class="w-7 h-7 rounded-full bg-surface-raised border border-hairline-bright flex items-center justify-center overflow-hidden ml-1">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait avatar of a high-tech platform engineering director in soft studio graphite lighting, sharp contrast, neutral calm expression, deep dark minimalist styling matching linear design aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMtBPv1KqG2DLuAmd8RJmovcr9YUCNSDgdIvNWQY74gGOaORVhegxdG1wbTLCtC5dAhSHTq7ediYj-25tHbhO2ZcTrVp_Keu-jXQsorS6UUp4iUmvD19zXJOvA1xLVh-ux6ebA9bwwIbwcfnhhdNB3Q1c_ic-xtiMShXpDTeV-y9j97na_HyGCdHOmxDApbNPD4zfh-mljoVtGugMDcEwLN5uriCuqFqySqeXchG1ZD0xzzmu9RdV_"/>
+</div>
+</div>
+</header>
+<!-- MAIN VIEWPORT CONTAINER -->
+<main class="max-w-[1200px] mx-auto px-6 py-8">
+<!-- BREADCRUMB & PAGE HEADER -->
+<div class="mb-8">
+<div class="flex items-center gap-2 font-code-telemetry text-code-telemetry text-ink-muted mb-2 uppercase tracking-wider text-[11px]">
+<span>ACME CORP</span>
+<span class="text-hairline-strong">/</span>
+<span class="text-ink-quiet">WORKSPACE PREFERENCES</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">Settings &amp; Intelligence Configuration</h1>
+<p class="font-body-md text-body-md text-ink-muted mt-1">Configure workspace foundation models, encryption keys, and continuous synthesis parameters.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-hairline font-code-telemetry text-code-telemetry text-ink-body">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+            Engine v4.2.0 • Operational
+          </span>
+</div>
+</div>
+</div>
+<!-- TWO-COLUMN WORKSPACE SETTINGS LAYOUT -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT SIDEBAR: NAVIGATION MENU (4 Columns) -->
+<aside class="lg:col-span-4 bg-surface-panel border border-hairline rounded-xl p-4 sticky top-20">
+<!-- Identity Summary Card -->
+<div class="flex items-center gap-3 p-3 bg-canvas/60 rounded-lg border border-hairline mb-4">
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline-strong overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Technical founder avatar in monochrome low-key studio lighting with sleek dark aesthetic, sharp focal depth, high contrast visual tone, subtle cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgH0WI5XnQiSUar4O5hUiqIjEtunlYV8I2FZ2S9DnNbecjfB_bibJgFP7PHOuUeW4UOsBpZ2aUMDGZmtK7Wgx8qcP0RNrqI2di2Z99QQMOGqvx2oGr5w5-yjMYr8RNnCcjUEr-aErVkyBTQtCnqYBTaNQHXev4noLyTSzfH0y8k11Fi5v4wS97g1JoSF7jr8WnoCCsrvZ8irzuM_Bft-kcSNLmJPEEHNzRGx6WsX61e4HBwePM1vT0"/>
+</div>
+<div class="overflow-hidden">
+<div class="font-title-sm text-title-sm text-ink truncate leading-snug">Elena Rostova</div>
+<div class="font-body-sm text-body-sm text-ink-muted truncate">elena.rostova@acme.corp</div>
+</div>
+</div>
+<nav class="space-y-1">
+<!-- General Profile -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg text-ink-muted hover:text-ink hover:bg-overlay-soft font-body-md text-body-md transition-colors" href="#profile">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-quiet">person</span>
+<span>General Profile</span>
+</div>
+<span class="material-symbols-outlined text-ink-quiet text-[16px]">chevron_right</span>
+</a>
+<!-- AI Configuration & BYOK [Active] -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-overlay-soft text-ink font-medium border border-hairline-veil font-body-md text-body-md" href="#ai-byok">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-electric">psychology</span>
+<span>AI Configuration &amp; BYOK</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric"></span>
+</a>
+<!-- Meeting Templates & Prompts -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg text-ink-muted hover:text-ink hover:bg-overlay-soft font-body-md text-body-md transition-colors" href="#prompts">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-quiet">terminal</span>
+<span>Meeting Templates &amp; Prompts</span>
+</div>
+<span class="material-symbols-outlined text-ink-quiet text-[16px]">chevron_right</span>
+</a>
+<!-- Integrations -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg text-ink-muted hover:text-ink hover:bg-overlay-soft font-body-md text-body-md transition-colors" href="#integrations">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-quiet">hub</span>
+<span>Integrations</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[11px] font-code-telemetry bg-surface border border-hairline text-ink-muted">5 Active</span>
+</a>
+<!-- Team & Access Control -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg text-ink-muted hover:text-ink hover:bg-overlay-soft font-body-md text-body-md transition-colors" href="#teams">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-quiet">group</span>
+<span>Team &amp; Access Control</span>
+</div>
+<span class="material-symbols-outlined text-ink-quiet text-[16px]">chevron_right</span>
+</a>
+<!-- Security & Compliance -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg text-ink-muted hover:text-ink hover:bg-overlay-soft font-body-md text-body-md transition-colors" href="#security">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ink-quiet">verified_user</span>
+<span>Security &amp; Compliance</span>
+</div>
+<span class="material-symbols-outlined text-ink-quiet text-[16px]">chevron_right</span>
+</a>
+</nav>
+<!-- Sidebar Telemetry Pill -->
+<div class="mt-6 pt-4 border-t border-hairline">
+<div class="flex items-center justify-between text-caption font-code-telemetry text-ink-quiet">
+<span>CLIENT SDK</span>
+<span>v2.14.0-EDGE</span>
+</div>
+<div class="flex items-center justify-between text-caption font-code-telemetry text-ink-muted mt-1">
+<span>KEY DERIVATION</span>
+<span class="text-ink">AES-256-GCM</span>
+</div>
+</div>
+</aside>
+<!-- RIGHT MAIN CONTENT PANEL: AI CONFIGURATION (8 Columns) -->
+<section class="lg:col-span-8 space-y-8">
+<!-- SUBSECTION 1: BYOK & PROVIDER SETTINGS -->
+<div class="bg-surface-panel border border-hairline rounded-xl p-6 relative overflow-hidden">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-hairline">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-title-md text-title-md text-ink font-semibold">BYOK &amp; Inference Routing</h2>
+<span class="px-2 py-0.5 rounded bg-accent-tint text-accent-electric border border-accent-electric/30 font-code-telemetry text-[11px]">Strict Isolation</span>
+</div>
+<p class="font-body-sm text-body-sm text-ink-muted mt-1">Direct all transcription synthesis and multi-speaker analysis through your private API credentials.</p>
+</div>
+<!-- Client-Side Routing Toggle Switch [Toggled ON] -->
+<div class="flex items-center gap-3 flex-shrink-0">
+<span class="font-body-sm text-body-sm text-ink font-medium">Enable BYOK Routing</span>
+<button aria-checked="true" class="w-11 h-6 bg-tertiary rounded-full p-0.5 transition-colors duration-200 ease-in-out relative focus:outline-none" role="switch">
+<span class="block w-5 h-5 bg-canvas rounded-full shadow transform translate-x-5 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+<!-- Provider Selection Cards Grid -->
+<div class="mt-6">
+<label class="block font-caption text-caption uppercase tracking-wider text-ink-muted mb-3 font-code-telemetry">Active Model Engines</label>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Anthropic Card (Active) -->
+<div class="p-4 rounded-lg bg-surface border border-accent-electric/50 relative cursor-pointer hover:border-accent-electric transition-colors">
+<div class="flex items-center justify-between mb-2">
+<span class="font-title-sm text-title-sm text-ink font-semibold">Anthropic</span>
+<span class="material-symbols-outlined text-accent-electric text-[18px]">check_circle</span>
+</div>
+<div class="font-code-telemetry text-code-telemetry text-accent-electric mb-2">claude-3-5-sonnet</div>
+<p class="font-caption text-caption text-ink-muted">Default for deep reasoning, contradictions, and risk auditing.</p>
+</div>
+<!-- OpenAI Card (Active Primary) -->
+<div class="p-4 rounded-lg bg-surface border border-hairline-bright relative cursor-pointer hover:border-outline transition-colors">
+<div class="flex items-center justify-between mb-2">
+<span class="font-title-sm text-title-sm text-ink font-semibold">OpenAI</span>
+<span class="material-symbols-outlined text-ink-body text-[18px]">check_circle</span>
+</div>
+<div class="font-code-telemetry text-code-telemetry text-ink-body mb-2">gpt-4o</div>
+<p class="font-caption text-caption text-ink-muted">Used for sub-second executive summaries and action extraction.</p>
+</div>
+<!-- Custom Inference / Local Endpoint -->
+<div class="p-4 rounded-lg bg-surface/50 border border-hairline relative cursor-pointer hover:border-hairline-bright transition-colors">
+<div class="flex items-center justify-between mb-2">
+<span class="font-title-sm text-title-sm text-ink font-semibold">Custom VPC</span>
+<span class="material-symbols-outlined text-ink-quiet text-[18px]">radio_button_unchecked</span>
+</div>
+<div class="font-code-telemetry text-code-telemetry text-ink-quiet mb-2">vLLM / Ollama</div>
+<p class="font-caption text-caption text-ink-muted">Self-hosted DeepSeek or Llama instances inside corporate DMZ.</p>
+</div>
+</div>
+</div>
+<!-- API Key Input Field with Connection Telemetry -->
+<div class="mt-6 space-y-4">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-body-sm text-body-sm text-ink-body font-medium">Anthropic API Key (sk-ant-...)</label>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-plan-green/10 text-plan-green border border-plan-green/20 font-code-telemetry text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green animate-pulse"></span>
+                    Connected - 38ms latency
+                  </span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative flex-1">
+<input class="w-full h-9 bg-surface border border-hairline-strong focus:border-accent-electric focus:ring-1 focus:ring-accent-electric rounded-lg px-3 pr-24 font-code-telemetry text-code-telemetry text-ink selection:bg-surface-raised" readonly="" type="password" value="sk-ant-api03-9fkj82nfms893ndkl209as8dmw029m-live"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-0.5 text-caption font-code-telemetry text-ink-muted hover:text-ink bg-surface-raised border border-hairline rounded transition-colors">
+                    Show Key
+                  </button>
+</div>
+<button class="h-9 px-3 bg-surface-raised hover:bg-surface-high border border-hairline-bright text-ink font-button-label text-button-label rounded-lg transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-ink-muted text-[16px]">sync</span>
+<span>Test Connection</span>
+</button>
+</div>
+</div>
+<!-- Custom Base URL for VPC -->
+<div>
+<label class="block font-body-sm text-body-sm text-ink-body font-medium mb-1.5">Custom Private Base URL (Optional VPC Gateway)</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-ink-quiet text-[16px]">dns</span>
+<input class="w-full h-9 bg-surface border border-hairline-strong focus:border-accent-electric focus:ring-1 focus:ring-accent-electric rounded-lg pl-9 pr-3 font-code-telemetry text-code-telemetry text-ink" type="text" value="https://ai-gateway.internal.acme.corp/v1"/>
+</div>
+<p class="font-caption text-caption text-ink-muted mt-1.5">Egress requests will route directly from Acme's transit gateway without external proxying.</p>
+</div>
+</div>
+</div>
+<!-- SUBSECTION 2: AUTOMATED EXTRACTION PREFERENCES -->
+<div class="bg-surface-panel border border-hairline rounded-xl p-6">
+<div class="pb-4 border-b border-hairline">
+<h2 class="font-title-md text-title-md text-ink font-semibold">Automated Extraction &amp; Synthesis</h2>
+<p class="font-body-sm text-body-sm text-ink-muted mt-1">Configure deep heuristics for real-time note generation and analytical item tagging.</p>
+</div>
+<div class="divide-y divide-hairline">
+<!-- Extraction Toggle 1 -->
+<div class="py-4 flex items-center justify-between gap-4">
+<div>
+<div class="font-body-md text-body-md text-ink font-medium">Auto-detect Action Items</div>
+<div class="font-body-sm text-body-sm text-ink-muted">Synthesize commitments, assignees, and deadlines mentioned dynamically across calls.</div>
+</div>
+<button aria-checked="true" class="w-11 h-6 bg-tertiary rounded-full p-0.5 transition-colors relative flex-shrink-0" role="switch">
+<span class="block w-5 h-5 bg-canvas rounded-full shadow transform translate-x-5 transition"></span>
+</button>
+</div>
+<!-- Extraction Toggle 2 -->
+<div class="py-4 flex items-center justify-between gap-4">
+<div>
+<div class="font-body-md text-body-md text-ink font-medium">Extract Architectural Decisions</div>
+<div class="font-body-sm text-body-sm text-ink-muted">Capture technical consensus, rejected alternatives, and trade-off rationales.</div>
+</div>
+<button aria-checked="true" class="w-11 h-6 bg-tertiary rounded-full p-0.5 transition-colors relative flex-shrink-0" role="switch">
+<span class="block w-5 h-5 bg-canvas rounded-full shadow transform translate-x-5 transition"></span>
+</button>
+</div>
+<!-- Extraction Toggle 3 -->
+<div class="py-4 flex items-center justify-between gap-4">
+<div>
+<div class="font-body-md text-body-md text-ink font-medium">Flag Negative Sentiment &amp; Unresolved Blockers</div>
+<div class="font-body-sm text-body-sm text-ink-muted">Detect team hesitation, unaddressed doubts, or potential scope creep risks.</div>
+</div>
+<button aria-checked="true" class="w-11 h-6 bg-tertiary rounded-full p-0.5 transition-colors relative flex-shrink-0" role="switch">
+<span class="block w-5 h-5 bg-canvas rounded-full shadow transform translate-x-5 transition"></span>
+</button>
+</div>
+</div>
+<!-- Slider: Confidence Threshold -->
+<div class="pt-6 border-t border-hairline mt-2">
+<div class="flex items-center justify-between mb-2">
+<label class="font-body-sm text-body-sm text-ink-body font-medium">Extraction Confidence Threshold</label>
+<span class="font-code-telemetry text-code-telemetry text-ink bg-surface-raised px-2 py-0.5 rounded border border-hairline-strong">90% Confidence or higher</span>
+</div>
+<input class="w-full h-1.5 bg-surface-raised rounded-lg appearance-none cursor-pointer" max="99" min="70" type="range" value="90"/>
+<div class="flex justify-between font-caption text-caption text-ink-muted mt-2">
+<span>70% (Broader ingestion)</span>
+<span class="text-ink">90% (Strict enterprise filtering)</span>
+<span>99% (Deterministic only)</span>
+</div>
+</div>
+</div>
+<!-- SUBSECTION 3: ENTERPRISE DATA SOVEREIGNTY & SECURITY NOTICE -->
+<div class="bg-surface border border-hairline-strong rounded-xl p-5 relative overflow-hidden">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline-bright flex items-center justify-center flex-shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h3 class="font-title-sm text-title-sm text-ink font-semibold">Zero Model Training Guarantee</h3>
+<span class="px-2 py-0.5 rounded bg-plan-green/10 text-plan-green border border-plan-green/20 font-code-telemetry text-[11px]">SOC2 Type II Certified</span>
+</div>
+<p class="font-body-sm text-body-sm text-ink-muted leading-relaxed">
+                All transcript audio and text streams are encrypted in flight (<span class="text-ink font-code-telemetry">TLS 1.3</span>) and never ingested into public foundation models. Model interactions execute strictly via ephemeral contextual inference.
+              </p>
+<div class="pt-2 flex items-center gap-4 text-caption font-code-telemetry text-ink-body">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span> BAA Attached</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span> Egress Auditing: Enabled</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span> Region: us-east-1 VPC</span>
+</div>
+</div>
+</div>
+</div>
+<!-- FORM ACTION FOOTER -->
+<div class="flex items-center justify-between pt-4 pb-12 border-t border-hairline">
+<div class="flex items-center gap-2 font-code-telemetry text-caption text-ink-quiet">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span>Last revision by e.rostova at 14:22 UTC</span>
+</div>
+<div class="flex items-center gap-3">
+<!-- Discard Changes (Glass Action) -->
+<button class="px-4 py-2 rounded-lg bg-overlay-soft hover:bg-surface-raised border border-hairline-veil text-ink font-button-label text-button-label transition-colors">
+              Discard Changes
+            </button>
+<!-- Save Preferences (Primary White Button) -->
+<button class="px-5 py-2 rounded-lg bg-tertiary hover:opacity-90 text-canvas font-button-label text-button-label font-medium transition-opacity flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">check</span>
+<span>Save Preferences</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER PER SHARED COMPONENT SCHEMA -->
+<footer class="bg-canvas-deep dark:bg-canvas-deep w-full border-t border-hairline dark:border-hairline shadow-none mt-16">
+<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Monogram & Copyright -->
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded bg-surface-raised border border-hairline text-ink flex items-center justify-center font-display-md text-[10px] font-bold">F</div>
+<span class="font-body-sm text-body-sm text-ink-quiet dark:text-ink-quiet">
+          © 2025 Fathom AI Systems Inc. Engineered for high-density analysis.
+        </span>
+</div>
+<!-- Links adhering to JSON and Design System -->
+<div class="flex flex-wrap items-center gap-6 font-body-sm text-body-sm">
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#security">Security</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#privacy">Privacy Policy</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#terms">Terms of Service</a>
+<a class="flex items-center gap-1.5 text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#status">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Status: Systems Operational</span>
+</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#docs">Documentation</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#api">API</a>
+</div>
+</div>
+</footer>
+</body></html>

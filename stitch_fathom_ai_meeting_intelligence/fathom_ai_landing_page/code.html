@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fathom AI — Engineered Meeting Intelligence</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary": "#121f8b",
+            "on-primary-fixed-variant": "#454747",
+            "primary-fixed": "#e2e2e2",
+            "on-tertiary-fixed": "#000964",
+            "surface-container-high": "#292a2b",
+            "surface-tint": "#c6c6c7",
+            "primary-fixed-dim": "#c6c6c7",
+            "primary-container": "#e2e2e2",
+            "build-yellow": "#d4b144",
+            "ink-quiet": "#62666d",
+            "surface-container-lowest": "#0d0e0f",
+            "on-secondary-fixed": "#000965",
+            "primary": "#ffffff",
+            "canvas": "#08090a",
+            "ink-muted": "#8a8f98",
+            "on-secondary-container": "#a7afff",
+            "secondary-fixed-dim": "#bdc2ff",
+            "error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "surface-container": "#1f2021",
+            "status-success": "#27a644",
+            "surface-raised": "#232326",
+            "inverse-surface": "#e3e2e3",
+            "surface-container-highest": "#343536",
+            "accent-electric": "#7170ff",
+            "inverse-primary": "#5d5f5f",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "hairline-bright": "#3e3e44",
+            "background": "#121315",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "surface-high": "#28282c",
+            "on-primary-container": "#636565",
+            "ink-body": "#d0d6e0",
+            "surface": "#1c1c1f",
+            "status-error": "#eb5757",
+            "outline-variant": "#444748",
+            "outline": "#8e9192",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "secondary": "#bdc2ff",
+            "on-primary": "#2f3131",
+            "on-surface-variant": "#c4c7c8",
+            "on-background": "#e3e2e3",
+            "on-tertiary-container": "#4c59c6",
+            "accent-tint": "#18182f",
+            "error": "#ffb4ab",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "tertiary-fixed": "#dfe0ff",
+            "inverse-on-surface": "#303032",
+            "surface-dim": "#121315",
+            "on-error-container": "#ffdad6",
+            "on-surface": "#e3e2e3",
+            "surface-panel": "#0f1011",
+            "secondary-container": "#2e3aa2",
+            "on-tertiary": "#0e1d90",
+            "tertiary-container": "#dfe0ff",
+            "hairline": "#23252a",
+            "surface-variant": "#343536",
+            "surface-bright": "#38393a",
+            "plan-green": "#68cc58",
+            "secondary-fixed": "#dfe0ff",
+            "hairline-strong": "#34343a",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "surface-container-low": "#1b1c1d",
+            "ink": "#f7f8f8",
+            "on-error": "#690005",
+            "canvas-deep": "#010102",
+            "security-slate": "#7a7fad",
+            "on-primary-fixed": "#1a1c1c",
+            "tertiary": "#ffffff"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          spacing: {
+            "gutter-desktop": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "gutter": "1rem"
+          },
+          fontFamily: {
+            "body-sm": ["Inter"],
+            "display-xl": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "button-label": ["Inter"],
+            "display-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "display-sm": ["Inter"],
+            "caption": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "title-sm": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "title-lg": ["Inter"]
+          },
+          fontSize: {
+            "body-sm": ["13px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }],
+            "display-xl": ["56px", { lineHeight: "60px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "code-telemetry": ["13px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }],
+            "body-lg": ["18px", { lineHeight: "28px", letterSpacing: "0em", fontWeight: "400" }],
+            "display-lg-mobile": ["32px", { lineHeight: "38px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "button-label": ["15px", { lineHeight: "15px", letterSpacing: "0em", fontWeight: "510" }],
+            "display-md": ["40px", { lineHeight: "44px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "display-lg": ["48px", { lineHeight: "52px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "display-sm": ["32px", { lineHeight: "36px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "caption": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "510" }],
+            "display-xl-mobile": ["36px", { lineHeight: "42px", letterSpacing: "-0.022em", fontWeight: "590" }],
+            "title-md": ["20px", { lineHeight: "26px", letterSpacing: "-0.012em", fontWeight: "510" }],
+            "title-sm": ["17px", { lineHeight: "24px", letterSpacing: "-0.012em", fontWeight: "510" }],
+            "keyboard-shortcut": ["11px", { lineHeight: "14px", letterSpacing: "0.02em", fontWeight: "500" }],
+            "body-md": ["15px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }],
+            "title-lg": ["24px", { lineHeight: "30px", letterSpacing: "-0.012em", fontWeight: "590" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    ::selection {
+      background: #7170ff;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body class="bg-canvas-deep text-ink antialiased selection:bg-accent-electric selection:text-primary min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md border-b border-hairline dark:border-hairline shadow-none docked full-width top-0 sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 h-14 max-w-7xl mx-auto">
+<!-- Brand Logo / Product Identifier -->
+<a class="flex items-center gap-3 active:scale-[0.98] transition-transform duration-100 group" href="#">
+<div class="w-7 h-7 rounded-lg bg-surface-raised border border-hairline-bright flex items-center justify-center relative overflow-hidden group-hover:border-accent-electric transition-colors">
+<div class="w-2.5 h-2.5 rounded-sm bg-accent-electric rotate-45 group-hover:scale-110 transition-transform"></div>
+</div>
+<span class="font-title-md text-title-md text-ink dark:text-ink font-semibold tracking-tight">Fathom AI</span>
+</a>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 font-button-label text-button-label">
+<a class="text-ink dark:text-ink font-medium px-3 py-1.5 rounded-lg hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 active:scale-[0.98]" href="#product">Product</a>
+<a class="text-ink-muted dark:text-ink-muted px-3 py-1.5 rounded-lg hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 active:scale-[0.98]" href="#features">Features</a>
+<a class="text-ink-muted dark:text-ink-muted px-3 py-1.5 rounded-lg hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 active:scale-[0.98]" href="#security">Security</a>
+<a class="text-ink-muted dark:text-ink-muted px-3 py-1.5 rounded-lg hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 active:scale-[0.98]" href="#pipeline">Pipeline</a>
+<a class="text-ink-muted dark:text-ink-muted px-3 py-1.5 rounded-lg hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 active:scale-[0.98]" href="#customers">Customers</a>
+</nav>
+<!-- Action Items on Right -->
+<div class="flex items-center gap-3 font-button-label text-button-label">
+<a class="hidden sm:inline-flex text-ink-muted hover:text-ink px-3 py-1.5 transition-colors duration-150" href="#">Sign in</a>
+<a class="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-canvas font-medium hover:opacity-90 active:scale-[0.98] transition-all duration-150 shadow-sm" href="#demo">
+          Get Started
+        </a>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-1 flex flex-col items-center w-full">
+<!-- Hero Section -->
+<section class="w-full max-w-7xl px-6 pt-16 pb-20 md:pt-24 md:pb-28 flex flex-col items-center text-center relative">
+<!-- Ambient Glow Behind Preview -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[650px] h-[350px] bg-accent-electric/15 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+<!-- Eyebrow Pill -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-tint border border-hairline-veil mb-8 hover:border-hairline-bright transition-colors cursor-pointer group">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric animate-pulse"></span>
+<span class="font-caption text-caption text-secondary">Fathom 2.0 is live</span>
+<span class="text-hairline-strong">|</span>
+<span class="font-keyboard-shortcut text-keyboard-shortcut bg-surface-raised border border-hairline-strong rounded px-1.5 py-0.5 text-ink-body group-hover:text-primary">⌘K</span>
+</div>
+<!-- Hero Headline -->
+<h1 class="font-display-xl text-display-xl max-w-4xl mx-auto text-ink tracking-tight mb-6">
+        Engineered meeting intelligence for high-velocity teams.
+      </h1>
+<!-- Hero Subtitle -->
+<p class="font-body-lg text-body-lg text-ink-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+        Turn raw meeting audio and video into instant executive summaries, verifiable action items, tracked decisions, and automated risk audits.
+      </p>
+<!-- Primary CTAs -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">
+<a class="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 rounded-lg bg-primary text-canvas font-button-label text-button-label font-medium hover:opacity-90 active:scale-[0.98] transition-all" href="#">
+          Start free trial
+        </a>
+<a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 px-5 rounded-lg bg-overlay-soft border border-hairline-veil text-ink font-button-label text-button-label hover:bg-white/10 active:scale-[0.98] transition-all" href="#preview">
+<span class="material-symbols-outlined text-[18px] text-accent-electric" data-icon="play_arrow">play_arrow</span>
+          View interactive demo
+        </a>
+</div>
+<!-- Social Proof / Customer Logos Strip -->
+<div class="w-full max-w-4xl pt-4 border-t border-hairline flex flex-col items-center gap-4">
+<span class="font-caption text-caption text-ink-quiet">Trusted by forward-thinking engineering and product teams at</span>
+<div class="flex flex-wrap items-center justify-center gap-8 md:gap-14 text-ink-muted text-sm font-semibold tracking-wider uppercase opacity-70">
+<span class="hover:text-ink transition-colors">Vercel</span>
+<span class="hover:text-ink transition-colors">Supabase</span>
+<span class="hover:text-ink transition-colors">Linear</span>
+<span class="hover:text-ink transition-colors">Retool</span>
+<span class="hover:text-ink transition-colors">Ramp</span>
+</div>
+</div>
+<!-- Flagship Product UI Preview in Hero (Product-Frame) -->
+<div class="w-full max-w-6xl mt-16 text-left" id="preview">
+<div class="rounded-xl border border-hairline bg-surface-panel overflow-hidden shadow-2xl relative">
+<!-- Window Title Bar -->
+<div class="h-10 px-4 bg-surface-container-low border-b border-hairline flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-hairline-strong"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-hairline-strong"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-hairline-strong"></div>
+<span class="text-hairline-strong mx-2">|</span>
+<div class="flex items-center gap-2 text-ink-body font-body-sm text-body-sm font-medium">
+<span class="material-symbols-outlined text-ink-muted text-[16px]" data-icon="mic">mic</span>
+                Q3 Core Architecture &amp; Latency Review
+              </div>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-caption text-caption text-plan-green flex items-center gap-1.5 bg-plan-green/10 px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+                Processed in 1.4s
+              </span>
+<span class="font-code-telemetry text-code-telemetry text-ink-quiet">48:12</span>
+</div>
+</div>
+<!-- Application Workspace View -->
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[500px]">
+<!-- Left 7 Cols: Video, Waveform & Interactive Transcript -->
+<div class="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-hairline flex flex-col justify-between bg-canvas">
+<div>
+<!-- Mock Video Display Area -->
+<div class="w-full aspect-video rounded-lg bg-surface-container-lowest border border-hairline overflow-hidden relative group">
+<div class="absolute inset-0 flex items-center justify-center">
+<!-- Participant Video Tiles Simulation -->
+<div class="grid grid-cols-2 gap-3 p-4 w-full h-full">
+<div class="rounded-lg bg-surface border border-hairline p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-caption text-caption bg-canvas/80 backdrop-blur px-2 py-0.5 rounded text-ink">Sarah Chen</span>
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+</div>
+<span class="font-caption text-caption text-ink-quiet">Staff Distributed Systems Eng</span>
+</div>
+<div class="rounded-lg bg-surface border border-hairline p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-caption text-caption bg-canvas/80 backdrop-blur px-2 py-0.5 rounded text-ink">Alex Rivera</span>
+<span class="w-2 h-2 rounded-full bg-hairline-bright"></span>
+</div>
+<span class="font-caption text-caption text-ink-quiet">Tech Lead, Infrastructure</span>
+</div>
+</div>
+</div>
+<!-- Playhead Overlay -->
+<div class="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
+<span class="font-code-telemetry text-code-telemetry text-ink bg-canvas/90 px-2 py-0.5 rounded border border-hairline">24:18 / 48:12</span>
+<span class="font-code-telemetry text-code-telemetry text-accent-electric bg-accent-tint px-2 py-0.5 rounded border border-hairline-bright">1.5x Speed</span>
+</div>
+</div>
+<!-- Meeting Waveform & Audio Player -->
+<div class="mt-4 p-3 rounded-lg bg-surface-panel border border-hairline">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<button class="w-6 h-6 rounded bg-surface-raised flex items-center justify-center text-ink hover:text-primary">
+<span class="material-symbols-outlined text-[14px]" data-icon="play_arrow">play_arrow</span>
+</button>
+<span class="font-code-telemetry text-code-telemetry text-ink-muted">Waveform Scrub</span>
+</div>
+<div class="flex items-center gap-3 text-caption font-caption text-ink-quiet">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-plan-green"></span> Sarah (54%)</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-build-yellow"></span> Alex (42%)</span>
+</div>
+</div>
+<!-- Audio Waveform Visualization -->
+<div class="h-8 flex items-center gap-1 cursor-pointer">
+<div class="h-3 w-1 bg-plan-green/60 rounded"></div>
+<div class="h-5 w-1 bg-plan-green rounded"></div>
+<div class="h-6 w-1 bg-plan-green rounded"></div>
+<div class="h-4 w-1 bg-plan-green rounded"></div>
+<div class="h-7 w-1 bg-plan-green rounded"></div>
+<div class="h-8 w-1 bg-accent-electric rounded"></div>
+<div class="h-5 w-1 bg-build-yellow rounded"></div>
+<div class="h-3 w-1 bg-build-yellow/70 rounded"></div>
+<div class="h-7 w-1 bg-build-yellow rounded"></div>
+<div class="h-4 w-1 bg-hairline-bright rounded"></div>
+<div class="h-2 w-1 bg-hairline-bright rounded"></div>
+<div class="h-5 w-1 bg-hairline-bright rounded"></div>
+<div class="h-3 w-1 bg-hairline-bright rounded"></div>
+<div class="h-6 w-1 bg-hairline-bright rounded"></div>
+<div class="h-4 w-1 bg-hairline-bright rounded"></div>
+<div class="h-2 w-1 bg-hairline-bright rounded"></div>
+<div class="h-5 w-1 bg-hairline-bright rounded"></div>
+<div class="h-7 w-1 bg-hairline-bright rounded"></div>
+<div class="h-3 w-1 bg-hairline-bright rounded"></div>
+<div class="h-6 w-1 bg-hairline-bright rounded"></div>
+</div>
+</div>
+</div>
+<!-- Interactive Transcript Stream -->
+<div class="mt-6 flex flex-col gap-3">
+<div class="flex items-center justify-between pb-2 border-b border-hairline">
+<span class="font-title-sm text-title-sm text-ink font-medium">Synchronized Transcript</span>
+<span class="font-keyboard-shortcut text-keyboard-shortcut text-ink-quiet">Follow audio on</span>
+</div>
+<div class="flex gap-3 text-body-sm font-body-sm text-ink-muted">
+<span class="font-code-telemetry text-code-telemetry text-ink-quiet">24:02</span>
+<div>
+<span class="text-ink font-medium">Alex Rivera:</span>
+                    If we migrate the event bus to the secondary cluster, tail latencies drop below 14ms across US-East.
+                  </div>
+</div>
+<!-- Active Spoken Segment Highlight -->
+<div class="flex gap-3 text-body-sm font-body-sm bg-accent-tint/40 border-l-2 border-accent-electric p-2 rounded-r">
+<span class="font-code-telemetry text-code-telemetry text-accent-electric font-medium">24:18</span>
+<div class="text-ink">
+<span class="text-primary font-medium">Sarah Chen:</span>
+                    Agreed. Let’s isolate the partition key change into a separate canary deploy before merging the gRPC pipeline.
+                  </div>
+</div>
+</div>
+</div>
+<!-- Right 5 Cols: Docked AI Intelligence & Synthesis Panel -->
+<div class="lg:col-span-5 p-6 bg-surface-panel flex flex-col gap-6">
+<!-- Panel Header -->
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-electric text-[18px]" data-icon="lightbulb">lightbulb</span>
+<span class="font-title-sm text-title-sm text-ink font-medium">AI Executive Synthesis</span>
+</div>
+<span class="font-caption text-caption bg-surface-raised border border-hairline-bright px-2 py-0.5 rounded text-ink-body">Model v2.4</span>
+</div>
+<!-- Executive Summary -->
+<div>
+<span class="font-caption text-caption text-ink-quiet uppercase tracking-wider block mb-2 font-medium">Executive Summary</span>
+<ul class="flex flex-col gap-2 font-body-sm text-body-sm text-ink-body">
+<li class="flex items-start gap-2">
+<span class="text-accent-electric font-bold">›</span>
+                    Consensus reached on event bus partitioning strategy to resolve US-East p99 spike.
+                  </li>
+<li class="flex items-start gap-2">
+<span class="text-accent-electric font-bold">›</span>
+                    Agreed to initiate canary deploy on Friday under synthetic load test protocol.
+                  </li>
+</ul>
+</div>
+<!-- Key Decisions Box -->
+<div class="p-3.5 rounded-lg bg-surface border border-hairline">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-caption text-caption text-accent-electric uppercase font-medium tracking-wide flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-electric"></span>
+                    Key Decision
+                  </span>
+<span class="font-code-telemetry text-code-telemetry text-ink-quiet">24:30</span>
+</div>
+<p class="font-body-sm text-body-sm text-ink font-medium">
+                  gRPC streaming migration approved for Q3 sprint without impacting legacy REST endpoints.
+                </p>
+</div>
+<!-- Extracted Action Items -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-caption text-caption text-ink-quiet uppercase tracking-wider font-medium">Action Items (3)</span>
+<span class="font-caption text-caption text-plan-green">1-Click Linear Sync</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container-low border border-hairline hover:border-hairline-bright transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-plan-green text-[18px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-ink">Isolate partition keys in canary branch</span>
+</div>
+<span class="font-caption text-caption text-ink-quiet bg-surface px-1.5 py-0.5 rounded">Sarah</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container-low border border-hairline hover:border-hairline-bright transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-plan-green text-[18px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-ink">Simulate synthetic 20k RPS replay</span>
+</div>
+<span class="font-caption text-caption text-ink-quiet bg-surface px-1.5 py-0.5 rounded">Alex</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded bg-surface-container-low border border-hairline hover:border-hairline-bright transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-plan-green text-[18px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-ink">Update on-call runbook with rollback spec</span>
+</div>
+<span class="font-caption text-caption text-ink-quiet bg-surface px-1.5 py-0.5 rounded">DevOps</span>
+</div>
+</div>
+</div>
+<!-- Integration Sync Pill Button -->
+<div class="mt-auto pt-2">
+<button class="w-full flex items-center justify-center gap-2 h-9 rounded bg-surface-raised border border-hairline-bright hover:border-accent-electric text-ink font-button-label text-button-label transition-colors">
+<span class="material-symbols-outlined text-[16px] text-accent-electric" data-icon="sync">sync</span>
+                  Export Action Items to Linear &amp; Jira
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Feature Breakdown Section -->
+<section class="w-full max-w-7xl px-6 py-24 border-t border-hairline" id="features">
+<div class="max-w-2xl mb-16">
+<span class="font-caption text-caption text-accent-electric uppercase tracking-wider font-semibold">Architectural Capabilities</span>
+<h2 class="font-display-lg text-display-lg text-ink tracking-tight mt-2 mb-4">
+          Built for teams who measure productivity in milliseconds.
+        </h2>
+<p class="font-body-lg text-body-lg text-ink-muted">
+          Generic AI transcription is noisy. Fathom AI is designed with domain-aware deterministic filters to separate signal from conversational banter.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bento 1: Large feature (Col-span 2) -->
+<div class="md:col-span-2 rounded-xl bg-surface-panel border border-hairline p-8 flex flex-col justify-between hover:border-hairline-bright transition-colors">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-accent-electric text-[22px]" data-icon="summarize">summarize</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">AI Meeting Summaries &amp; Executive Briefs</h3>
+<p class="font-body-md text-body-md text-ink-muted max-w-xl mb-6">
+              Zero fluff. Get hyper-dense, verifiable summaries with direct timecoded citations linked to the precise spoken sentence in audio.
+            </p>
+</div>
+<div class="rounded-lg bg-surface p-4 border border-hairline-strong flex flex-col gap-2 font-code-telemetry text-code-telemetry text-ink-body">
+<div class="flex items-center justify-between text-caption text-ink-quiet">
+<span>OUTPUT_SYNTHESIS_METRIC</span>
+<span class="text-status-success font-medium">99.4% factual precision</span>
+</div>
+<div class="text-ink">→ "Q3 latency mitigation: gRPC streaming migration verified for week 34." [24:18]</div>
+</div>
+</div>
+<!-- Bento 2: Sub-Second Transcript Search -->
+<div class="rounded-xl bg-surface-panel border border-hairline p-8 flex flex-col justify-between hover:border-hairline-bright transition-colors">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-accent-electric text-[22px]" data-icon="search">search</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">Sub-Second Search</h3>
+<p class="font-body-md text-body-md text-ink-muted mb-6">
+              Full-text regex and semantic vector lookup across 10,000+ hours of team recordings in under 200ms.
+            </p>
+</div>
+<div class="h-9 px-3 bg-surface rounded border border-hairline flex items-center justify-between text-ink-muted font-code-telemetry text-code-telemetry">
+<span>/grep --speaker=Sarah "latency"</span>
+<span class="text-caption text-ink-quiet font-sans">18 hits</span>
+</div>
+</div>
+<!-- Bento 3: Verifiable Action Items -->
+<div class="rounded-xl bg-surface-panel border border-hairline p-8 flex flex-col justify-between hover:border-hairline-bright transition-colors">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-plan-green text-[22px]" data-icon="task_alt">task_alt</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">Verifiable Action Items</h3>
+<p class="font-body-md text-body-md text-ink-muted">
+              Auto-extract tasks explicitly mapped to owners, deadlines, and urgency ratings with direct sync to your issue tracker.
+            </p>
+</div>
+<div class="mt-6 flex items-center gap-2 text-plan-green font-button-label text-button-label">
+<span class="material-symbols-outlined text-[18px]" data-icon="done_all">done_all</span>
+<span>Zero manual note-taking</span>
+</div>
+</div>
+<!-- Bento 4: Meeting Quality Audits -->
+<div class="rounded-xl bg-surface-panel border border-hairline p-8 flex flex-col justify-between hover:border-hairline-bright transition-colors">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-build-yellow text-[22px]" data-icon="policy">policy</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">Autonomous Quality Audits</h3>
+<p class="font-body-md text-body-md text-ink-muted">
+              Flag unresolved questions, unassigned deliverables, conflicting statements, and unaddressed technical risks automatically.
+            </p>
+</div>
+<div class="mt-6">
+<span class="font-caption text-caption bg-build-yellow/10 border border-build-yellow/30 text-build-yellow px-2.5 py-1 rounded">
+              Warning: 1 Unresolved blocker identified
+            </span>
+</div>
+</div>
+<!-- Bento 5: Decisions & Highlights -->
+<div class="rounded-xl bg-surface-panel border border-hairline p-8 flex flex-col justify-between hover:border-hairline-bright transition-colors">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-security-slate text-[22px]" data-icon="history_edu">history_edu</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">Decisions &amp; Truth Log</h3>
+<p class="font-body-md text-body-md text-ink-muted">
+              Timestamped records of truth so architectural consensus and strategic shifts are never contested or forgotten.
+            </p>
+</div>
+<div class="mt-6 flex items-center gap-2 text-ink-body font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-accent-electric" data-icon="verified">verified</span>
+<span>Immutable meeting ledger</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Pipeline Workflow Section -->
+<section class="w-full max-w-7xl px-6 py-24 border-t border-hairline" id="pipeline">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-caption text-caption text-accent-electric uppercase tracking-wider font-semibold">Continuous Engine</span>
+<h2 class="font-display-lg text-display-lg text-ink tracking-tight mt-2 mb-4">
+          From conversational chaos to operational clarity.
+        </h2>
+<p class="font-body-md text-body-md text-ink-muted">
+          Our four-stage pipeline processes conversations with sub-minute turnaround times without requiring user intervention.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+<!-- Step 1 -->
+<div class="p-6 rounded-xl bg-surface-panel border border-hairline relative group hover:border-hairline-bright transition-colors">
+<div class="font-code-telemetry text-code-telemetry text-accent-electric mb-3">01 // INGEST</div>
+<h4 class="font-title-sm text-title-sm text-ink mb-2">Import</h4>
+<p class="font-body-sm text-body-sm text-ink-muted">
+            Silent Zoom &amp; Google Meet bot attends, or drag-and-drop raw MP4, M4A, and WAV audio dumps.
+          </p>
+</div>
+<!-- Step 2 -->
+<div class="p-6 rounded-xl bg-surface-panel border border-hairline relative group hover:border-hairline-bright transition-colors">
+<div class="font-code-telemetry text-code-telemetry text-accent-electric mb-3">02 // PARSE</div>
+<h4 class="font-title-sm text-title-sm text-ink mb-2">Analyze</h4>
+<p class="font-body-sm text-body-sm text-ink-muted">
+            Multi-speaker diarization combined with low-hallucination domain LLM fact extraction.
+          </p>
+</div>
+<!-- Step 3 -->
+<div class="p-6 rounded-xl bg-surface-panel border border-hairline relative group hover:border-hairline-bright transition-colors">
+<div class="font-code-telemetry text-code-telemetry text-accent-electric mb-3">03 // SYNTHESIZE</div>
+<h4 class="font-title-sm text-title-sm text-ink mb-2">Understand</h4>
+<p class="font-body-sm text-body-sm text-ink-muted">
+            Dynamic transcript scrubbing with linked citations and automatic risk auditing.
+          </p>
+</div>
+<!-- Step 4 -->
+<div class="p-6 rounded-xl bg-surface-panel border border-hairline relative group hover:border-hairline-bright transition-colors">
+<div class="font-code-telemetry text-code-telemetry text-plan-green mb-3">04 // EXECUTE</div>
+<h4 class="font-title-sm text-title-sm text-ink mb-2">Act</h4>
+<p class="font-body-sm text-body-sm text-ink-muted">
+            Direct webhooks push assigned tasks directly to Linear issues, Jira epics, Slack channels, and Notion docs.
+          </p>
+</div>
+</div>
+</section>
+<!-- Enterprise Security & Privacy Notice -->
+<section class="w-full max-w-7xl px-6 py-20 border-t border-hairline" id="security">
+<div class="rounded-xl bg-surface-panel border border-hairline p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="max-w-2xl">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-security-slate text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="font-caption text-caption text-security-slate uppercase font-semibold tracking-wider">Enterprise Security Architecture</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-ink mb-2">
+            Zero model training. Full customer data sovereignty.
+          </h3>
+<p class="font-body-md text-body-md text-ink-muted">
+            Your conversations contain your company’s highest-value intellectual property. We enforce zero data retention on LLM provider models, support Bring Your Own Key (BYOK), and maintain full SOC-2 Type II and HIPAA compliance.
+          </p>
+</div>
+<div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0 w-full sm:w-auto">
+<div class="px-4 py-2.5 rounded-lg bg-surface border border-hairline font-code-telemetry text-code-telemetry text-ink-body flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+            SOC-2 Type II Certified
+          </div>
+<div class="px-4 py-2.5 rounded-lg bg-surface border border-hairline font-code-telemetry text-code-telemetry text-ink-body flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+            AES-256 + TLS 1.3 In Flight
+          </div>
+</div>
+</div>
+</section>
+<!-- Final High-Impact Conversion CTA Band -->
+<section class="w-full max-w-7xl px-6 py-28 text-center flex flex-col items-center relative overflow-hidden">
+<div class="w-full max-w-3xl flex flex-col items-center">
+<h2 class="font-display-xl text-display-xl text-ink tracking-tight mb-6">
+          Reclaim 10+ hours per engineer every single week.
+        </h2>
+<p class="font-body-lg text-body-lg text-ink-muted mb-10 max-w-xl">
+          Deploy Fathom AI across your organization in less than two minutes. No credit card required.
+        </p>
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<a class="h-11 px-8 rounded-lg bg-primary text-canvas font-button-label text-button-label font-medium hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center" href="#">
+            Start your 14-day trial
+          </a>
+<a class="h-11 px-6 rounded-lg bg-surface-raised border border-hairline-bright text-ink font-button-label text-button-label hover:border-accent-electric active:scale-[0.98] transition-all flex items-center justify-center" href="#">
+            Contact enterprise sales
+          </a>
+</div>
+</div>
+</section>
+</main>
+<!-- Comprehensive Footer -->
+<footer class="w-full bg-canvas-deep border-t border-hairline dark:border-hairline">
+<div class="max-w-7xl mx-auto px-6 py-16">
+<!-- Top 5-Column Navigation Grid -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+<!-- Col 1: Product -->
+<div>
+<span class="font-title-sm text-title-sm text-ink font-medium block mb-4">Product</span>
+<ul class="flex flex-col gap-2.5 font-body-sm text-body-sm text-ink-muted">
+<li><a class="hover:text-ink transition-colors" href="#">Overview</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">AI Summaries</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Transcript Engine</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Action Items Sync</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Integrations</a></li>
+</ul>
+</div>
+<!-- Col 2: Features -->
+<div>
+<span class="font-title-sm text-title-sm text-ink font-medium block mb-4">Features</span>
+<ul class="flex flex-col gap-2.5 font-body-sm text-body-sm text-ink-muted">
+<li><a class="hover:text-ink transition-colors" href="#">Sub-Second Search</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Quality Auditing</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Speaker Attribution</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Linear Webhooks</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">CLI &amp; API</a></li>
+</ul>
+</div>
+<!-- Col 3: Resources -->
+<div>
+<span class="font-title-sm text-title-sm text-ink font-medium block mb-4">Resources</span>
+<ul class="flex flex-col gap-2.5 font-body-sm text-body-sm text-ink-muted">
+<li><a class="hover:text-ink transition-colors" href="#">Documentation</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Engineering Blog</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Changelog</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Architecture Whitepaper</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Meeting Benchmarks</a></li>
+</ul>
+</div>
+<!-- Col 4: Company -->
+<div>
+<span class="font-title-sm text-title-sm text-ink font-medium block mb-4">Company</span>
+<ul class="flex flex-col gap-2.5 font-body-sm text-body-sm text-ink-muted">
+<li><a class="hover:text-ink transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Careers (Hiring)</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Press Kit</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<!-- Col 5: Legal & Security -->
+<div>
+<span class="font-title-sm text-title-sm text-ink font-medium block mb-4">Legal &amp; Trust</span>
+<ul class="flex flex-col gap-2.5 font-body-sm text-body-sm text-ink-muted">
+<li><a class="hover:text-ink transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">Sub-processors</a></li>
+<li><a class="hover:text-ink transition-colors" href="#">SOC-2 Portal</a></li>
+</ul>
+</div>
+</div>
+<!-- Bottom Status & Copyright Bar -->
+<div class="pt-8 border-t border-hairline flex flex-col md:flex-row justify-between items-center gap-4 text-ink-quiet font-body-sm text-body-sm">
+<div class="flex items-center gap-3">
+<span class="font-semibold text-ink">Fathom AI</span>
+<span>© 2025 Fathom AI Systems Inc. Engineered for high-density analysis.</span>
+</div>
+<div class="flex items-center gap-2 bg-surface px-3 py-1 rounded-full border border-hairline">
+<span class="w-2 h-2 rounded-full bg-status-success animate-pulse"></span>
+<span class="text-ink-body font-caption text-caption">Status: Systems Operational</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

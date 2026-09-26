@@ -1,20 +1,22 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-jetbrains-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
-  title: 'Fathom AI Clone — Executive Meeting Intelligence',
+  title: 'Fathom AI — Engineered Meeting Intelligence',
   description: 'AI-powered meeting transcripts, executive summaries, action items, and decisions.',
 };
 
@@ -24,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} dark h-full`}>
+      <body className="min-h-full flex flex-col bg-[#08090a] text-[#d0d6e0] antialiased" style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

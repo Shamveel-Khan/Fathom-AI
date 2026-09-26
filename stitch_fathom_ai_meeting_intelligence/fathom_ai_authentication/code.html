@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign in — Fathom AI</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#c6c6c7",
+            "surface-container": "#1f2021",
+            "build-yellow": "#d4b144",
+            "tertiary-fixed": "#dfe0ff",
+            "on-tertiary-fixed": "#000964",
+            "accent-electric": "#7170ff",
+            "accent-tint": "#18182f",
+            "on-secondary-fixed": "#000965",
+            "ink-muted": "#8a8f98",
+            "background": "#121315",
+            "surface-raised": "#232326",
+            "on-error": "#690005",
+            "surface-panel": "#0f1011",
+            "on-tertiary-container": "#4c59c6",
+            "plan-green": "#68cc58",
+            "outline-variant": "#444748",
+            "on-surface": "#e3e2e3",
+            "secondary": "#bdc2ff",
+            "surface-container-high": "#292a2b",
+            "on-secondary": "#121f8b",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "on-primary-fixed": "#1a1c1c",
+            "on-primary-fixed-variant": "#454747",
+            "ink": "#f7f8f8",
+            "tertiary-container": "#dfe0ff",
+            "primary-container": "#e2e2e2",
+            "hairline": "#23252a",
+            "tertiary": "#ffffff",
+            "surface-high": "#28282c",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "on-secondary-container": "#a7afff",
+            "secondary-fixed-dim": "#bdc2ff",
+            "surface-container-lowest": "#0d0e0f",
+            "secondary-container": "#2e3aa2",
+            "surface-container-highest": "#343536",
+            "on-error-container": "#ffdad6",
+            "hairline-strong": "#34343a",
+            "status-error": "#eb5757",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "outline": "#8e9192",
+            "surface-variant": "#343536",
+            "ink-body": "#d0d6e0",
+            "surface": "#1c1c1f",
+            "error": "#ffb4ab",
+            "on-tertiary": "#0e1d90",
+            "status-success": "#27a644",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "on-primary-container": "#636565",
+            "surface-bright": "#38393a",
+            "primary": "#ffffff",
+            "security-slate": "#7a7fad",
+            "hairline-bright": "#3e3e44",
+            "secondary-fixed": "#dfe0ff",
+            "error-container": "#93000a",
+            "canvas-deep": "#010102",
+            "surface-dim": "#121315",
+            "on-surface-variant": "#c4c7c8",
+            "inverse-primary": "#5d5f5f",
+            "canvas": "#08090a",
+            "inverse-surface": "#e3e2e3",
+            "primary-fixed": "#e2e2e2",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "on-primary": "#2f3131",
+            "inverse-on-surface": "#303032",
+            "surface-container-low": "#1b1c1d",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "ink-quiet": "#62666d",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-background": "#e3e2e3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-sm": "0.75rem",
+            "margin-tablet": "2rem",
+            "space-xs": "0.5rem",
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "display-md": ["Inter"],
+            "button-label": ["Inter"],
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "title-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "display-sm": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "display-xl-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "caption": ["Inter"],
+            "display-xl": ["Inter"],
+            "display-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "keyboard-shortcut": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "display-md": ["40px", {"lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "button-label": ["15px", {"lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510"}],
+            "title-sm": ["17px", {"lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-lg": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-sm": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "code-telemetry": ["13px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+            "display-xl-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "title-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510"}],
+            "display-xl": ["56px", {"lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590"}],
+            "display-lg": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590"}]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-canvas text-ink antialiased min-h-screen flex flex-col justify-between selection:bg-accent-electric selection:text-primary">
+<!-- Subtle Ambient Radial Glow -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[360px] bg-accent-tint/40 blur-[130px] rounded-full opacity-60"></div>
+</div>
+<!-- Header with Brand Anchor & Exit Target -->
+<header class="relative z-10 w-full px-6 py-5 flex items-center justify-between border-b border-hairline/60">
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="w-7 h-7 rounded-lg bg-surface-raised border border-hairline-bright flex items-center justify-center text-ink shadow-sm group-hover:border-outline transition-colors">
+<span class="material-symbols-outlined text-sm leading-none text-accent-electric" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<span class="font-title-md text-title-md font-semibold text-ink tracking-tight">Fathom AI</span>
+<span class="font-code-telemetry text-caption text-ink-quiet px-1.5 py-0.5 rounded bg-surface-container border border-hairline ml-1">v2.4</span>
+</a>
+<a class="font-button-label text-button-label text-ink-muted hover:text-ink flex items-center gap-1.5 transition-colors" href="#">
+<span>Landing Page</span>
+<span class="material-symbols-outlined text-sm leading-none" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</header>
+<!-- Main Center Auth Canvas -->
+<main class="relative z-10 flex-1 flex items-center justify-center px-4 py-10">
+<div class="w-full max-w-[440px]">
+<!-- Central Frame -->
+<div class="bg-surface-panel border border-hairline rounded-xl p-7 md:p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+<!-- Overhead hairline edge luminescence -->
+<div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-hairline-bright to-transparent"></div>
+<!-- Pillar Security Tag -->
+<div class="flex items-center justify-between mb-5">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-tint border border-hairline-strong">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green animate-pulse"></span>
+<span class="font-code-telemetry text-caption tracking-wider text-secondary uppercase">FATHOM AI // ACCESS GATEWAY</span>
+</div>
+<div class="flex items-center gap-1 text-ink-quiet">
+<span class="material-symbols-outlined text-caption" data-icon="lock">lock</span>
+<span class="font-code-telemetry text-caption">TLS 1.3</span>
+</div>
+</div>
+<!-- Title & Subtitle -->
+<div class="space-y-1.5 mb-6">
+<h1 class="font-title-lg text-title-lg font-semibold text-ink tracking-tight">Welcome to Fathom AI</h1>
+<p class="font-body-sm text-body-sm text-ink-muted leading-relaxed">
+            Sign in to access your synthesized meeting records, decisions, and intelligence briefings.
+          </p>
+</div>
+<!-- Tab Switcher (Log in / Create Account) -->
+<div class="p-0.5 bg-surface-container-lowest border border-hairline rounded-lg flex mb-6">
+<button class="flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md bg-surface text-ink border border-hairline-strong shadow-sm transition-all" id="tab-login" onclick="setAuthTab('login')">
+            Log in
+          </button>
+<button class="flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md text-ink-muted hover:text-ink transition-all" id="tab-signup" onclick="setAuthTab('signup')">
+            Create Account
+          </button>
+</div>
+<!-- Google SSO Action -->
+<button class="w-full h-9 px-4 rounded-lg bg-overlay-soft hover:bg-surface-raised border border-hairline hover:border-hairline-bright transition-all duration-150 flex items-center justify-center gap-3 text-ink font-button-label text-button-label group active:scale-[0.99]" type="button">
+<svg class="w-4 h-4 flex-shrink-0" viewbox="0 0 24 24">
+<path d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.3 8.8 5 12 5z" fill="#EA4335"></path>
+<path d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z" fill="#4285F4"></path>
+<path d="M5.3 14.7c-.2-.7-.4-1.5-.4-2.4s.2-1.6.4-2.4L1.6 7C.6 9 0 10.4 0 12s.6 3 1.6 5l3.7-2.3z" fill="#FBBC05"></path>
+<path d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.2 0-5.8-2.3-6.7-5.3L1.6 16C3.5 19.8 7.4 23 12 23z" fill="#34A853"></path>
+</svg>
+<span class="text-ink">Continue with Google Workspace</span>
+</button>
+<!-- Structural Divider -->
+<div class="relative my-5 flex items-center">
+<div class="flex-grow border-t border-hairline"></div>
+<span class="flex-shrink mx-3 font-code-telemetry text-caption tracking-wider text-ink-quiet uppercase">OR CONTINUE WITH EMAIL</span>
+<div class="flex-grow border-t border-hairline"></div>
+</div>
+<!-- Form Fields -->
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- Email Input -->
+<div class="space-y-1.5 text-left">
+<label class="block font-body-sm text-body-sm text-ink-muted" for="email-field">Email address</label>
+<div class="relative">
+<input class="w-full h-9 px-3 rounded-lg bg-surface border border-hairline-strong text-ink font-body-md text-body-md placeholder:text-ink-quiet focus:border-accent-electric focus:ring-1 focus:ring-accent-electric focus:outline-none transition-all" id="email-field" placeholder="elena@acme.com" type="email" value="elena@acme.com"/>
+<div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none text-ink-quiet">
+<span class="material-symbols-outlined text-base" data-icon="domain">domain</span>
+</div>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-1.5 text-left">
+<div class="flex items-center justify-between">
+<label class="font-body-sm text-body-sm text-ink-muted" for="password-field">Password</label>
+<a class="font-body-sm text-caption text-ink-quiet hover:text-ink transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<input class="w-full h-9 pl-3 pr-10 rounded-lg bg-surface border border-hairline-strong text-ink font-body-md text-body-md placeholder:text-ink-quiet focus:border-accent-electric focus:ring-1 focus:ring-accent-electric focus:outline-none transition-all" id="password-field" placeholder="Enter your passphrase" type="password" value="••••••••••••••••"/>
+<button class="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-quiet hover:text-ink transition-colors p-1" onclick="togglePasswordVisibility()" title="Toggle password visibility" type="button">
+<span class="material-symbols-outlined text-base leading-none" data-icon="visibility_off" id="pw-icon">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Enterprise Domain Policy Banner -->
+<div class="p-2.5 rounded-lg bg-surface-container-low border border-hairline flex items-start gap-2.5 text-left">
+<span class="material-symbols-outlined text-base text-accent-electric mt-0.5 flex-shrink-0" data-icon="info">info</span>
+<div class="font-body-sm text-caption leading-tight text-ink-muted">
+<span class="text-ink font-medium">SSO Enforced</span>: Single Sign-On is active for <code class="font-code-telemetry text-caption text-secondary">@acme.com</code>. Password login requires hardware 2FA token.
+            </div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full h-9 px-4 rounded-lg bg-primary hover:bg-primary/92 text-canvas font-button-label text-button-label font-medium transition-all duration-150 flex items-center justify-center gap-2 active:scale-[0.99] shadow-sm" id="primary-cta-btn" type="submit">
+<span>Sign In to Workspace</span>
+<span class="material-symbols-outlined text-sm font-semibold" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Demo Account Quick Switcher -->
+<div class="mt-6 pt-5 border-t border-hairline text-left">
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-telemetry text-caption text-ink-quiet uppercase">Quick Demo Access</span>
+<span class="font-keyboard-shortcut text-keyboard-shortcut text-ink-muted bg-surface-raised px-1.5 py-0.5 rounded border border-hairline-bright">DEMO ENV</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="px-2.5 py-2 rounded-lg bg-surface-container hover:bg-surface-raised border border-hairline text-left transition-colors flex items-center gap-2 group" onclick="selectDemo('elena@acme.com', 'Elena V. (Lead)')" type="button">
+<div class="w-5 h-5 rounded-full bg-accent-tint border border-accent-electric/40 text-accent-electric flex items-center justify-center font-code-telemetry text-[10px]">EV</div>
+<div class="truncate">
+<p class="font-body-sm text-caption text-ink truncate group-hover:text-primary">Elena V.</p>
+<p class="font-code-telemetry text-[10px] text-ink-quiet truncate">Product Lead</p>
+</div>
+</button>
+<button class="px-2.5 py-2 rounded-lg bg-surface-container hover:bg-surface-raised border border-hairline text-left transition-colors flex items-center gap-2 group" onclick="selectDemo('alex.c@acme.com', 'Alex C. (VP Eng)')" type="button">
+<div class="w-5 h-5 rounded-full bg-surface-raised border border-hairline-bright text-ink-muted flex items-center justify-center font-code-telemetry text-[10px]">AC</div>
+<div class="truncate">
+<p class="font-body-sm text-caption text-ink truncate group-hover:text-primary">Alex C.</p>
+<p class="font-code-telemetry text-[10px] text-ink-quiet truncate">VP Eng</p>
+</div>
+</button>
+</div>
+</div>
+</div>
+<!-- Trust & Compliance Micro-Badge -->
+<div class="mt-6 flex items-center justify-center gap-2 text-ink-quiet">
+<span class="material-symbols-outlined text-sm text-plan-green" data-icon="verified_user">verified_user</span>
+<p class="font-code-telemetry text-caption text-ink-quiet text-center">
+          SOC-2 Type II Certified • 256-bit Encrypted • Zero Data Retention
+        </p>
+</div>
+</div>
+</main>
+<!-- Minimal Footer Section Anchor -->
+<footer class="relative z-10 w-full border-t border-hairline bg-canvas-deep">
+<div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-ink font-semibold">Fathom AI</span>
+<span class="text-ink-quiet font-body-sm text-caption">© 2025 Fathom AI Systems Inc. Engineered for high-density analysis.</span>
+</div>
+<div class="flex items-center flex-wrap gap-5 font-body-sm text-caption text-ink-quiet">
+<a class="hover:text-ink-body transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-ink-body transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-ink-body transition-colors flex items-center gap-1.5" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Status: Systems Operational</span>
+</a>
+<a class="hover:text-ink-body transition-colors" href="#">Documentation</a>
+<a class="hover:text-ink-body transition-colors" href="#">API</a>
+</div>
+</div>
+</footer>
+<script>
+    function togglePasswordVisibility() {
+      const field = document.getElementById('password-field');
+      const icon = document.getElementById('pw-icon');
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.textContent = 'visibility';
+      } else {
+        field.type = 'password';
+        icon.textContent = 'visibility_off';
+      }
+    }
+
+    function selectDemo(email, name) {
+      const emailField = document.getElementById('email-field');
+      emailField.value = email;
+      emailField.classList.add('ring-1', 'ring-accent-electric');
+      setTimeout(() => emailField.classList.remove('ring-1', 'ring-accent-electric'), 600);
+    }
+
+    function setAuthTab(tab) {
+      const loginBtn = document.getElementById('tab-login');
+      const signupBtn = document.getElementById('tab-signup');
+      const ctaBtn = document.getElementById('primary-cta-btn');
+
+      if (tab === 'login') {
+        loginBtn.className = 'flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md bg-surface text-ink border border-hairline-strong shadow-sm transition-all';
+        signupBtn.className = 'flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md text-ink-muted hover:text-ink transition-all';
+        ctaBtn.querySelector('span:first-child').textContent = 'Sign In to Workspace';
+      } else {
+        signupBtn.className = 'flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md bg-surface text-ink border border-hairline-strong shadow-sm transition-all';
+        loginBtn.className = 'flex-1 py-1.5 font-button-label text-button-label font-medium rounded-md text-ink-muted hover:text-ink transition-all';
+        ctaBtn.querySelector('span:first-child').textContent = 'Create Enterprise Account';
+      }
+    }
+  </script>
+</body></html>

@@ -10,8 +10,8 @@ import { DashboardSkeleton } from '@/components/Skeletons';
 import { ImportMeetingModal } from '@/components/ImportMeetingModal';
 import { MEETING_TEMPLATES } from '@/lib/templates/definitions';
 import {
-  Search, Sparkles, Video, CheckSquare, ShieldAlert, Filter, Upload,
-  CheckCircle2, ArrowRight, X, LayoutGrid, List,
+  Search, Video, Upload, CheckCircle2, ArrowRight, X, LayoutGrid, List,
+  Calendar, Clock, Users, ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -19,14 +19,14 @@ const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
 const LOCAL_STORAGE_MODEL = 'fathom_ai_model';
 
-export default function DashboardPage() {
+export default function MeetingsPage() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [meetings, setMeetings] = useState<MeetingSummary[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [dashboardFilter, setDashboardFilter] = useState<'all' | 'mine' | 'shared'>('all');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
+  const [view, setView] = useState<'grid' | 'dense'>('grid');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importedNotice, setImportedNotice] = useState<{ id: string; title: string } | null>(null);
   const [apiKey, setApiKey] = useState('');
@@ -82,14 +82,9 @@ export default function DashboardPage() {
   const filteredMeetings = meetings.filter((m) => {
     const q = searchQuery.toLowerCase();
     const matchesSearch = m.title.toLowerCase().includes(q) || m.participants.some((p) => p.name.toLowerCase().includes(q));
-    const matchesTab = dashboardFilter === 'all' || (dashboardFilter === 'mine' && !m.isShared) || (dashboardFilter === 'shared' && m.isShared);
     const matchesTemplate = templateFilter === 'all' || m.template === templateFilter;
-    return matchesSearch && matchesTab && matchesTemplate;
+    return matchesSearch && matchesTemplate;
   });
-
-  const analyzedCount = meetings.filter((m) => m.hasAnalysis).length;
-  const reviewCount = meetings.filter((m) => m.hasReview).length;
-  const totalActionItems = meetings.reduce((sum, m) => sum + m.actionItemsCount, 0);
 
   if (authLoading || !user) {
     return (
@@ -107,14 +102,15 @@ export default function DashboardPage() {
         <DashboardSkeleton />
       ) : (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
           {/* Header */}
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold mb-1" style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}>
-                Good to see you, {user.name.split(' ')[0]}
+                Meetings Library
               </h1>
-              <p className="text-sm" style={{ color: '#8a8f98' }}>Your executive meeting intelligence workspace.</p>
+              <p className="text-sm" style={{ color: '#8a8f98' }}>
+                {meetings.length} meeting{meetings.length !== 1 ? 's' : ''} in your workspace
+              </p>
             </div>
             <button
               onClick={() => setIsImportModalOpen(true)}
@@ -135,15 +131,15 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3 min-w-0">
                 <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#27a644' }} />
                 <div className="truncate">
-                  <p className="text-xs font-semibold" style={{ color: '#f7f8f8' }}>Meeting successfully imported!</p>
+                  <p className="text-xs font-semibold" style={{ color: '#f7f8f8' }}>Meeting imported!</p>
                   <p className="text-xs truncate" style={{ color: '#8a8f98' }}>{importedNotice.title}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Link
                   href={`/meetings/${importedNotice.id}`}
-                  className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors"
-                  style={{ color: '#828fff', borderColor: 'rgba(130,143,255,0.3)', background: '#18182f' }}
+                  className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg"
+                  style={{ color: '#828fff', background: '#18182f' }}
                 >
                   Open <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -154,81 +150,43 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-            {[
-              { icon: <Video className="w-5 h-5" style={{ color: '#7170ff' }} />, label: 'Total Meetings', value: meetings.length },
-              { icon: <Sparkles className="w-5 h-5" style={{ color: '#68cc58' }} />, label: 'AI Analyzed', value: analyzedCount },
-              { icon: <ShieldAlert className="w-5 h-5" style={{ color: '#7a7fad' }} />, label: 'AI Audited', value: reviewCount },
-              { icon: <CheckSquare className="w-5 h-5" style={{ color: '#d4b144' }} />, label: 'Open Actions', value: totalActionItems },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-xl border p-5"
-                style={{ background: '#0f1011', borderColor: '#23252a' }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  {stat.icon}
-                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: '#62666d', letterSpacing: '0.06em' }}>
-                    {stat.label}
-                  </span>
-                </div>
-                <p
-                  className="text-2xl font-semibold"
-                  style={{ color: '#f7f8f8', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '-0.01em' }}
-                >
-                  {stat.value}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Search & Filters */}
+          {/* Search + filters + view toggle */}
           <div className="space-y-3 mb-6">
             <div className="flex flex-wrap items-center gap-3">
-              {/* Search */}
               <div className="relative flex-1 min-w-[220px] max-w-sm">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#62666d' }} />
                 <input
                   type="text"
-                  placeholder="Search meetings, speakers…"
+                  placeholder="Search meetings…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 h-9 text-sm rounded-lg border focus:outline-none transition-colors"
-                  style={{
-                    background: '#1c1c1f',
-                    borderColor: '#34343a',
-                    color: '#f7f8f8',
-                  }}
+                  className="w-full pl-9 pr-4 h-9 text-sm rounded-lg border focus:outline-none"
+                  style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#f7f8f8' }}
                   onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
                   onBlur={(e) => (e.currentTarget.style.borderColor = '#34343a')}
                 />
               </div>
-
-              {/* Tab filter */}
-              <div className="flex items-center gap-1 rounded-lg border p-1" style={{ background: '#0f1011', borderColor: '#23252a' }}>
-                {(['all', 'mine', 'shared'] as const).map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setDashboardFilter(f)}
-                    className="px-3 py-1 rounded-md text-xs font-medium transition-all"
-                    style={{
-                      background: dashboardFilter === f ? '#232326' : 'transparent',
-                      color: dashboardFilter === f ? '#f7f8f8' : '#8a8f98',
-                      border: dashboardFilter === f ? '1px solid #34343a' : '1px solid transparent',
-                    }}
-                  >
-                    {f === 'all' ? 'All' : f === 'mine' ? 'My Meetings' : 'Shared'}
-                  </button>
-                ))}
+              {/* View toggle */}
+              <div className="flex items-center gap-1 rounded-lg border p-1 ml-auto" style={{ background: '#0f1011', borderColor: '#23252a' }}>
+                <button
+                  onClick={() => setView('grid')}
+                  className="p-1.5 rounded-md transition-colors"
+                  style={{ background: view === 'grid' ? '#232326' : 'transparent', color: view === 'grid' ? '#f7f8f8' : '#8a8f98' }}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setView('dense')}
+                  className="p-1.5 rounded-md transition-colors"
+                  style={{ background: view === 'dense' ? '#232326' : 'transparent', color: view === 'dense' ? '#f7f8f8' : '#8a8f98' }}
+                >
+                  <List className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
-            {/* Template filter pills */}
+            {/* Template pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-              <span className="text-[11px] font-medium flex items-center gap-1 mr-1 shrink-0" style={{ color: '#62666d' }}>
-                <Filter className="w-3 h-3" /> Template:
-              </span>
               <button
                 onClick={() => setTemplateFilter('all')}
                 className="px-3 py-1 rounded-lg text-xs font-medium border transition-all shrink-0"
@@ -238,7 +196,7 @@ export default function DashboardPage() {
                   borderColor: templateFilter === 'all' ? '#34343a' : '#23252a',
                 }}
               >
-                All
+                All Templates
               </button>
               {Object.values(MEETING_TEMPLATES).map((tpl) => (
                 <button
@@ -257,32 +215,77 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Meetings grid */}
+          {/* Content */}
           {filteredMeetings.length === 0 ? (
-            <div
-              className="rounded-xl border border-dashed p-16 text-center"
-              style={{ borderColor: '#34343a' }}
-            >
+            <div className="rounded-xl border border-dashed p-16 text-center" style={{ borderColor: '#34343a' }}>
               <Video className="w-10 h-10 mx-auto mb-3" style={{ color: '#3e3e44' }} />
-              <h3 className="text-sm font-semibold mb-1" style={{ color: '#f7f8f8' }}>No meetings found</h3>
+              <h3 className="text-sm font-semibold mb-2" style={{ color: '#f7f8f8' }}>No meetings found</h3>
               <p className="text-xs mb-4 max-w-sm mx-auto" style={{ color: '#8a8f98' }}>
-                {searchQuery
-                  ? `No meetings matching "${searchQuery}". Try adjusting your filters.`
-                  : 'No meetings in this view. Import a JSON meeting to get started.'}
+                {searchQuery ? `No results for "${searchQuery}".` : 'Import a JSON meeting to get started.'}
               </p>
               <button
                 onClick={() => setIsImportModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border"
                 style={{ background: '#18182f', color: '#828fff', borderColor: 'rgba(113,112,255,0.3)' }}
               >
-                <Upload className="w-3.5 h-3.5" />
-                Import JSON Meeting
+                <Upload className="w-3.5 h-3.5" /> Import JSON Meeting
               </button>
             </div>
-          ) : (
+          ) : view === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredMeetings.map((meeting) => (
                 <MeetingCard key={meeting.id} meeting={meeting} />
+              ))}
+            </div>
+          ) : (
+            /* Dense table view */
+            <div className="rounded-xl border overflow-hidden" style={{ background: '#0f1011', borderColor: '#23252a' }}>
+              <div
+                className="grid gap-4 px-4 py-2.5 border-b text-[11px] font-medium uppercase tracking-wider"
+                style={{ borderColor: '#23252a', color: '#62666d', letterSpacing: '0.06em', gridTemplateColumns: '1fr auto auto auto' }}
+              >
+                <span>Meeting</span>
+                <span>Date</span>
+                <span>Duration</span>
+                <span>Status</span>
+              </div>
+              {filteredMeetings.map((meeting) => (
+                <Link
+                  key={meeting.id}
+                  href={`/meetings/${meeting.id}`}
+                  className="group flex items-center gap-4 px-4 py-3 border-b transition-colors"
+                  style={{ borderColor: '#1c1c1f' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate transition-colors" style={{ color: '#d0d6e0' }}>
+                      {meeting.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Users className="w-3 h-3" style={{ color: '#62666d' }} />
+                      <span className="text-xs" style={{ color: '#62666d' }}>{meeting.participants.length} participants</span>
+                    </div>
+                  </div>
+                  <span className="text-xs shrink-0" style={{ color: '#8a8f98', fontFamily: "'JetBrains Mono', monospace" }}>
+                    {meeting.date}
+                  </span>
+                  <span className="text-xs shrink-0" style={{ color: '#8a8f98', fontFamily: "'JetBrains Mono', monospace" }}>
+                    {meeting.durationMinutes}m
+                  </span>
+                  <div className="shrink-0">
+                    {meeting.hasAnalysis ? (
+                      <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: '#18182f', color: '#828fff' }}>
+                        AI Ready
+                      </span>
+                    ) : (
+                      <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: 'rgba(212,177,68,0.1)', color: '#d4b144' }}>
+                        Pending
+                      </span>
+                    )}
+                  </div>
+                  <ChevronRight className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8a8f98' }} />
+                </Link>
               ))}
             </div>
           )}

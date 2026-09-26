@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fathom AI — Decisions &amp; Truth Log</title>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;510;590;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#5d5f5f",
+            "tertiary-container": "#dfe0ff",
+            "on-primary": "#2f3131",
+            "outline-variant": "#444748",
+            "surface": "#1c1c1f",
+            "surface-container-highest": "#343536",
+            "surface-container": "#1f2021",
+            "on-secondary-fixed": "#000965",
+            "primary-fixed-dim": "#c6c6c7",
+            "inverse-surface": "#e3e2e3",
+            "on-tertiary": "#0e1d90",
+            "plan-green": "#68cc58",
+            "secondary-fixed-dim": "#bdc2ff",
+            "primary-container": "#e2e2e2",
+            "surface-bright": "#38393a",
+            "surface-container-low": "#1b1c1d",
+            "surface-tint": "#c6c6c7",
+            "tertiary-fixed": "#dfe0ff",
+            "on-surface": "#e3e2e3",
+            "ink-muted": "#8a8f98",
+            "canvas": "#08090a",
+            "hairline-bright": "#3e3e44",
+            "tertiary": "#ffffff",
+            "secondary": "#bdc2ff",
+            "on-secondary-fixed-variant": "#2e3aa2",
+            "on-primary-container": "#636565",
+            "surface-container-lowest": "#0d0e0f",
+            "on-error": "#690005",
+            "ink": "#f7f8f8",
+            "surface-dim": "#121315",
+            "ink-body": "#d0d6e0",
+            "surface-variant": "#343536",
+            "hairline-veil": "rgba(255, 255, 255, 0.08)",
+            "overlay-soft": "rgba(255, 255, 255, 0.05)",
+            "security-slate": "#7a7fad",
+            "on-tertiary-fixed-variant": "#2c39a6",
+            "error": "#ffb4ab",
+            "on-secondary": "#121f8b",
+            "hairline": "#23252a",
+            "error-container": "#93000a",
+            "accent-electric": "#7170ff",
+            "primary-fixed": "#e2e2e2",
+            "on-background": "#e3e2e3",
+            "header-veil": "rgba(11, 11, 11, 0.8)",
+            "on-secondary-container": "#a7afff",
+            "hairline-strong": "#34343a",
+            "on-tertiary-fixed": "#000964",
+            "ink-quiet": "#62666d",
+            "background": "#121315",
+            "canvas-deep": "#010102",
+            "primary": "#ffffff",
+            "on-primary-fixed": "#1a1c1c",
+            "accent-tint": "#18182f",
+            "status-success": "#27a644",
+            "on-primary-fixed-variant": "#454747",
+            "inverse-on-surface": "#303032",
+            "surface-high": "#28282c",
+            "status-error": "#eb5757",
+            "surface-raised": "#232326",
+            "on-tertiary-container": "#4c59c6",
+            "surface-container-high": "#292a2b",
+            "on-surface-variant": "#c4c7c8",
+            "outline": "#8e9192",
+            "build-yellow": "#d4b144",
+            "secondary-container": "#2e3aa2",
+            "surface-panel": "#0f1011",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "secondary-fixed": "#dfe0ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.75rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2rem",
+            "space-xs": "0.5rem"
+          },
+          "fontFamily": {
+            "button-label": ["Inter"],
+            "display-xl": ["Inter"],
+            "title-sm": ["Inter"],
+            "caption": ["Inter"],
+            "display-md": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "body-md": ["Inter"],
+            "code-telemetry": ["JetBrains Mono"],
+            "title-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "keyboard-shortcut": ["JetBrains Mono"],
+            "display-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-md": ["Inter"],
+            "display-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "button-label": ["15px", { "lineHeight": "15px", "letterSpacing": "0em", "fontWeight": "510" }],
+            "display-xl": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "title-sm": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "510" }],
+            "display-md": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-xl-mobile": ["36px", { "lineHeight": "42px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "code-telemetry": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-lg": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.012em", "fontWeight": "590" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "keyboard-shortcut": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "display-lg": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.012em", "fontWeight": "510" }],
+            "display-sm": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.022em", "fontWeight": "590" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.022em", "fontWeight": "590" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+      display: inline-block;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-ink-body font-body-md antialiased min-h-screen selection:bg-accent-electric selection:text-primary">
+<!-- TopNavBar (Derived from Shared Components JSON) -->
+<header class="flex justify-between items-center w-full px-6 h-14 sticky top-0 z-50 bg-surface-panel/80 dark:bg-surface-panel/80 backdrop-blur-md border-b border-hairline dark:border-hairline shadow-none">
+<!-- Left Section: Logo & Context -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-lg bg-surface-raised border border-hairline-bright flex items-center justify-center text-accent-electric">
+<span class="material-symbols-outlined text-title-sm" data-icon="waves">waves</span>
+</div>
+<span class="font-title-md text-title-md text-ink dark:text-ink font-semibold tracking-tight">Fathom AI</span>
+</div>
+<div class="h-4 w-px bg-hairline"></div>
+<!-- Workspace Monogram & Selector -->
+<div class="flex items-center gap-2 px-2 py-1 rounded bg-overlay-soft border border-hairline-veil text-ink-muted">
+<span class="w-2 h-2 rounded-full bg-accent-electric"></span>
+<span class="font-body-sm text-body-sm text-ink font-medium">Acme Corp</span>
+<span class="font-caption text-caption text-ink-quiet">• Enterprise Tier</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="unfold_more">unfold_more</span>
+</div>
+<!-- Navigation Links from JSON (Decisions is Active) -->
+<nav class="hidden md:flex items-center gap-1 ml-2">
+<a class="px-3 py-1.5 font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 rounded-lg active:scale-[0.98]" href="#">
+          Meetings
+        </a>
+<a class="px-3 py-1.5 font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 rounded-lg active:scale-[0.98]" href="#">
+          Action Items
+        </a>
+<a class="px-3 py-1.5 font-button-label text-button-label text-ink dark:text-ink font-medium bg-overlay-soft border border-hairline-veil rounded-lg" href="#">
+          Decisions
+        </a>
+<a class="px-3 py-1.5 font-button-label text-button-label text-ink-muted dark:text-ink-muted hover:text-ink dark:hover:text-ink hover:bg-overlay-soft dark:hover:bg-overlay-soft transition-colors duration-150 rounded-lg active:scale-[0.98]" href="#">
+          Settings
+        </a>
+</nav>
+</div>
+<!-- Right Section: Search & Actions -->
+<div class="flex items-center gap-3">
+<!-- Search Bar -->
+<div class="hidden lg:flex items-center bg-surface border border-hairline-strong rounded-lg px-3 py-1.5 w-64 text-ink-muted gap-2 focus-within:border-accent-electric focus-within:ring-1 focus-within:ring-accent-electric transition-all">
+<span class="material-symbols-outlined text-body-sm text-ink-quiet" data-icon="search">search</span>
+<input class="bg-transparent border-0 p-0 text-ink text-body-sm focus:ring-0 w-full placeholder:text-ink-quiet" placeholder="Search truth log..." type="text"/>
+<span class="bg-surface-raised border border-hairline-strong border-t-hairline-bright rounded px-1.5 py-0.5 font-keyboard-shortcut text-keyboard-shortcut text-ink-muted">⌘K</span>
+</div>
+<!-- Icon Actions -->
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" title="Notifications">
+<span class="material-symbols-outlined text-title-sm" data-icon="notifications">notifications</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:text-ink hover:bg-overlay-soft transition-colors duration-150" title="Help &amp; Docs">
+<span class="material-symbols-outlined text-title-sm" data-icon="help">help</span>
+</button>
+<div class="h-4 w-px bg-hairline hidden sm:block"></div>
+<!-- Import Meeting CTA (JSON trailing_primary_action) -->
+<button class="h-8 px-3 rounded-lg bg-primary text-canvas font-button-label text-button-label font-medium hover:opacity-90 active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-body-md" data-icon="add">add</span>
+<span>Import Meeting</span>
+</button>
+<!-- Profile Avatar -->
+<div class="w-8 h-8 rounded-full bg-surface-raised border border-hairline flex items-center justify-center overflow-hidden ml-1 cursor-pointer hover:border-hairline-bright">
+<img class="w-full h-full object-cover" data-alt="A clean, highly realistic profile headshot of a technical team lead in a dark minimalist studio environment. The subject is framed against an architectural graphite background with low subtle edge lighting and soft volumetric fill, maintaining an understated executive style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrFsTMCyEInw9Imcn-cOfFnRxUHKbaRI1y8x6_nWWw2c9U5J9gXiC9rFoW3rbMcCQFOm0P9g4SAT8Fh2CoSa6UnHLCHwnl_-VPWWT8lCWgUmSHxIrsXVqAJfGcTNXs2ShVeu_oDmbwx_jpuHK5QGius37vhBVh8B4Py968EOjioL8329Lv--n4FlQULoo-wDxZ05dvwyGbjEXKZrh4g4UYaJBZ51wJBqQicC8_Yd6I_naGMlNZQ8Ra"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas Container -->
+<main class="max-w-[1200px] mx-auto px-6 py-10 space-y-8">
+<!-- Page Title & Header Block -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-hairline">
+<div class="space-y-2 max-w-2xl">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded-full bg-accent-tint border border-accent-electric/30 text-accent-electric font-caption text-caption uppercase tracking-wider">
+            Verified Records
+          </span>
+<span class="font-code-telemetry text-code-telemetry text-ink-quiet">SYNC_STATUS: LIVE_WEBSOCKET</span>
+</div>
+<h1 class="font-display-md text-display-md text-ink tracking-tight font-semibold">Decisions &amp; Truth Log</h1>
+<p class="font-body-md text-body-md text-ink-muted">
+          An immutable, searchable record of organizational decisions and consensus points synthesized from verified meeting audio.
+        </p>
+</div>
+<!-- High-Density Metric Bar (3 stats) -->
+<div class="grid grid-cols-3 gap-3 bg-surface-panel border border-hairline p-3 rounded-xl min-w-[340px]">
+<div class="px-3 py-1 border-r border-hairline">
+<span class="block font-caption text-caption text-ink-quiet">Total Decisions</span>
+<span class="font-title-lg text-title-lg text-ink font-semibold">14</span>
+</div>
+<div class="px-3 py-1 border-r border-hairline">
+<span class="block font-caption text-caption text-ink-quiet">Unanimous</span>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span class="font-title-lg text-title-lg text-ink font-semibold">12</span>
+<span class="font-caption text-caption text-ink-muted">(86%)</span>
+</div>
+</div>
+<div class="px-3 py-1">
+<span class="block font-caption text-caption text-ink-quiet">Cross-Team</span>
+<span class="font-title-lg text-title-lg text-secondary font-semibold">5 Teams</span>
+</div>
+</div>
+</div>
+<!-- Search, Filter & View Controls -->
+<div class="space-y-3">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+<!-- Main Search Bar -->
+<div class="relative flex-1">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-quiet">
+<span class="material-symbols-outlined text-body-md" data-icon="search">search</span>
+</div>
+<input class="w-full h-10 pl-9 pr-12 bg-surface border border-hairline-strong rounded-lg text-body-md text-ink placeholder:text-ink-quiet focus:border-accent-electric focus:ring-1 focus:ring-accent-electric transition-colors" placeholder="Search decisions, rationale keywords, decision makers, or source meetings..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+<span class="font-keyboard-shortcut text-keyboard-shortcut text-ink-quiet bg-surface-raised px-1.5 py-0.5 rounded border border-hairline-strong">/</span>
+</div>
+</div>
+<!-- Export & View Switchers -->
+<div class="flex items-center gap-2 justify-end">
+<!-- Export Truth Log Dropdown Button -->
+<div class="relative group">
+<button class="h-10 px-3.5 rounded-lg bg-surface border border-hairline-strong text-ink hover:bg-surface-raised active:scale-[0.98] transition-all flex items-center gap-2 font-button-label text-button-label">
+<span class="material-symbols-outlined text-body-sm text-ink-muted" data-icon="ios_share">ios_share</span>
+<span>Export Truth Log</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<!-- View Switcher -->
+<div class="flex items-center p-0.5 bg-surface-panel border border-hairline rounded-lg">
+<button class="px-2.5 py-1.5 rounded bg-surface-raised text-ink border border-hairline-bright shadow-sm flex items-center gap-1.5 font-caption text-caption font-medium" title="Card View">
+<span class="material-symbols-outlined text-body-sm" data-icon="view_agenda">view_agenda</span>
+<span class="hidden sm:inline">Cards</span>
+</button>
+<button class="px-2.5 py-1.5 rounded text-ink-muted hover:text-ink transition-colors flex items-center gap-1.5 font-caption text-caption font-medium" title="Table View">
+<span class="material-symbols-outlined text-body-sm" data-icon="table_rows">table_rows</span>
+<span class="hidden sm:inline">Table</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Filter Pills Sub-bar -->
+<div class="flex flex-wrap items-center gap-2 text-caption">
+<span class="font-code-telemetry text-ink-quiet mr-1">FILTER_BY:</span>
+<!-- Team / Pillar Dropdown Pill -->
+<div class="flex items-center gap-1.5 bg-surface-panel hover:bg-surface-raised border border-hairline hover:border-hairline-strong rounded-lg px-2.5 py-1 cursor-pointer transition-all text-ink-body">
+<span class="text-ink-quiet">Team:</span>
+<span class="font-medium text-ink">All Teams</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<!-- Consensus Type Pill -->
+<div class="flex items-center gap-1.5 bg-surface-panel hover:bg-surface-raised border border-hairline hover:border-hairline-strong rounded-lg px-2.5 py-1 cursor-pointer transition-all text-ink-body">
+<span class="text-ink-quiet">Consensus:</span>
+<span class="font-medium text-ink">All Consensus</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<!-- Date Range Pill -->
+<div class="flex items-center gap-1.5 bg-surface-panel hover:bg-surface-raised border border-hairline hover:border-hairline-strong rounded-lg px-2.5 py-1 cursor-pointer transition-all text-ink-body">
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="calendar_today">calendar_today</span>
+<span class="font-medium text-ink">Last 30 Days</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<!-- Meeting Pill -->
+<div class="flex items-center gap-1.5 bg-surface-panel hover:bg-surface-raised border border-hairline hover:border-hairline-strong rounded-lg px-2.5 py-1 cursor-pointer transition-all text-ink-body">
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="mic">mic</span>
+<span class="font-medium text-ink">All Source Meetings</span>
+<span class="material-symbols-outlined text-caption text-ink-quiet" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<!-- Reset Button -->
+<button class="ml-auto text-ink-quiet hover:text-ink font-caption text-caption flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-caption" data-icon="restart_alt">restart_alt</span>
+<span>Clear filters</span>
+</button>
+</div>
+</div>
+<!-- Decisions Feed / Structured Cards -->
+<div class="space-y-4">
+<!-- Decision 1 -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-5 hover:border-hairline-strong transition-all space-y-4 relative group">
+<!-- Top Metadata Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3.5">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-accent-tint text-security-slate border border-security-slate/20 font-code-telemetry text-caption font-medium">
+              Architecture / Security
+            </span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Unanimous (4/4 participants)</span>
+</div>
+</div>
+<div class="flex items-center gap-3 font-code-telemetry text-code-telemetry text-ink-quiet">
+<span>Today, 10:42 AM</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">LOG_ID: #DEC-8819</span>
+</div>
+</div>
+<!-- Decision Header & Title -->
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-4">
+<h2 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+              Mandate TLS 1.3 encryption across all internal gRPC microservice bridges
+            </h2>
+<button class="text-ink-quiet hover:text-ink p-1 rounded hover:bg-surface-raised transition-colors">
+<span class="material-symbols-outlined text-body-lg" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<!-- Attribution Line -->
+<div class="flex flex-wrap items-center gap-4 text-body-sm text-ink-muted">
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Decision Maker:</span>
+<div class="w-5 h-5 rounded-full bg-surface-raised border border-hairline-bright overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait avatar of Alex Chen, VP of Engineering, with clean professional glasses against a dark industrial gray tech studio backdrop, soft overhead edge illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDARE0IDku2jbcmaNy4aM_JcFzbsqkmBcEw-JOH4vXBlold81CQS36xIxctpALKshgHEKbbYI9VcNBCUm9ZtFbp_aRXnT32hO25X--N6QMWKn44bkCvlnYeLJTTh43pSD-Nyi9dEjke0MiOpz3DyaTQ5q-28jkNM_4Mm4HIJ1LORn0GeLjXcVyt8P9powBGnA3YxWmGL0gKFQnSfXia_SD6hIbOT3AVlxqXL68l-1S4c0BU9tPM2ifX"/>
+</div>
+<span class="text-ink font-medium">Alex Chen (VP Engineering)</span>
+</div>
+<span class="text-hairline">•</span>
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Source:</span>
+<span class="text-ink font-medium">H2 Engineering Roadmap &amp; Tech Debt Review</span>
+<a class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-raised border border-hairline-strong border-t-hairline-bright text-accent-electric font-keyboard-shortcut text-keyboard-shortcut hover:bg-surface-high transition-colors" href="#">
+<span class="material-symbols-outlined text-caption" data-icon="play_arrow">play_arrow</span>
+<span>18:42</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Technical Rationale -->
+<div class="bg-canvas border border-hairline rounded-lg p-3.5 space-y-2">
+<div class="flex items-center justify-between text-caption font-code-telemetry text-ink-quiet">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-caption text-secondary" data-icon="psychology">psychology</span>
+              SYNTHESIZED RATIONALE &amp; SPOKEN CONTEXT
+            </span>
+<span>CONFIDENCE: 99.4%</span>
+</div>
+<p class="font-body-md text-body-md text-ink-body">
+            Eliminates plaintext packet inspection risks within internal VPC mesh. While it introduces a negligible 1.2ms TLS handshake overhead on initial connection pools, persistent HTTP/2 multiplexing mitigates ongoing request latency.
+          </p>
+</div>
+<!-- Spoken Quote Verification Callout -->
+<div class="border-l-2 border-accent-electric bg-accent-tint/30 px-3.5 py-2.5 rounded-r-lg space-y-1">
+<div class="flex items-center gap-2 font-caption text-caption text-accent-electric">
+<span class="material-symbols-outlined text-caption" data-icon="format_quote">format_quote</span>
+<span class="font-medium">Verifiable Audio Excerpt</span>
+</div>
+<blockquote class="font-body-sm text-body-sm text-ink italic">
+            "We cannot compromise on zero-trust microservice transport. Every internal edge must enforce TLS 1.3 before SOC-2 recertification."
+          </blockquote>
+</div>
+<!-- Footer / Linked Items -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-hairline text-caption text-ink-muted">
+<span class="material-symbols-outlined text-caption text-build-yellow" data-icon="check_circle">check_circle</span>
+<span>2 linked action items</span>
+</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-hairline text-caption text-ink-muted">
+<span class="material-symbols-outlined text-caption text-security-slate" data-icon="shield">shield</span>
+<span>SOC-2 Compliance Item</span>
+</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 text-button-label text-ink-muted hover:text-ink hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="share">share</span>
+<span>Permalink</span>
+</button>
+<button class="px-2.5 py-1 text-button-label text-ink hover:text-primary hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="open_in_new">open_in_new</span>
+<span>Open in Meeting</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Decision 2 -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-5 hover:border-hairline-strong transition-all space-y-4">
+<!-- Top Metadata Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3.5">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-surface-raised text-ink-body border border-hairline-bright font-code-telemetry text-caption font-medium">
+              Product / Ops
+            </span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Consensus (3/3)</span>
+</div>
+</div>
+<div class="flex items-center gap-3 font-code-telemetry text-code-telemetry text-ink-quiet">
+<span>Yesterday, 3:15 PM</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">LOG_ID: #DEC-8818</span>
+</div>
+</div>
+<!-- Decision Header & Title -->
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-4">
+<h2 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+              Freeze user onboarding batch during database indexing window (Nov 2)
+            </h2>
+<button class="text-ink-quiet hover:text-ink p-1 rounded hover:bg-surface-raised transition-colors">
+<span class="material-symbols-outlined text-body-lg" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<!-- Attribution Line -->
+<div class="flex flex-wrap items-center gap-4 text-body-sm text-ink-muted">
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Decision Maker:</span>
+<span class="text-ink font-medium">Marcus B. (Staff Engineer) &amp; Elena V. (Lead)</span>
+</div>
+<span class="text-hairline">•</span>
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Source:</span>
+<span class="text-ink font-medium">Customer Onboarding: Stripe Integration Deep-dive</span>
+<a class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-raised border border-hairline-strong border-t-hairline-bright text-accent-electric font-keyboard-shortcut text-keyboard-shortcut hover:bg-surface-high transition-colors" href="#">
+<span class="material-symbols-outlined text-caption" data-icon="play_arrow">play_arrow</span>
+<span>24:10</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Technical Rationale -->
+<div class="bg-canvas border border-hairline rounded-lg p-3.5 space-y-1.5">
+<div class="text-caption font-code-telemetry text-ink-quiet">RATIONALE &amp; SPOKEN CONTEXT</div>
+<p class="font-body-md text-body-md text-ink-body">
+            Prevents database write deadlocks and thread pool starvation during the secondary partition indexing phase. Batch jobs will queue for 45 minutes with automatic customer notification.
+          </p>
+</div>
+<!-- Footer / Linked Items -->
+<div class="flex items-center justify-between pt-1">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-hairline text-caption text-ink-muted">
+<span class="material-symbols-outlined text-caption text-build-yellow" data-icon="check_circle">check_circle</span>
+<span>1 linked action item</span>
+</span>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 text-button-label text-ink hover:text-primary hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="open_in_new">open_in_new</span>
+<span>Open in Meeting</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Decision 3 -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-5 hover:border-hairline-strong transition-all space-y-4">
+<!-- Top Metadata Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3.5">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-accent-tint text-secondary border border-secondary/20 font-code-telemetry text-caption font-medium">
+              Infrastructure
+            </span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Unanimous (6/6)</span>
+</div>
+</div>
+<div class="flex items-center gap-3 font-code-telemetry text-code-telemetry text-ink-quiet">
+<span>Oct 22, 11:30 AM</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">LOG_ID: #DEC-8815</span>
+</div>
+</div>
+<!-- Decision Header & Title -->
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-4">
+<h2 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+              Decouple semantic transcript search tier from primary PostgreSQL cluster
+            </h2>
+<button class="text-ink-quiet hover:text-ink p-1 rounded hover:bg-surface-raised transition-colors">
+<span class="material-symbols-outlined text-body-lg" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<!-- Attribution Line -->
+<div class="flex flex-wrap items-center gap-4 text-body-sm text-ink-muted">
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Decision Maker:</span>
+<div class="w-5 h-5 rounded-full bg-surface-raised border border-hairline-bright overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait headshot of Maya Patel, Lead Architect, in an ultraminimalist dark tech workspace with subtle cool purple rim lighting and architectural graphite background framing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5y4B7Xu9PqoM4-tIJL0s2X4lhAnXjBNbILJI2JFJh39L25vqCOGNM-Iza5DPkIpZlEQuTnujF4Ow836-fzIktfb1QOipePXIAEoL2vi2P8WnU_kWrX482ZizDMY1DgIQH6AL6U4lIJPztsSsJTjWWCo2XMZoHD7BhPDKwm96oRljh7SuQj0d82WPTpnJtjLSOX7RUuAByQV3vhFjNOM602XAPN-BBDdiq6J9HB9Fzad73VVkPsZbq"/>
+</div>
+<span class="text-ink font-medium">Maya Patel (Lead Architect)</span>
+</div>
+<span class="text-hairline">•</span>
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Source:</span>
+<span class="text-ink font-medium">Product Strategy &amp; Roadmap H2</span>
+<a class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-raised border border-hairline-strong border-t-hairline-bright text-accent-electric font-keyboard-shortcut text-keyboard-shortcut hover:bg-surface-high transition-colors" href="#">
+<span class="material-symbols-outlined text-caption" data-icon="play_arrow">play_arrow</span>
+<span>14:32</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Technical Rationale -->
+<div class="bg-canvas border border-hairline rounded-lg p-3.5 space-y-1.5">
+<div class="text-caption font-code-telemetry text-ink-quiet">RATIONALE &amp; ARCHITECTURAL TARGET</div>
+<p class="font-body-md text-body-md text-ink-body">
+            Offload 1536-dimensional vector embedding lookups to dedicated worker nodes using Qdrant/Milvus to ensure transactional database P99 query latency remains under 48ms during peak traffic.
+          </p>
+</div>
+<!-- Impact Telemetry Pill -->
+<div class="flex items-center gap-3 text-caption font-code-telemetry bg-surface border border-hairline px-3 py-2 rounded-lg">
+<span class="text-ink-quiet">PERF_IMPACT:</span>
+<span class="text-plan-green font-medium">Projected P99 query drop: 420ms → 48ms</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">Primary CPU headroom: +38%</span>
+</div>
+<!-- Footer -->
+<div class="flex items-center justify-end pt-1">
+<button class="px-2.5 py-1 text-button-label text-ink hover:text-primary hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="open_in_new">open_in_new</span>
+<span>Open in Meeting</span>
+</button>
+</div>
+</article>
+<!-- Decision 4 -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-5 hover:border-hairline-strong transition-all space-y-4">
+<!-- Top Metadata Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3.5">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-surface-raised text-ink-body border border-hairline-bright font-code-telemetry text-caption font-medium">
+              Design Systems
+            </span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-plan-green/10 border border-plan-green/20 text-plan-green font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-plan-green"></span>
+<span>Consensus (5/5)</span>
+</div>
+</div>
+<div class="flex items-center gap-3 font-code-telemetry text-code-telemetry text-ink-quiet">
+<span>Oct 20, 2:15 PM</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">LOG_ID: #DEC-8812</span>
+</div>
+</div>
+<!-- Decision Header & Title -->
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-4">
+<h2 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+              Adopt zero-radius keycap token system for global desktop shortcuts
+            </h2>
+<button class="text-ink-quiet hover:text-ink p-1 rounded hover:bg-surface-raised transition-colors">
+<span class="material-symbols-outlined text-body-lg" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<!-- Attribution Line -->
+<div class="flex flex-wrap items-center gap-4 text-body-sm text-ink-muted">
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Decision Maker:</span>
+<span class="text-ink font-medium">Maya Patel &amp; Elena V.</span>
+</div>
+<span class="text-hairline">•</span>
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Source:</span>
+<span class="text-ink font-medium">Weekly Product &amp; Design Sync</span>
+<a class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-raised border border-hairline-strong border-t-hairline-bright text-accent-electric font-keyboard-shortcut text-keyboard-shortcut hover:bg-surface-high transition-colors" href="#">
+<span class="material-symbols-outlined text-caption" data-icon="play_arrow">play_arrow</span>
+<span>34:05</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Technical Rationale -->
+<div class="bg-canvas border border-hairline rounded-lg p-3.5 space-y-1.5">
+<div class="text-caption font-code-telemetry text-ink-quiet">RATIONALE &amp; SPOKEN CONTEXT</div>
+<p class="font-body-md text-body-md text-ink-body">
+            Aligns desktop web shortcut indicators with the Linear-inspired dark graphite token hierarchy, consolidating keyboard key aesthetics into standardized 4px/zero-radius chips.
+          </p>
+</div>
+<!-- Footer -->
+<div class="flex items-center justify-end pt-1">
+<button class="px-2.5 py-1 text-button-label text-ink hover:text-primary hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="open_in_new">open_in_new</span>
+<span>Open in Meeting</span>
+</button>
+</div>
+</article>
+<!-- Decision 5 -->
+<article class="bg-surface-panel border border-hairline rounded-xl p-5 hover:border-hairline-strong transition-all space-y-4">
+<!-- Top Metadata Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-3.5">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-accent-tint text-security-slate border border-security-slate/20 font-code-telemetry text-caption font-medium">
+              Executive / Compliance
+            </span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Executive Directive</span>
+</div>
+</div>
+<div class="flex items-center gap-3 font-code-telemetry text-code-telemetry text-ink-quiet">
+<span>Oct 18, 9:45 AM</span>
+<span class="text-hairline">•</span>
+<span class="text-ink-muted">LOG_ID: #DEC-8809</span>
+</div>
+</div>
+<!-- Decision Header & Title -->
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-4">
+<h2 class="font-title-lg text-title-lg text-ink font-semibold tracking-tight">
+              Standardize on BYOK (Bring Your Own Key) zero-data-retention AI policy for enterprise tier
+            </h2>
+<button class="text-ink-quiet hover:text-ink p-1 rounded hover:bg-surface-raised transition-colors">
+<span class="material-symbols-outlined text-body-lg" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<!-- Attribution Line -->
+<div class="flex flex-wrap items-center gap-4 text-body-sm text-ink-muted">
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Decision Maker:</span>
+<div class="w-5 h-5 rounded-full bg-surface-raised border border-hairline-bright overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up modern business executive portrait with dark suit in a sophisticated high-contrast studio setting, subtle geometric graphite background reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8l5IJOIvKP2EYqZhmPWSOr2qkoar-vsfI0KDZEF4rr4Jxpdp85XwKFw6TOd9veIgkY7QLQz0nxYol8B51RglKYAKTvENPd3vZAjfZ7aKqamHr7oMQ0nq4yMbb-LQCUlchOA0iqrDKlilekTLlOOQ5QAr6usTbTraCYfBcvv8D__XolhYJsxf8gFmyhLUSFd7c1LzpKHj5xjAZLaWoLvkJQk8KUWtj2YrKUdrDHjigRdXxgM9FChzs"/>
+</div>
+<span class="text-ink font-medium">Alex Chen (VP Engineering)</span>
+</div>
+<span class="text-hairline">•</span>
+<div class="flex items-center gap-2">
+<span class="text-ink-quiet">Source:</span>
+<span class="text-ink font-medium">Executive Staff Sync: Q3 Revenue &amp; Compliance</span>
+<a class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-raised border border-hairline-strong border-t-hairline-bright text-accent-electric font-keyboard-shortcut text-keyboard-shortcut hover:bg-surface-high transition-colors" href="#">
+<span class="material-symbols-outlined text-caption" data-icon="play_arrow">play_arrow</span>
+<span>12:15</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Technical Rationale -->
+<div class="bg-canvas border border-hairline rounded-lg p-3.5 space-y-1.5">
+<div class="text-caption font-code-telemetry text-ink-quiet">GOVERNANCE RATIONALE</div>
+<p class="font-body-md text-body-md text-ink-body">
+            Customer enterprise contracts require strict zero data retention guarantees from third-party LLM providers. Enabling client-side API key configuration satisfies Fortune 500 security standards.
+          </p>
+</div>
+<!-- Footer -->
+<div class="flex items-center justify-between pt-1">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-hairline text-caption text-ink-muted">
+<span class="material-symbols-outlined text-caption text-secondary" data-icon="verified_user">verified_user</span>
+<span>Legal Sign-off Completed</span>
+</span>
+<button class="px-2.5 py-1 text-button-label text-ink hover:text-primary hover:bg-overlay-soft rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm" data-icon="open_in_new">open_in_new</span>
+<span>Open in Meeting</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Empty State / Filter Guidance Footnote Callout -->
+<div class="bg-surface-panel/40 border border-hairline rounded-xl p-5 flex items-start gap-4 text-body-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-raised border border-hairline flex items-center justify-center text-accent-electric shrink-0">
+<span class="material-symbols-outlined text-title-sm" data-icon="info">info</span>
+</div>
+<div class="space-y-1">
+<h4 class="text-ink font-medium">Automated Truth Extraction</h4>
+<p class="text-ink-muted">
+          Decisions are automatically logged when natural language consensus or explicit agreements are detected in transcript audio. You can also manually tag any transcript excerpt as a Decision.
+        </p>
+</div>
+<button class="ml-auto shrink-0 px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-raised border border-hairline-strong text-caption text-ink font-medium transition-all">
+        Detection Rules
+      </button>
+</div>
+</main>
+<!-- Footer (Derived from Shared Components JSON) -->
+<footer class="w-full bg-canvas-deep dark:bg-canvas-deep border-t border-hairline dark:border-hairline shadow-none mt-20">
+<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<span class="font-title-sm text-title-sm text-ink dark:text-ink font-semibold">Fathom AI</span>
+<span class="hidden sm:inline text-hairline">|</span>
+<span class="font-body-sm text-body-sm text-ink-body dark:text-ink-body">
+          © 2025 Fathom AI Systems Inc. Engineered for high-density analysis.
+        </span>
+</div>
+<!-- Links from JSON -->
+<nav class="flex flex-wrap items-center justify-center gap-6 font-body-sm text-body-sm">
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#">Security</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150 flex items-center gap-1.5" href="#">
+<span class="w-2 h-2 rounded-full bg-plan-green"></span>
+<span>Status: Systems Operational</span>
+</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#">Documentation</a>
+<a class="text-ink-quiet dark:text-ink-quiet hover:text-ink-body dark:hover:text-ink-body transition-colors duration-150" href="#">API</a>
+</nav>
+</div>
+</footer>
+</body></html>

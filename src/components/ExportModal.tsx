@@ -20,7 +20,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, meeti
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
-  // Generate payload according to activeTab
   const generatePayload = (): string => {
     if (activeTab === 'transcript') {
       let text = `# Transcript: ${meeting.title}\n`;
@@ -85,7 +84,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, meeti
       return text;
     }
 
-    // Default: Full Markdown with deep-link timestamps
+    // Default: Full Markdown
     let md = `# ${meeting.title}\n\n`;
     md += `**Date**: ${meeting.date} | **Duration**: ${meeting.durationMinutes} min\n`;
     md += `**Participants**: ${meeting.participants.map((p) => p.name).join(', ')}\n\n`;
@@ -163,111 +162,118 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, meeti
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-      <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(1, 1, 2, 0.75)', backdropFilter: 'blur(8px)' }}
+    >
+      <div
+        className="w-full max-w-2xl rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+        style={{ background: '#0f1011', borderColor: '#23252a' }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:px-6 border-b border-slate-100 bg-slate-50/50">
+        <div
+          className="flex items-center justify-between p-4 sm:px-6 border-b"
+          style={{ background: '#141516', borderColor: '#23252a' }}
+        >
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+            <div
+              className="w-8 h-8 rounded-lg border flex items-center justify-center"
+              style={{ background: '#18182f', borderColor: 'rgba(113,112,255,0.3)', color: '#828fff' }}
+            >
               <Download className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Export Meeting Intelligence</h2>
-              <p className="text-[11px] text-slate-500">Copy or download meeting notes, deep links, and transcripts</p>
+              <h2 className="text-sm font-semibold" style={{ color: '#f7f8f8' }}>Export Meeting Intelligence</h2>
+              <p className="text-[11px]" style={{ color: '#8a8f98' }}>Copy or download meeting notes, deep links, and transcripts</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg transition-colors"
+            style={{ color: '#62666d' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#f7f8f8')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#62666d')}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab selector */}
-        <div className="flex items-center gap-1.5 px-6 pt-4 border-b border-slate-100 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('full')}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'full'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Executive Report</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('actionItems')}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'actionItems'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <ListFilter className="w-3.5 h-3.5" />
-            <span>Action Items</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('review')}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'review'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>AI Risk Review</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('transcript')}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'transcript'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Full Transcript</span>
-          </button>
+        <div className="flex items-center gap-1.5 px-6 pt-4 border-b overflow-x-auto" style={{ borderColor: '#23252a' }}>
+          {[
+            { id: 'full', label: 'Executive Report', icon: Sparkles },
+            { id: 'actionItems', label: 'Action Items', icon: ListFilter },
+            { id: 'review', label: 'AI Risk Review', icon: ShieldAlert },
+            { id: 'transcript', label: 'Full Transcript', icon: FileText },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isSelected = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ExportType)}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors shrink-0"
+                style={{
+                  borderBottomColor: isSelected ? '#7170ff' : 'transparent',
+                  color: isSelected ? '#f7f8f8' : '#8a8f98',
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" style={{ color: isSelected ? '#7170ff' : '#8a8f98' }} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Preview content */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-50/50">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 font-mono text-xs text-slate-700 leading-relaxed whitespace-pre-wrap max-h-72 overflow-y-auto shadow-2xs">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1" style={{ background: '#08090a' }}>
+          <div
+            className="rounded-xl border p-4 text-xs leading-relaxed whitespace-pre-wrap max-h-72 overflow-y-auto"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              background: '#141516',
+              borderColor: '#23252a',
+              color: '#d0d6e0',
+            }}
+          >
             {payload}
           </div>
         </div>
 
         {/* Footer controls */}
-        <div className="p-4 sm:px-6 border-t border-slate-100 bg-white flex items-center justify-between gap-3 flex-wrap">
+        <div
+          className="p-4 sm:px-6 border-t flex items-center justify-between gap-3 flex-wrap"
+          style={{ background: '#0f1011', borderColor: '#23252a' }}
+        >
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleDownload('md')}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer"
+              style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#d0d6e0' }}
             >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <Download className="w-3.5 h-3.5" style={{ color: '#8a8f98' }} />
               <span>Download .md</span>
             </button>
             <button
               onClick={() => handleDownload('txt')}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer"
+              style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#d0d6e0' }}
             >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <Download className="w-3.5 h-3.5" style={{ color: '#8a8f98' }} />
               <span>Download .txt</span>
             </button>
           </div>
 
           <button
             onClick={handleCopy}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              copied
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs'
-            }`}
+            className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-90 cursor-pointer"
+            style={{
+              background: copied ? '#27a644' : '#ffffff',
+              color: copied ? '#ffffff' : '#08090a',
+            }}
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? 'Copied to Clipboard!' : 'Copy to Clipboard'}</span>
+            <span>{copied ? 'Copied!' : 'Copy to Clipboard'}</span>
           </button>
         </div>
       </div>

@@ -17,7 +17,6 @@ import {
   ShieldAlert,
   CheckSquare,
   Scale,
-  Highlighter,
   ArrowRight,
   RefreshCw,
   FolderOpen,
@@ -30,6 +29,14 @@ interface ImportMeetingModalProps {
 }
 
 type TabMode = 'upload' | 'paste' | 'samples';
+
+const TEMPLATE_ACCENT: Record<string, string> = {
+  general:   '#7170ff',
+  one_on_one:'#bdc2ff',
+  sales:     '#68cc58',
+  interview: '#7a7fad',
+  project:   '#d4b144',
+};
 
 export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
   isOpen,
@@ -122,7 +129,6 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
         sampleData = await import('@/../demo/meeting-3.json');
       }
 
-      // If module loader exports default
       const jsonContent = (sampleData as { default?: unknown }).default || sampleData;
       const str = JSON.stringify(jsonContent, null, 2);
       validateAndSetJson(str, `meeting-${sampleNum}.json (${sampleTitle})`);
@@ -170,52 +176,71 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
   };
 
   const tpl = parsedMeeting ? getTemplateDefinition(parsedMeeting.template) : null;
+  const accent = parsedMeeting ? (TEMPLATE_ACCENT[parsedMeeting.template || 'general'] || '#7170ff') : '#7170ff';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(1, 1, 2, 0.75)', backdropFilter: 'blur(8px)' }}
+    >
+      <div
+        className="w-full max-w-2xl rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        style={{ background: '#0f1011', borderColor: '#23252a' }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:px-6 border-b border-slate-100 bg-slate-50/60">
+        <div
+          className="flex items-center justify-between p-4 sm:px-6 border-b"
+          style={{ background: '#141516', borderColor: '#23252a' }}
+        >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+            <div
+              className="w-8 h-8 rounded-lg border flex items-center justify-center"
+              style={{ background: '#18182f', borderColor: 'rgba(113,112,255,0.3)', color: '#828fff' }}
+            >
               <Upload className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Import Meeting JSON</h2>
-              <p className="text-[11px] text-slate-500">
-                Upload your meeting transcripts, summaries, action items, and AI reviews
+              <h2 className="text-sm font-semibold" style={{ color: '#f7f8f8' }}>Import Meeting JSON</h2>
+              <p className="text-[11px]" style={{ color: '#8a8f98' }}>
+                Upload transcripts, summaries, action items, and AI reviews
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg transition-colors"
+            style={{ color: '#62666d' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#f7f8f8')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#62666d')}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab selection */}
-        <div className="flex items-center justify-between px-6 pt-3 border-b border-slate-100 bg-white">
+        <div
+          className="flex items-center justify-between px-6 pt-3 border-b"
+          style={{ background: '#0f1011', borderColor: '#23252a' }}
+        >
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('upload')}
-              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-                activeTab === 'upload'
-                  ? 'border-indigo-600 text-indigo-700'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-              }`}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors"
+              style={{
+                borderBottomColor: activeTab === 'upload' ? '#7170ff' : 'transparent',
+                color: activeTab === 'upload' ? '#f7f8f8' : '#8a8f98',
+              }}
             >
               <FileJson className="w-3.5 h-3.5" />
               <span>Upload File</span>
             </button>
             <button
               onClick={() => setActiveTab('paste')}
-              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${
-                activeTab === 'paste'
-                  ? 'border-indigo-600 text-indigo-700'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-              }`}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold border-b-2 transition-colors"
+              style={{
+                borderBottomColor: activeTab === 'paste' ? '#7170ff' : 'transparent',
+                color: activeTab === 'paste' ? '#f7f8f8' : '#8a8f98',
+              }}
             >
               <FileCode className="w-3.5 h-3.5" />
               <span>Paste JSON</span>
@@ -224,26 +249,32 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
 
           {/* Quick Demo Pre-fills */}
           <div className="flex items-center gap-1.5 pb-1">
-            <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400">
-              Demo Files:
+            <span
+              className="text-[10px] uppercase tracking-wider font-semibold"
+              style={{ color: '#62666d', letterSpacing: '0.06em' }}
+            >
+              Demo:
             </span>
             <button
               onClick={() => handleLoadSample(1)}
-              className="px-2 py-0.5 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-semibold border border-indigo-200 transition-colors"
+              className="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors"
+              style={{ background: '#18182f', color: '#828fff', borderColor: 'rgba(113,112,255,0.3)' }}
               title="Load Strategy Demo"
             >
               Strategy
             </button>
             <button
               onClick={() => handleLoadSample(2)}
-              className="px-2 py-0.5 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-700 text-[10px] font-semibold border border-amber-200 transition-colors"
+              className="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors"
+              style={{ background: 'rgba(104,204,88,0.1)', color: '#68cc58', borderColor: 'rgba(104,204,88,0.3)' }}
               title="Load Sales Demo"
             >
               Sales
             </button>
             <button
               onClick={() => handleLoadSample(3)}
-              className="px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[10px] font-semibold border border-emerald-200 transition-colors"
+              className="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors"
+              style={{ background: 'rgba(212,177,68,0.1)', color: '#d4b144', borderColor: 'rgba(212,177,68,0.3)' }}
               title="Load Eng Sync Demo"
             >
               Eng Sync
@@ -263,11 +294,11 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
-                  isDragging
-                    ? 'border-indigo-500 bg-indigo-50/50 scale-101'
-                    : 'border-slate-300 hover:border-indigo-400 bg-slate-50/50 hover:bg-slate-50'
-                }`}
+                className="border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all"
+                style={{
+                  background: isDragging ? 'rgba(113,112,255,0.06)' : '#141516',
+                  borderColor: isDragging ? '#7170ff' : '#23252a',
+                }}
               >
                 <input
                   ref={fileInputRef}
@@ -276,43 +307,57 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-indigo-600 mx-auto mb-3">
+                <div
+                  className="w-12 h-12 rounded-xl border flex items-center justify-center mx-auto mb-3"
+                  style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#7170ff' }}
+                >
                   <FolderOpen className="w-6 h-6" />
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-slate-800 mb-1">
+                <p className="text-xs sm:text-sm font-semibold mb-1" style={{ color: '#f7f8f8' }}>
                   {fileName ? (
-                    <span className="text-indigo-600 font-bold">{fileName}</span>
+                    <span style={{ color: '#828fff' }}>{fileName}</span>
                   ) : (
                     'Click to select or drag and drop a meeting JSON file'
                   )}
                 </p>
-                <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
+                <p className="text-[11px] max-w-xs mx-auto" style={{ color: '#8a8f98' }}>
                   Supports full meeting objects with transcripts, AI summaries, and reviews.
                 </p>
               </div>
             </div>
           ) : (
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700">Raw Meeting JSON</label>
+              <label className="block text-xs font-medium" style={{ color: '#8a8f98' }}>Raw Meeting JSON</label>
               <textarea
                 rows={9}
                 value={jsonText}
                 onChange={(e) => validateAndSetJson(e.target.value)}
                 placeholder={`{\n  "title": "Weekly Strategy Sync",\n  "date": "Oct 28, 2026",\n  "durationMinutes": 30,\n  "participants": [{ "name": "Sarah Chen" }],\n  "transcript": [{ "speaker": "Sarah Chen", "timestamp": "00:00", "text": "Hello team." }]\n}`}
-                className="w-full font-mono text-xs p-3.5 bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                className="w-full text-xs p-3.5 rounded-xl border focus:outline-none transition-colors"
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  background: '#08090a',
+                  borderColor: '#23252a',
+                  color: '#f7f8f8',
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
+                onBlur={(e) => (e.currentTarget.style.borderColor = '#23252a')}
               />
             </div>
           )}
 
           {/* Validation Error Banner */}
           {validationError && (
-            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1.5 animate-in fade-in duration-150">
+            <div
+              className="p-3.5 rounded-xl border space-y-1.5"
+              style={{ background: 'rgba(235,87,87,0.08)', borderColor: 'rgba(235,87,87,0.3)', color: '#eb5757' }}
+            >
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 <span className="text-xs font-semibold">{validationError}</span>
               </div>
               {validationDetails.length > 0 && (
-                <ul className="text-[11px] text-rose-700 list-disc list-inside space-y-0.5 pl-2 font-mono">
+                <ul className="text-[11px] list-disc list-inside space-y-0.5 pl-2 font-mono" style={{ color: '#eb5757' }}>
                   {validationDetails.map((det, i) => (
                     <li key={i}>{det}</li>
                   ))}
@@ -323,20 +368,29 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
 
           {/* Validated Meeting Preview Card */}
           {parsedMeeting && tpl && (
-            <div className="bg-emerald-50/50 border border-emerald-200 rounded-2xl p-4.5 space-y-3.5 animate-in fade-in duration-200 shadow-2xs">
-              <div className="flex items-center justify-between gap-2 border-b border-emerald-100 pb-2.5">
+            <div
+              className="rounded-xl p-4 space-y-3 border"
+              style={{ background: '#141516', borderColor: 'rgba(104,204,88,0.3)' }}
+            >
+              <div className="flex items-center justify-between gap-2 border-b pb-2.5" style={{ borderColor: '#23252a' }}>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span className="text-xs font-bold text-emerald-950">Valid Meeting Schema Ready</span>
+                  <CheckCircle2 className="w-4 h-4" style={{ color: '#68cc58' }} />
+                  <span className="text-xs font-semibold" style={{ color: '#68cc58' }}>Valid Meeting Schema Ready</span>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${tpl.bgLight} ${tpl.color} ${tpl.borderLight}`}>
+                <span
+                  className="text-[10px] font-medium px-2 py-0.5 rounded border"
+                  style={{ background: `${accent}15`, color: accent, borderColor: `${accent}30` }}
+                >
                   {tpl.badge}
                 </span>
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-slate-900 leading-snug">{parsedMeeting.title}</h3>
-                <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-500">
+                <h3 className="text-sm font-semibold leading-snug" style={{ color: '#f7f8f8' }}>{parsedMeeting.title}</h3>
+                <div
+                  className="flex flex-wrap items-center gap-3 mt-1.5 text-xs"
+                  style={{ color: '#8a8f98', fontFamily: "'JetBrains Mono', monospace" }}
+                >
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" />
                     {parsedMeeting.date}
@@ -349,43 +403,55 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
                     <Users className="w-3.5 h-3.5" />
                     {parsedMeeting.participants.length} participants
                   </span>
-                  <span className="text-slate-600 font-medium">
-                    {parsedMeeting.transcript.length} transcript turns
+                  <span style={{ color: '#828fff' }}>
+                    {parsedMeeting.transcript.length} turns
                   </span>
                 </div>
               </div>
 
               {/* Badges preview row */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-emerald-100/60">
+              <div className="flex flex-wrap items-center gap-2 pt-1 border-t" style={{ borderColor: '#23252a' }}>
                 {parsedMeeting.analysis ? (
                   <>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">
+                    <span
+                      className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded border"
+                      style={{ background: '#18182f', color: '#828fff', borderColor: 'rgba(113,112,255,0.2)' }}
+                    >
                       <Sparkles className="w-2.5 h-2.5" />
                       Executive Summary Included
                     </span>
-                    {parsedMeeting.analysis.actionItems?.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    {parsedMeeting.analysis.actionItems && parsedMeeting.analysis.actionItems.length > 0 && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded border"
+                        style={{ background: 'rgba(104,204,88,0.1)', color: '#68cc58', borderColor: 'rgba(104,204,88,0.2)' }}
+                      >
                         <CheckSquare className="w-2.5 h-2.5" />
                         {parsedMeeting.analysis.actionItems.length} Action Items
                       </span>
                     )}
-                    {parsedMeeting.analysis.decisions?.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                    {parsedMeeting.analysis.decisions && parsedMeeting.analysis.decisions.length > 0 && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded border"
+                        style={{ background: 'rgba(212,177,68,0.1)', color: '#d4b144', borderColor: 'rgba(212,177,68,0.2)' }}
+                      >
                         <Scale className="w-2.5 h-2.5" />
                         {parsedMeeting.analysis.decisions.length} Decisions
                       </span>
                     )}
                   </>
                 ) : (
-                  <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: '#1c1c1f', color: '#8a8f98' }}>
                     No Analysis (Can be generated later)
                   </span>
                 )}
 
                 {parsedMeeting.review && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">
+                  <span
+                    className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded border"
+                    style={{ background: '#18182f', color: '#828fff', borderColor: 'rgba(113,112,255,0.2)' }}
+                  >
                     <ShieldAlert className="w-2.5 h-2.5" />
-                    AI Review (Score: {parsedMeeting.review.overallScore}/100)
+                    AI Review ({parsedMeeting.review.overallScore}/100)
                   </span>
                 )}
               </div>
@@ -394,21 +460,28 @@ export const ImportMeetingModal: React.FC<ImportMeetingModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:px-6 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
-          <p className="text-[11px] text-slate-400">
-            {parsedMeeting ? 'Click confirm to save to your Neon database.' : 'Upload or paste a JSON file to preview.'}
+        <div
+          className="p-4 sm:px-6 border-t flex items-center justify-between gap-3"
+          style={{ background: '#141516', borderColor: '#23252a' }}
+        >
+          <p className="text-[11px]" style={{ color: '#62666d' }}>
+            {parsedMeeting ? 'Click confirm to save to your database.' : 'Upload or paste a JSON file to preview.'}
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-200/60 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors"
+              style={{ color: '#8a8f98' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#f7f8f8')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#8a8f98')}
             >
               Cancel
             </button>
             <button
               onClick={handleImportSubmit}
               disabled={!parsedMeeting || isSubmitting}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-50 cursor-pointer"
+              style={{ background: '#ffffff', color: '#08090a' }}
             >
               {isSubmitting ? (
                 <>
