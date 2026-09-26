@@ -1,0 +1,21 @@
+{
+  "agent-capture": {
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "/home/shamveelkhan/Documents/Codes/Fathom-AI-clone/scripts/capture-agent.sh",
+        "timeout": 10
+      }
+    ]
+  },
+  "agent-capture-stop": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "/home/shamveelkhan/Documents/Codes/Fathom-AI-clone/scripts/capture-agent.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}
+
