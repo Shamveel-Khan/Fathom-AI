@@ -7,8 +7,10 @@ import { AppNav } from '@/components/AppNav';
 import { MeetingCard } from '@/components/MeetingCard';
 import { MeetingSummary } from '@/lib/schemas/meeting';
 import { DashboardSkeleton } from '@/components/Skeletons';
+import { ImportMeetingModal } from '@/components/ImportMeetingModal';
 import { MEETING_TEMPLATES } from '@/lib/templates/definitions';
-import { Search, Sparkles, Video, CheckSquare, ShieldAlert, LayoutTemplate, Filter } from 'lucide-react';
+import { Search, Sparkles, Video, CheckSquare, ShieldAlert, LayoutTemplate, Filter, Upload, Plus, CheckCircle2, ArrowRight, X } from 'lucide-react';
+import Link from 'next/link';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
@@ -22,6 +24,8 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dashboardFilter, setDashboardFilter] = useState<'all' | 'mine' | 'shared'>('all');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importedNotice, setImportedNotice] = useState<{ id: string; title: string } | null>(null);
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [model, setModel] = useState('gpt-4o-mini');
@@ -58,6 +62,14 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user) fetchMeetings();
   }, [user, fetchMeetings]);
+
+  const handleImportSuccess = (newMeeting: unknown) => {
+    const m = newMeeting as { id?: string; title?: string };
+    if (m?.id && m?.title) {
+      setImportedNotice({ id: m.id, title: m.title });
+    }
+    fetchMeetings();
+  };
 
   const handleSaveApiKey = (key: string, newBaseUrl?: string, newModel?: string) => {
     setApiKey(key);
@@ -107,7 +119,7 @@ export default function DashboardPage() {
         <DashboardSkeleton />
       ) : (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Greeting */}
+          {/* Greeting & Actions */}
           <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 mb-0.5">
@@ -115,7 +127,45 @@ export default function DashboardPage() {
               </h1>
               <p className="text-sm text-slate-500">Your executive meeting intelligence workspace.</p>
             </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-all hover:shadow-indigo-200 hover:shadow-md cursor-pointer"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Import Meeting</span>
+              </button>
+            </div>
           </div>
+
+          {/* Import Success Banner */}
+          {importedNotice && (
+            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3 text-emerald-950 animate-in fade-in duration-200 shadow-2xs">
+              <div className="flex items-center gap-3 min-w-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <div className="truncate">
+                  <p className="text-xs font-bold">Meeting successfully imported!</p>
+                  <p className="text-xs text-emerald-800 truncate">{importedNotice.title}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Link
+                  href={`/meetings/${importedNotice.id}`}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-white border border-emerald-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors"
+                >
+                  <span>Open Meeting</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  onClick={() => setImportedNotice(null)}
+                  className="text-emerald-500 hover:text-emerald-800 p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Stats Row */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
@@ -211,14 +261,21 @@ export default function DashboardPage() {
 
           {/* Meetings Grid */}
           {filteredMeetings.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-              <Video className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <h3 className="text-sm font-semibold text-slate-900 mb-1">No meetings found</h3>
+            <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center space-y-3">
+              <Video className="w-10 h-10 text-slate-300 mx-auto mb-1" />
+              <h3 className="text-sm font-semibold text-slate-900">No meetings found</h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 {searchQuery
                   ? `No meetings matching "${searchQuery}". Try adjusting your filters.`
-                  : 'No meetings found in this view.'}
+                  : 'No meetings found in this view. You can import an existing meeting JSON to get started.'}
               </p>
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold border border-indigo-200 transition-colors"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Import JSON Meeting</span>
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -229,6 +286,12 @@ export default function DashboardPage() {
           )}
         </main>
       )}
+
+      <ImportMeetingModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={handleImportSuccess}
+      />
     </div>
   );
 }

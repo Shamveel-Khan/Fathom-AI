@@ -8,6 +8,232 @@
   },
   "meetings": [
     {
+      "id": "mtg-imp-1790451923732",
+      "title": "H2 Product Strategy & AI Memory Architecture",
+      "date": "Oct 28, 2026",
+      "durationMinutes": 45,
+      "template": "project",
+      "participants": [
+        {
+          "name": "Sarah Chen",
+          "email": "sarah@fathom.ai",
+          "role": "Head of Product",
+          "avatarColor": "bg-emerald-500"
+        },
+        {
+          "name": "Alex Rivera",
+          "email": "alex@fathom.ai",
+          "role": "Lead Systems Architect",
+          "avatarColor": "bg-indigo-500"
+        },
+        {
+          "name": "Marcus Brody",
+          "email": "marcus@fathom.ai",
+          "role": "Principal ML Engineer",
+          "avatarColor": "bg-amber-500"
+        },
+        {
+          "name": "Elena Rostova",
+          "email": "elena@fathom.ai",
+          "role": "Staff Product Designer",
+          "avatarColor": "bg-rose-500"
+        }
+      ],
+      "transcript": [
+        {
+          "id": "u-1",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "00:00",
+          "timestampSeconds": 0,
+          "text": "Thanks everyone for hopping on. Today we need to align on our H2 product strategy, specifically our transition to proactive AI meeting intelligence and accountability auditing."
+        },
+        {
+          "id": "u-2",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Systems Architect",
+          "timestamp": "01:15",
+          "timestampSeconds": 75,
+          "text": "From the infrastructure side, we completed the serverless PostgreSQL migration with Neon. Sub-50ms query latency for full-text search across transcripts is now rock solid."
+        },
+        {
+          "id": "u-3",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Principal ML Engineer",
+          "timestamp": "02:40",
+          "timestampSeconds": 160,
+          "text": "For the AI models, we benchmarked GPT-4o Mini against Claude 3.5 Sonnet. For transcript summary generation and gap auditing, 4o-mini gives us a 92% cost reduction with virtually identical extraction quality."
+        },
+        {
+          "id": "u-4",
+          "speaker": "Elena Rostova",
+          "speakerRole": "Staff Product Designer",
+          "timestamp": "04:10",
+          "timestampSeconds": 250,
+          "text": "User testing showed that executives don't just want bullet points—they want to see 'Readiness Scores' and click directly on timeline moments where unassigned blockers were mentioned."
+        },
+        {
+          "id": "u-5",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "06:30",
+          "timestampSeconds": 390,
+          "text": "That's a huge point. Let's make sure the AI Review tab is front and center. I want unresolved questions and unassigned commitments highlighted immediately after any call finishes."
+        },
+        {
+          "id": "u-6",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Systems Architect",
+          "timestamp": "08:20",
+          "timestampSeconds": 500,
+          "text": "We should also implement JSON meeting export and import so customers can easily back up their workspaces and import legacy meeting records."
+        },
+        {
+          "id": "u-7",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Principal ML Engineer",
+          "timestamp": "10:05",
+          "timestampSeconds": 605,
+          "text": "Agreed. I will finalize the prompt templates for risk audits and test edge cases like contradictory stakeholder deadlines."
+        },
+        {
+          "id": "u-8",
+          "speaker": "Elena Rostova",
+          "speakerRole": "Staff Product Designer",
+          "timestamp": "11:45",
+          "timestampSeconds": 705,
+          "text": "I'll deliver the high-fidelity mockups for the import modal and template selector by Wednesday afternoon."
+        },
+        {
+          "id": "u-9",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "13:10",
+          "timestampSeconds": 790,
+          "text": "Perfect. Let's aim for a full QA release candidate by end of next week. Thanks all!"
+        }
+      ],
+      "analysis": {
+        "executiveSummary": "The team aligned on the H2 AI meeting intelligence strategy, confirming low-latency infrastructure on Neon PostgreSQL, cost-effective LLM extraction using GPT-4o Mini, and an executive-first AI Review audit interface. Key milestones were assigned for prompt engineering, JSON import/export, and UX designs.",
+        "keyTakeaways": [
+          "Sub-50ms search latency achieved on Neon PostgreSQL serverless architecture.",
+          "GPT-4o Mini selected as default model delivering 92% cost savings with high audit fidelity.",
+          "User research highlighted high demand for AI Readiness Scores and click-to-seek playback sync.",
+          "Targeting end of next week for full QA release candidate."
+        ],
+        "analyzedAt": "2026-10-28T14:30:00.000Z",
+        "actionItems": [
+          {
+            "id": "act-1",
+            "task": "Deliver high-fidelity mockups for the meeting import modal and template badges",
+            "assignee": "Elena Rostova",
+            "dueDate": "Nov 2, 2026",
+            "context": "Needs Wednesday delivery for frontend engineering handoff",
+            "completed": false
+          },
+          {
+            "id": "act-2",
+            "task": "Finalize prompt templates for contradiction detection and risk audits",
+            "assignee": "Marcus Brody",
+            "dueDate": "Nov 4, 2026",
+            "context": "Test across long transcripts and diverse templates",
+            "completed": false
+          },
+          {
+            "id": "act-3",
+            "task": "Implement JSON import/export API endpoints with atomic transaction safety",
+            "assignee": "Alex Rivera",
+            "dueDate": "Nov 5, 2026",
+            "context": "Support multi-entity JSON structures and schema validation",
+            "completed": true
+          },
+          {
+            "id": "act-4",
+            "task": "Prepare release candidate testing matrix and stakeholder demo deck",
+            "assignee": "Sarah Chen",
+            "dueDate": "Nov 8, 2026",
+            "context": "Cover all 5 meeting templates and shared meeting security",
+            "completed": false
+          }
+        ],
+        "decisions": [
+          {
+            "id": "dec-1",
+            "decision": "Adopt GPT-4o Mini as the default LLM engine for meeting summaries and gap audits",
+            "rationale": "92% cost reduction with extraction accuracy matching larger tier models.",
+            "madeBy": "Sarah Chen & Marcus Brody",
+            "timestamp": "02:40",
+            "timestampSeconds": 160
+          },
+          {
+            "id": "dec-2",
+            "decision": "Feature the AI Review audit scorecard as a top-level tab across all meeting workspaces",
+            "rationale": "Executive users prioritize action item clarity, accountability, and risk mitigation over simple transcripts.",
+            "madeBy": "Product & Design Team",
+            "timestamp": "06:30",
+            "timestampSeconds": 390
+          }
+        ],
+        "highlights": [
+          {
+            "id": "hl-1",
+            "quote": "Executives don't just want bullet points—they want to see 'Readiness Scores' and click directly on timeline moments where unassigned blockers were mentioned.",
+            "speaker": "Elena Rostova",
+            "timestamp": "04:10",
+            "timestampSeconds": 250,
+            "significance": "Key product insight guiding the AI Review tab UX",
+            "category": "key_moment",
+            "isUserSaved": false
+          },
+          {
+            "id": "hl-2",
+            "quote": "Sub-50ms query latency for full-text search across transcripts is now rock solid.",
+            "speaker": "Alex Rivera",
+            "timestamp": "01:15",
+            "timestampSeconds": 75,
+            "significance": "Confirmed database performance milestone on Neon PostgreSQL",
+            "category": "action",
+            "isUserSaved": true
+          }
+        ]
+      },
+      "review": {
+        "overallScore": 92,
+        "summary": "High alignment across product, engineering, and design. Clear ownership established for all major deliverables, with well-defined dates and low execution risks.",
+        "unresolvedQuestions": [
+          {
+            "id": "q-1",
+            "question": "Will offline local LLM endpoints (e.g. Ollama) require custom token streaming adjustments?",
+            "context": "Marcus mentioned Ollama support in passing but local streaming latency has not been measured.",
+            "raisedBy": "Marcus Brody",
+            "severity": "low"
+          }
+        ],
+        "unassignedResponsibilities": [],
+        "missingDeadlines": [
+          {
+            "id": "md-1",
+            "task": "Load testing concurrent transcript search under peak tenant traffic",
+            "assignee": "Alex Rivera",
+            "urgency": "medium"
+          }
+        ],
+        "missingDependencies": [],
+        "contradictions": [],
+        "potentialRisks": [
+          {
+            "id": "r-1",
+            "risk": "Large meeting transcripts (>90 min) may exceed single-pass prompt token budgets if not chunked.",
+            "severity": "medium",
+            "mitigation": "Implement automatic transcript truncation or multi-pass map-reduce summarization for 2+ hour recordings."
+          }
+        ],
+        "reviewedAt": "2026-10-28T14:32:00.000Z"
+      },
+      "isOwner": true,
+      "isShared": false
+    },
+    {
       "id": "mtg-101",
       "title": "Q3 Product Launch Sync & Risk Assessment",
       "date": "2026-09-24",
@@ -15,21 +241,95 @@
       "template": "project",
       "videoUrl": "/demo-video.mp4",
       "participants": [
-        { "name": "Sarah Chen", "email": "sarah@fathom.ai", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
-        { "name": "Alex Rivera", "email": "alex@fathom.ai", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" },
-        { "name": "Marcus Brody", "email": "marcus@fathom.ai", "role": "Staff Infrastructure Engineer", "avatarColor": "bg-amber-500" },
-        { "name": "Elena Rostova", "email": "elena@fathom.ai", "role": "Product Marketing Lead", "avatarColor": "bg-purple-500" }
+        {
+          "name": "Sarah Chen",
+          "email": "sarah@fathom.ai",
+          "role": "Head of Product",
+          "avatarColor": "bg-emerald-500"
+        },
+        {
+          "name": "Alex Rivera",
+          "email": "alex@fathom.ai",
+          "role": "Lead Frontend Engineer",
+          "avatarColor": "bg-indigo-500"
+        },
+        {
+          "name": "Marcus Brody",
+          "email": "marcus@fathom.ai",
+          "role": "Staff Infrastructure Engineer",
+          "avatarColor": "bg-amber-500"
+        },
+        {
+          "name": "Elena Rostova",
+          "email": "elena@fathom.ai",
+          "role": "Product Marketing Lead",
+          "avatarColor": "bg-purple-500"
+        }
       ],
       "transcript": [
-        { "id": "1", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:05", "text": "Good morning everyone. We have exactly 72 hours until our Q3 launch. Let's do a fast go/no-go assessment across frontend performance, rate limiting, and marketing enablement." },
-        { "id": "2", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "00:38", "text": "On the client side, the meeting player and synchronized transcript highlights are locked. We tested latency with 50+ participants and client memory stayed rock-solid under 45MB." },
-        { "id": "3", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "01:15", "text": "That's exceptional news. Marcus, how are backend rate limits and LLM inference costs looking?" },
-        { "id": "4", "speaker": "Marcus Brody", "speakerRole": "Staff Infrastructure Engineer", "timestamp": "01:42", "text": "We noticed a spike when power users trigger three summaries in under a minute. To protect latency, I recommend introducing a Redis token-bucket rate limiter and setting a BYOK Bring-Your-Own-Key model for heavy enterprise accounts." },
-        { "id": "5", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "02:30", "text": "Agreed. Let's make BYOK standard for heavy usage while giving free users 5 full runs a day. Marcus, can you get that implemented and tested before Thursday staging freeze?" },
-        { "id": "6", "speaker": "Marcus Brody", "speakerRole": "Staff Infrastructure Engineer", "timestamp": "03:05", "text": "Yes, I will have the PR merged by Thursday noon." },
-        { "id": "7", "speaker": "Elena Rostova", "speakerRole": "Product Marketing Lead", "timestamp": "03:40", "text": "From the marketing side, the changelog draft and customer announcement emails are ready. But we need deep-link timestamps in all copied markdown exports so customers can click directly back to the audio moment." },
-        { "id": "8", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "04:20", "text": "I can add ?t=seconds deep links to our markdown export helper today. It's a quick 30-minute win." },
-        { "id": "9", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "05:15", "text": "Perfect. So all clipboard exports will contain deep-linked transcript timestamps by default. Let's lock staging for Thursday night and launch Friday at 2 PM EST." }
+        {
+          "id": "1",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "00:05",
+          "text": "Good morning everyone. We have exactly 72 hours until our Q3 launch. Let's do a fast go/no-go assessment across frontend performance, rate limiting, and marketing enablement."
+        },
+        {
+          "id": "2",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "00:38",
+          "text": "On the client side, the meeting player and synchronized transcript highlights are locked. We tested latency with 50+ participants and client memory stayed rock-solid under 45MB."
+        },
+        {
+          "id": "3",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "01:15",
+          "text": "That's exceptional news. Marcus, how are backend rate limits and LLM inference costs looking?"
+        },
+        {
+          "id": "4",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Staff Infrastructure Engineer",
+          "timestamp": "01:42",
+          "text": "We noticed a spike when power users trigger three summaries in under a minute. To protect latency, I recommend introducing a Redis token-bucket rate limiter and setting a BYOK Bring-Your-Own-Key model for heavy enterprise accounts."
+        },
+        {
+          "id": "5",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "02:30",
+          "text": "Agreed. Let's make BYOK standard for heavy usage while giving free users 5 full runs a day. Marcus, can you get that implemented and tested before Thursday staging freeze?"
+        },
+        {
+          "id": "6",
+          "speaker": "Marcus Brody",
+          "speakerRole": "Staff Infrastructure Engineer",
+          "timestamp": "03:05",
+          "text": "Yes, I will have the PR merged by Thursday noon."
+        },
+        {
+          "id": "7",
+          "speaker": "Elena Rostova",
+          "speakerRole": "Product Marketing Lead",
+          "timestamp": "03:40",
+          "text": "From the marketing side, the changelog draft and customer announcement emails are ready. But we need deep-link timestamps in all copied markdown exports so customers can click directly back to the audio moment."
+        },
+        {
+          "id": "8",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "04:20",
+          "text": "I can add ?t=seconds deep links to our markdown export helper today. It's a quick 30-minute win."
+        },
+        {
+          "id": "9",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "05:15",
+          "text": "Perfect. So all clipboard exports will contain deep-linked transcript timestamps by default. Let's lock staging for Thursday night and launch Friday at 2 PM EST."
+        }
       ],
       "analysis": {
         "executiveSummary": "The product and engineering teams completed a final pre-launch readiness review for the Q3 release. Frontend latency and memory metrics passed benchmark tests under high load. To mitigate LLM cost overhead, the team adopted a Bring-Your-Own-Key (BYOK) architecture alongside token-bucket throttling. Export workflows were enhanced with transcript deep links, and the launch target was locked for Friday at 2 PM EST.",
@@ -41,39 +341,130 @@
         ],
         "analyzedAt": "2026-09-24T10:45:00.000Z",
         "actionItems": [
-          { "id": "act-1", "task": "Implement Redis token-bucket limiter and merge before staging freeze", "assignee": "Marcus Brody", "dueDate": "2026-09-25", "context": "Mitigates LLM cost spikes during high-concurrency summarization.", "completed": false },
-          { "id": "act-2", "task": "Add deep-link timestamps (?t=seconds) to markdown export payload", "assignee": "Alex Rivera", "dueDate": "2026-09-24", "context": "Allows marketing and customers to link directly back to transcript moments.", "completed": true },
-          { "id": "act-3", "task": "Finalize customer announcement email and changelog blog post", "assignee": "Elena Rostova", "dueDate": "2026-09-25", "context": "Draft ready for review ahead of Friday 2 PM EST broadcast.", "completed": false },
-          { "id": "act-4", "task": "Review pricing tier copy for enterprise billing update", "assignee": "Sarah Chen", "dueDate": "2026-09-25", "context": "Ensures transparent messaging around BYOK vs free tier runs.", "completed": false }
+          {
+            "id": "act-1",
+            "task": "Implement Redis token-bucket limiter and merge before staging freeze",
+            "assignee": "Marcus Brody",
+            "dueDate": "2026-09-25",
+            "context": "Mitigates LLM cost spikes during high-concurrency summarization.",
+            "completed": false
+          },
+          {
+            "id": "act-2",
+            "task": "Add deep-link timestamps (?t=seconds) to markdown export payload",
+            "assignee": "Alex Rivera",
+            "dueDate": "2026-09-24",
+            "context": "Allows marketing and customers to link directly back to transcript moments.",
+            "completed": true
+          },
+          {
+            "id": "act-3",
+            "task": "Finalize customer announcement email and changelog blog post",
+            "assignee": "Elena Rostova",
+            "dueDate": "2026-09-25",
+            "context": "Draft ready for review ahead of Friday 2 PM EST broadcast.",
+            "completed": false
+          },
+          {
+            "id": "act-4",
+            "task": "Review pricing tier copy for enterprise billing update",
+            "assignee": "Sarah Chen",
+            "dueDate": "2026-09-25",
+            "context": "Ensures transparent messaging around BYOK vs free tier runs.",
+            "completed": false
+          }
         ],
         "decisions": [
-          { "id": "dec-1", "decision": "Enforce BYOK for high-frequency AI users with a 5 daily run cap for free accounts", "rationale": "Prevents runaway API compute bills while preserving trial accessibility.", "madeBy": "Sarah Chen & Marcus Brody", "timestamp": "02:30", "timestampSeconds": 150 },
-          { "id": "dec-2", "decision": "All exported summaries will include transcript deep-link timestamps by default", "rationale": "Directly links AI takeaways back to audio evidence for high trust.", "madeBy": "Sarah Chen", "timestamp": "05:15", "timestampSeconds": 315 },
-          { "id": "dec-3", "decision": "Lock staging Thursday night for Friday 2 PM EST launch", "rationale": "Guarantees a clean morning window for regression QA.", "madeBy": "Team Consensus", "timestamp": "05:30", "timestampSeconds": 330 }
+          {
+            "id": "dec-1",
+            "decision": "Enforce BYOK for high-frequency AI users with a 5 daily run cap for free accounts",
+            "rationale": "Prevents runaway API compute bills while preserving trial accessibility.",
+            "madeBy": "Sarah Chen & Marcus Brody",
+            "timestamp": "02:30",
+            "timestampSeconds": 150
+          },
+          {
+            "id": "dec-2",
+            "decision": "All exported summaries will include transcript deep-link timestamps by default",
+            "rationale": "Directly links AI takeaways back to audio evidence for high trust.",
+            "madeBy": "Sarah Chen",
+            "timestamp": "05:15",
+            "timestampSeconds": 315
+          },
+          {
+            "id": "dec-3",
+            "decision": "Lock staging Thursday night for Friday 2 PM EST launch",
+            "rationale": "Guarantees a clean morning window for regression QA.",
+            "madeBy": "Team Consensus",
+            "timestamp": "05:30",
+            "timestampSeconds": 330
+          }
         ],
         "highlights": [
-          { "id": "hl-1", "quote": "We tested latency with 50+ participants and client memory stayed rock-solid under 45MB.", "speaker": "Alex Rivera", "timestamp": "00:38", "significance": "Validates frontend architecture for enterprise scale.", "category": "key_moment", "isUserSaved": false },
-          { "id": "hl-2", "quote": "All clipboard exports will contain deep-linked transcript timestamps by default.", "speaker": "Sarah Chen", "timestamp": "05:15", "significance": "Core UX differentiator connecting AI summaries directly to audio evidence.", "category": "decision", "isUserSaved": true }
+          {
+            "id": "hl-1",
+            "quote": "We tested latency with 50+ participants and client memory stayed rock-solid under 45MB.",
+            "speaker": "Alex Rivera",
+            "timestamp": "00:38",
+            "significance": "Validates frontend architecture for enterprise scale.",
+            "category": "key_moment",
+            "isUserSaved": false
+          },
+          {
+            "id": "hl-2",
+            "quote": "All clipboard exports will contain deep-linked transcript timestamps by default.",
+            "speaker": "Sarah Chen",
+            "timestamp": "05:15",
+            "significance": "Core UX differentiator connecting AI summaries directly to audio evidence.",
+            "category": "decision",
+            "isUserSaved": true
+          }
         ]
       },
       "review": {
         "overallScore": 88,
         "summary": "High alignment on core launch deliverables, with moderate risk regarding staging cut-off tolerance and unassigned production on-call responsibilities.",
         "unresolvedQuestions": [
-          { "id": "uq-1", "question": "What is the fallback behavior if Redis limiter latency exceeds 20ms during peak load?", "raisedBy": "Elena Rostova", "context": "Could introduce delay in instant summary generation.", "severity": "medium" }
+          {
+            "id": "uq-1",
+            "question": "What is the fallback behavior if Redis limiter latency exceeds 20ms during peak load?",
+            "raisedBy": "Elena Rostova",
+            "context": "Could introduce delay in instant summary generation.",
+            "severity": "medium"
+          }
         ],
         "unassignedResponsibilities": [
-          { "id": "ur-1", "task": "Monitor Datadog error rates and latency alarms during Friday 2 PM rollout", "context": "Needs a designated engineer on call.", "suggestedRole": "Staff Infrastructure Engineer" }
+          {
+            "id": "ur-1",
+            "task": "Monitor Datadog error rates and latency alarms during Friday 2 PM rollout",
+            "context": "Needs a designated engineer on call.",
+            "suggestedRole": "Staff Infrastructure Engineer"
+          }
         ],
         "missingDeadlines": [
-          { "id": "md-1", "task": "Review pricing tier copy for enterprise billing update", "assignee": "Sarah Chen", "urgency": "high" }
+          {
+            "id": "md-1",
+            "task": "Review pricing tier copy for enterprise billing update",
+            "assignee": "Sarah Chen",
+            "urgency": "high"
+          }
         ],
         "missingDependencies": [
-          { "id": "dp-1", "blocker": "Staging Redis cluster must be provisioned before Thursday noon", "impactedArea": "Rate Limiting PR validation", "description": "Marcus needs the Redis instance to run load tests." }
+          {
+            "id": "dp-1",
+            "blocker": "Staging Redis cluster must be provisioned before Thursday noon",
+            "impactedArea": "Rate Limiting PR validation",
+            "description": "Marcus needs the Redis instance to run load tests."
+          }
         ],
         "contradictions": [],
         "potentialRisks": [
-          { "id": "rk-1", "risk": "Narrow 4-hour QA window on Friday morning before public 2 PM release", "severity": "medium", "mitigation": "Automate end-to-end smoke test scripts on Thursday night staging build." }
+          {
+            "id": "rk-1",
+            "risk": "Narrow 4-hour QA window on Friday morning before public 2 PM release",
+            "severity": "medium",
+            "mitigation": "Automate end-to-end smoke test scripts on Thursday night staging build."
+          }
         ],
         "reviewedAt": "2026-09-24T10:48:00.000Z"
       }
@@ -86,17 +477,68 @@
       "template": "sales",
       "videoUrl": "/demo-video.mp4",
       "participants": [
-        { "name": "Sarah Chen", "email": "sarah@fathom.ai", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
-        { "name": "David Miller", "email": "david.miller@acme.com", "role": "VP of Engineering @ Acme", "avatarColor": "bg-blue-600" },
-        { "name": "Rachel Zane", "email": "rachel.zane@acme.com", "role": "Director of Operations", "avatarColor": "bg-rose-500" }
+        {
+          "name": "Sarah Chen",
+          "email": "sarah@fathom.ai",
+          "role": "Head of Product",
+          "avatarColor": "bg-emerald-500"
+        },
+        {
+          "name": "David Miller",
+          "email": "david.miller@acme.com",
+          "role": "VP of Engineering @ Acme",
+          "avatarColor": "bg-blue-600"
+        },
+        {
+          "name": "Rachel Zane",
+          "email": "rachel.zane@acme.com",
+          "role": "Director of Operations",
+          "avatarColor": "bg-rose-500"
+        }
       ],
       "transcript": [
-        { "id": "1", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:10", "text": "Hi David, Rachel, great to connect. Today we wanted to understand Acme's current meeting transcription bottlenecks and evaluate how Fathom can streamline your executive reporting." },
-        { "id": "2", "speaker": "David Miller", "speakerRole": "VP of Engineering @ Acme", "timestamp": "01:05", "text": "Our primary headache is meeting sprawl across 300 engineers. Team leads spend 4 hours a week writing meeting minutes and half the action items get lost in Slack channels." },
-        { "id": "3", "speaker": "Rachel Zane", "speakerRole": "Director of Operations", "timestamp": "02:15", "text": "Security is our biggest blocker. We cannot have transcript data trained on by foundational model providers. Does Fathom offer zero-data retention agreements with OpenAI?" },
-        { "id": "4", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "03:00", "text": "Yes, absolutely. We support enterprise zero-data retention (ZDR) and Bring-Your-Own-Key so queries bypass our servers directly to your private enterprise tenant." },
-        { "id": "5", "speaker": "David Miller", "speakerRole": "VP of Engineering @ Acme", "timestamp": "04:10", "text": "That is huge for our InfoSec approval. If we can run a 50-seat pilot starting next month, what would the pricing structure look like?" },
-        { "id": "6", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "05:00", "text": "I will prepare a custom proposal covering a 50-seat pilot with dedicated onboarding and SOC2 compliance addendum by Wednesday." }
+        {
+          "id": "1",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "00:10",
+          "text": "Hi David, Rachel, great to connect. Today we wanted to understand Acme's current meeting transcription bottlenecks and evaluate how Fathom can streamline your executive reporting."
+        },
+        {
+          "id": "2",
+          "speaker": "David Miller",
+          "speakerRole": "VP of Engineering @ Acme",
+          "timestamp": "01:05",
+          "text": "Our primary headache is meeting sprawl across 300 engineers. Team leads spend 4 hours a week writing meeting minutes and half the action items get lost in Slack channels."
+        },
+        {
+          "id": "3",
+          "speaker": "Rachel Zane",
+          "speakerRole": "Director of Operations",
+          "timestamp": "02:15",
+          "text": "Security is our biggest blocker. We cannot have transcript data trained on by foundational model providers. Does Fathom offer zero-data retention agreements with OpenAI?"
+        },
+        {
+          "id": "4",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "03:00",
+          "text": "Yes, absolutely. We support enterprise zero-data retention (ZDR) and Bring-Your-Own-Key so queries bypass our servers directly to your private enterprise tenant."
+        },
+        {
+          "id": "5",
+          "speaker": "David Miller",
+          "speakerRole": "VP of Engineering @ Acme",
+          "timestamp": "04:10",
+          "text": "That is huge for our InfoSec approval. If we can run a 50-seat pilot starting next month, what would the pricing structure look like?"
+        },
+        {
+          "id": "6",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "05:00",
+          "text": "I will prepare a custom proposal covering a 50-seat pilot with dedicated onboarding and SOC2 compliance addendum by Wednesday."
+        }
       ],
       "analysis": {
         "executiveSummary": "Acme Corp is evaluating Fathom AI to solve meeting sprawl across their 300-person engineering organization. Key evaluation criteria include zero-data retention (ZDR), Bring-Your-Own-Key (BYOK) privacy controls, and automated action item syncing. Acme is ready to proceed with a 50-seat pilot pending InfoSec review.",
@@ -107,32 +549,82 @@
         ],
         "analyzedAt": "2026-09-23T15:30:00.000Z",
         "actionItems": [
-          { "id": "act-1", "task": "Send enterprise security whitepaper and Zero-Data-Retention addendum", "assignee": "Sarah Chen", "dueDate": "2026-09-25", "context": "Needed for Acme InfoSec sign-off.", "completed": true },
-          { "id": "act-2", "task": "Draft custom 50-seat pilot proposal with onboarding terms", "assignee": "Sarah Chen", "dueDate": "2026-09-26", "context": "David requested pricing by Wednesday.", "completed": false }
+          {
+            "id": "act-1",
+            "task": "Send enterprise security whitepaper and Zero-Data-Retention addendum",
+            "assignee": "Sarah Chen",
+            "dueDate": "2026-09-25",
+            "context": "Needed for Acme InfoSec sign-off.",
+            "completed": true
+          },
+          {
+            "id": "act-2",
+            "task": "Draft custom 50-seat pilot proposal with onboarding terms",
+            "assignee": "Sarah Chen",
+            "dueDate": "2026-09-26",
+            "context": "David requested pricing by Wednesday.",
+            "completed": false
+          }
         ],
         "decisions": [
-          { "id": "dec-1", "decision": "Acme will proceed with a 50-seat pilot pending InfoSec review", "rationale": "Solves engineer meeting documentation overhead.", "madeBy": "David Miller & Sarah Chen", "timestamp": "05:00", "timestampSeconds": 300 }
+          {
+            "id": "dec-1",
+            "decision": "Acme will proceed with a 50-seat pilot pending InfoSec review",
+            "rationale": "Solves engineer meeting documentation overhead.",
+            "madeBy": "David Miller & Sarah Chen",
+            "timestamp": "05:00",
+            "timestampSeconds": 300
+          }
         ],
         "highlights": [
-          { "id": "hl-1", "quote": "Team leads spend 4 hours a week writing meeting minutes and half the action items get lost.", "speaker": "David Miller", "timestamp": "01:05", "significance": "Core customer pain point driving the deal.", "category": "key_moment", "isUserSaved": false }
+          {
+            "id": "hl-1",
+            "quote": "Team leads spend 4 hours a week writing meeting minutes and half the action items get lost.",
+            "speaker": "David Miller",
+            "timestamp": "01:05",
+            "significance": "Core customer pain point driving the deal.",
+            "category": "key_moment",
+            "isUserSaved": false
+          }
         ]
       },
       "review": {
         "overallScore": 84,
         "summary": "Strong sales qualification and security alignment, but contract term duration and custom SAML SSO requirements were not clarified.",
         "unresolvedQuestions": [
-          { "id": "uq-1", "question": "Does Acme require Okta SCIM directory provisioning for the 50-seat pilot?", "raisedBy": "Sarah Chen", "context": "Affects pilot setup timeline.", "severity": "medium" }
+          {
+            "id": "uq-1",
+            "question": "Does Acme require Okta SCIM directory provisioning for the 50-seat pilot?",
+            "raisedBy": "Sarah Chen",
+            "context": "Affects pilot setup timeline.",
+            "severity": "medium"
+          }
         ],
         "unassignedResponsibilities": [],
         "missingDeadlines": [
-          { "id": "md-1", "task": "Draft custom 50-seat pilot proposal with onboarding terms", "assignee": "Sarah Chen", "urgency": "high" }
+          {
+            "id": "md-1",
+            "task": "Draft custom 50-seat pilot proposal with onboarding terms",
+            "assignee": "Sarah Chen",
+            "urgency": "high"
+          }
         ],
         "missingDependencies": [
-          { "id": "dp-1", "blocker": "Acme Legal must approve Standard Contractual Clauses (SCCs)", "impactedArea": "Pilot Agreement", "description": "Cannot start pilot without executed DPA." }
+          {
+            "id": "dp-1",
+            "blocker": "Acme Legal must approve Standard Contractual Clauses (SCCs)",
+            "impactedArea": "Pilot Agreement",
+            "description": "Cannot start pilot without executed DPA."
+          }
         ],
         "contradictions": [],
         "potentialRisks": [
-          { "id": "rk-1", "risk": "Acme CISO review could take up to 3 weeks if standard SOC2 Type II is insufficient", "severity": "high", "mitigation": "Proactively provide ISO 27001 certificate and architecture diagram." }
+          {
+            "id": "rk-1",
+            "risk": "Acme CISO review could take up to 3 weeks if standard SOC2 Type II is insufficient",
+            "severity": "high",
+            "mitigation": "Proactively provide ISO 27001 certificate and architecture diagram."
+          }
         ],
         "reviewedAt": "2026-09-23T15:35:00.000Z"
       }
@@ -145,15 +637,54 @@
       "template": "general",
       "videoUrl": "/demo-video.mp4",
       "participants": [
-        { "name": "Sarah Chen", "email": "sarah@fathom.ai", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
-        { "name": "Alex Rivera", "email": "alex@fathom.ai", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" },
-        { "name": "Maya Patel", "email": "maya@fathom.ai", "role": "Lead Product Designer", "avatarColor": "bg-pink-500" }
+        {
+          "name": "Sarah Chen",
+          "email": "sarah@fathom.ai",
+          "role": "Head of Product",
+          "avatarColor": "bg-emerald-500"
+        },
+        {
+          "name": "Alex Rivera",
+          "email": "alex@fathom.ai",
+          "role": "Lead Frontend Engineer",
+          "avatarColor": "bg-indigo-500"
+        },
+        {
+          "name": "Maya Patel",
+          "email": "maya@fathom.ai",
+          "role": "Lead Product Designer",
+          "avatarColor": "bg-pink-500"
+        }
       ],
       "transcript": [
-        { "id": "1", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:05", "text": "Let's review the new AI Review card component and export modal designs." },
-        { "id": "2", "speaker": "Maya Patel", "speakerRole": "Lead Product Designer", "timestamp": "00:45", "text": "I simplified the gap analysis badges into severity colors: high urgency in rose, medium in amber, and low in slate. We also added an overall clarity score pill." },
-        { "id": "3", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "01:30", "text": "The severity hierarchy looks great. For the export modal, let's make sure users can copy formatted markdown or raw transcript with a single click." },
-        { "id": "4", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "02:15", "text": "Agreed. Let's approve these Figma components and build them into the design system." }
+        {
+          "id": "1",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "00:05",
+          "text": "Let's review the new AI Review card component and export modal designs."
+        },
+        {
+          "id": "2",
+          "speaker": "Maya Patel",
+          "speakerRole": "Lead Product Designer",
+          "timestamp": "00:45",
+          "text": "I simplified the gap analysis badges into severity colors: high urgency in rose, medium in amber, and low in slate. We also added an overall clarity score pill."
+        },
+        {
+          "id": "3",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "01:30",
+          "text": "The severity hierarchy looks great. For the export modal, let's make sure users can copy formatted markdown or raw transcript with a single click."
+        },
+        {
+          "id": "4",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "02:15",
+          "text": "Agreed. Let's approve these Figma components and build them into the design system."
+        }
       ],
       "analysis": {
         "executiveSummary": "Design review approved the new AI Review visual hierarchy and export modal layouts. Severity tagging and overall score metrics will guide the user through meeting accountability gaps.",
@@ -164,14 +695,43 @@
         ],
         "analyzedAt": "2026-09-22T14:00:00.000Z",
         "actionItems": [
-          { "id": "act-1", "task": "Export Figma tokens and icons for AI Review components", "assignee": "Maya Patel", "dueDate": "2026-09-23", "context": "For Alex to consume in Tailwind config.", "completed": true },
-          { "id": "act-2", "task": "Implement ExportModal component with multi-format tabs", "assignee": "Alex Rivera", "dueDate": "2026-09-24", "context": "Markdown, transcript, and review downloads.", "completed": true }
+          {
+            "id": "act-1",
+            "task": "Export Figma tokens and icons for AI Review components",
+            "assignee": "Maya Patel",
+            "dueDate": "2026-09-23",
+            "context": "For Alex to consume in Tailwind config.",
+            "completed": true
+          },
+          {
+            "id": "act-2",
+            "task": "Implement ExportModal component with multi-format tabs",
+            "assignee": "Alex Rivera",
+            "dueDate": "2026-09-24",
+            "context": "Markdown, transcript, and review downloads.",
+            "completed": true
+          }
         ],
         "decisions": [
-          { "id": "dec-1", "decision": "Adopt 3-tier severity badges (high, medium, low) for AI Review gaps", "rationale": "Cleaner visual scanability for executives.", "madeBy": "Maya Patel & Sarah Chen", "timestamp": "02:15", "timestampSeconds": 135 }
+          {
+            "id": "dec-1",
+            "decision": "Adopt 3-tier severity badges (high, medium, low) for AI Review gaps",
+            "rationale": "Cleaner visual scanability for executives.",
+            "madeBy": "Maya Patel & Sarah Chen",
+            "timestamp": "02:15",
+            "timestampSeconds": 135
+          }
         ],
         "highlights": [
-          { "id": "hl-1", "quote": "I simplified the gap analysis badges into severity colors: high urgency in rose, medium in amber, and low in slate.", "speaker": "Maya Patel", "timestamp": "00:45", "significance": "Defines core UI palette for accountability view.", "category": "key_moment", "isUserSaved": false }
+          {
+            "id": "hl-1",
+            "quote": "I simplified the gap analysis badges into severity colors: high urgency in rose, medium in amber, and low in slate.",
+            "speaker": "Maya Patel",
+            "timestamp": "00:45",
+            "significance": "Defines core UI palette for accountability view.",
+            "category": "key_moment",
+            "isUserSaved": false
+          }
         ]
       },
       "review": {
@@ -194,14 +754,48 @@
       "template": "one_on_one",
       "videoUrl": "/demo-video.mp4",
       "participants": [
-        { "name": "Sarah Chen", "email": "sarah@fathom.ai", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
-        { "name": "Alex Rivera", "email": "alex@fathom.ai", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" }
+        {
+          "name": "Sarah Chen",
+          "email": "sarah@fathom.ai",
+          "role": "Head of Product",
+          "avatarColor": "bg-emerald-500"
+        },
+        {
+          "name": "Alex Rivera",
+          "email": "alex@fathom.ai",
+          "role": "Lead Frontend Engineer",
+          "avatarColor": "bg-indigo-500"
+        }
       ],
       "transcript": [
-        { "id": "1", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:05", "text": "Hey Alex, thanks for taking time today. How are you feeling about the workload heading into the final sprint?" },
-        { "id": "2", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "00:40", "text": "Doing well! The frontend architecture is solid. I would love to take on more technical leadership in Q4, particularly mentoring junior frontend contributors." },
-        { "id": "3", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "01:20", "text": "You have been stellar leading the client player and search integrations. I fully support your promotion pathway to Staff Engineer in the upcoming cycle." },
-        { "id": "4", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "02:10", "text": "That means a lot. I will write a brief technical strategy doc for our component library rewrite as part of the promotion packet." }
+        {
+          "id": "1",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "00:05",
+          "text": "Hey Alex, thanks for taking time today. How are you feeling about the workload heading into the final sprint?"
+        },
+        {
+          "id": "2",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "00:40",
+          "text": "Doing well! The frontend architecture is solid. I would love to take on more technical leadership in Q4, particularly mentoring junior frontend contributors."
+        },
+        {
+          "id": "3",
+          "speaker": "Sarah Chen",
+          "speakerRole": "Head of Product",
+          "timestamp": "01:20",
+          "text": "You have been stellar leading the client player and search integrations. I fully support your promotion pathway to Staff Engineer in the upcoming cycle."
+        },
+        {
+          "id": "4",
+          "speaker": "Alex Rivera",
+          "speakerRole": "Lead Frontend Engineer",
+          "timestamp": "02:10",
+          "text": "That means a lot. I will write a brief technical strategy doc for our component library rewrite as part of the promotion packet."
+        }
       ],
       "analysis": {
         "executiveSummary": "1:1 check-in focusing on Alex's workload balance, career trajectory towards Staff Engineer, and Q4 component library architecture leadership.",
@@ -212,14 +806,43 @@
         ],
         "analyzedAt": "2026-09-21T11:00:00.000Z",
         "actionItems": [
-          { "id": "act-1", "task": "Draft Q4 component library technical roadmap for promotion portfolio", "assignee": "Alex Rivera", "dueDate": "2026-10-05", "context": "Demonstrates architectural leadership for Staff promotion packet.", "completed": false },
-          { "id": "act-2", "task": "Submit Staff Engineer promotion nomination to engineering director", "assignee": "Sarah Chen", "dueDate": "2026-10-15", "context": "Formal nomination for upcoming cycle.", "completed": false }
+          {
+            "id": "act-1",
+            "task": "Draft Q4 component library technical roadmap for promotion portfolio",
+            "assignee": "Alex Rivera",
+            "dueDate": "2026-10-05",
+            "context": "Demonstrates architectural leadership for Staff promotion packet.",
+            "completed": false
+          },
+          {
+            "id": "act-2",
+            "task": "Submit Staff Engineer promotion nomination to engineering director",
+            "assignee": "Sarah Chen",
+            "dueDate": "2026-10-15",
+            "context": "Formal nomination for upcoming cycle.",
+            "completed": false
+          }
         ],
         "decisions": [
-          { "id": "dec-1", "decision": "Nominate Alex Rivera for Staff Engineer promotion in Q4 review cycle", "rationale": "Demonstrated technical leadership across media playback and search architecture.", "madeBy": "Sarah Chen", "timestamp": "01:20", "timestampSeconds": 80 }
+          {
+            "id": "dec-1",
+            "decision": "Nominate Alex Rivera for Staff Engineer promotion in Q4 review cycle",
+            "rationale": "Demonstrated technical leadership across media playback and search architecture.",
+            "madeBy": "Sarah Chen",
+            "timestamp": "01:20",
+            "timestampSeconds": 80
+          }
         ],
         "highlights": [
-          { "id": "hl-1", "quote": "I would love to take on more technical leadership in Q4, particularly mentoring junior contributors.", "speaker": "Alex Rivera", "timestamp": "00:40", "significance": "Sets clear career trajectory goal.", "category": "key_moment", "isUserSaved": true }
+          {
+            "id": "hl-1",
+            "quote": "I would love to take on more technical leadership in Q4, particularly mentoring junior contributors.",
+            "speaker": "Alex Rivera",
+            "timestamp": "00:40",
+            "significance": "Sets clear career trajectory goal.",
+            "category": "key_moment",
+            "isUserSaved": true
+          }
         ]
       },
       "review": {

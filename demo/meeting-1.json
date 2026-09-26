@@ -1,0 +1,223 @@
+{
+  "title": "H2 Product Strategy & AI Memory Architecture",
+  "date": "Oct 28, 2026",
+  "durationMinutes": 45,
+  "template": "project",
+  "participants": [
+    {
+      "name": "Sarah Chen",
+      "email": "sarah@fathom.ai",
+      "role": "Head of Product",
+      "avatarColor": "bg-emerald-500"
+    },
+    {
+      "name": "Alex Rivera",
+      "email": "alex@fathom.ai",
+      "role": "Lead Systems Architect",
+      "avatarColor": "bg-indigo-500"
+    },
+    {
+      "name": "Marcus Brody",
+      "email": "marcus@fathom.ai",
+      "role": "Principal ML Engineer",
+      "avatarColor": "bg-amber-500"
+    },
+    {
+      "name": "Elena Rostova",
+      "email": "elena@fathom.ai",
+      "role": "Staff Product Designer",
+      "avatarColor": "bg-rose-500"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "u-1",
+      "speaker": "Sarah Chen",
+      "speakerRole": "Head of Product",
+      "timestamp": "00:00",
+      "timestampSeconds": 0,
+      "text": "Thanks everyone for hopping on. Today we need to align on our H2 product strategy, specifically our transition to proactive AI meeting intelligence and accountability auditing."
+    },
+    {
+      "id": "u-2",
+      "speaker": "Alex Rivera",
+      "speakerRole": "Lead Systems Architect",
+      "timestamp": "01:15",
+      "timestampSeconds": 75,
+      "text": "From the infrastructure side, we completed the serverless PostgreSQL migration with Neon. Sub-50ms query latency for full-text search across transcripts is now rock solid."
+    },
+    {
+      "id": "u-3",
+      "speaker": "Marcus Brody",
+      "speakerRole": "Principal ML Engineer",
+      "timestamp": "02:40",
+      "timestampSeconds": 160,
+      "text": "For the AI models, we benchmarked GPT-4o Mini against Claude 3.5 Sonnet. For transcript summary generation and gap auditing, 4o-mini gives us a 92% cost reduction with virtually identical extraction quality."
+    },
+    {
+      "id": "u-4",
+      "speaker": "Elena Rostova",
+      "speakerRole": "Staff Product Designer",
+      "timestamp": "04:10",
+      "timestampSeconds": 250,
+      "text": "User testing showed that executives don't just want bullet points—they want to see 'Readiness Scores' and click directly on timeline moments where unassigned blockers were mentioned."
+    },
+    {
+      "id": "u-5",
+      "speaker": "Sarah Chen",
+      "speakerRole": "Head of Product",
+      "timestamp": "06:30",
+      "timestampSeconds": 390,
+      "text": "That's a huge point. Let's make sure the AI Review tab is front and center. I want unresolved questions and unassigned commitments highlighted immediately after any call finishes."
+    },
+    {
+      "id": "u-6",
+      "speaker": "Alex Rivera",
+      "speakerRole": "Lead Systems Architect",
+      "timestamp": "08:20",
+      "timestampSeconds": 500,
+      "text": "We should also implement JSON meeting export and import so customers can easily back up their workspaces and import legacy meeting records."
+    },
+    {
+      "id": "u-7",
+      "speaker": "Marcus Brody",
+      "speakerRole": "Principal ML Engineer",
+      "timestamp": "10:05",
+      "timestampSeconds": 605,
+      "text": "Agreed. I will finalize the prompt templates for risk audits and test edge cases like contradictory stakeholder deadlines."
+    },
+    {
+      "id": "u-8",
+      "speaker": "Elena Rostova",
+      "speakerRole": "Staff Product Designer",
+      "timestamp": "11:45",
+      "timestampSeconds": 705,
+      "text": "I'll deliver the high-fidelity mockups for the import modal and template selector by Wednesday afternoon."
+    },
+    {
+      "id": "u-9",
+      "speaker": "Sarah Chen",
+      "speakerRole": "Head of Product",
+      "timestamp": "13:10",
+      "timestampSeconds": 790,
+      "text": "Perfect. Let's aim for a full QA release candidate by end of next week. Thanks all!"
+    }
+  ],
+  "analysis": {
+    "executiveSummary": "The team aligned on the H2 AI meeting intelligence strategy, confirming low-latency infrastructure on Neon PostgreSQL, cost-effective LLM extraction using GPT-4o Mini, and an executive-first AI Review audit interface. Key milestones were assigned for prompt engineering, JSON import/export, and UX designs.",
+    "keyTakeaways": [
+      "Sub-50ms search latency achieved on Neon PostgreSQL serverless architecture.",
+      "GPT-4o Mini selected as default model delivering 92% cost savings with high audit fidelity.",
+      "User research highlighted high demand for AI Readiness Scores and click-to-seek playback sync.",
+      "Targeting end of next week for full QA release candidate."
+    ],
+    "actionItems": [
+      {
+        "id": "act-1",
+        "task": "Deliver high-fidelity mockups for the meeting import modal and template badges",
+        "assignee": "Elena Rostova",
+        "dueDate": "Nov 2, 2026",
+        "context": "Needs Wednesday delivery for frontend engineering handoff",
+        "completed": false
+      },
+      {
+        "id": "act-2",
+        "task": "Finalize prompt templates for contradiction detection and risk audits",
+        "assignee": "Marcus Brody",
+        "dueDate": "Nov 4, 2026",
+        "context": "Test across long transcripts and diverse templates",
+        "completed": false
+      },
+      {
+        "id": "act-3",
+        "task": "Implement JSON import/export API endpoints with atomic transaction safety",
+        "assignee": "Alex Rivera",
+        "dueDate": "Nov 5, 2026",
+        "context": "Support multi-entity JSON structures and schema validation",
+        "completed": true
+      },
+      {
+        "id": "act-4",
+        "task": "Prepare release candidate testing matrix and stakeholder demo deck",
+        "assignee": "Sarah Chen",
+        "dueDate": "Nov 8, 2026",
+        "context": "Cover all 5 meeting templates and shared meeting security",
+        "completed": false
+      }
+    ],
+    "decisions": [
+      {
+        "id": "dec-1",
+        "decision": "Adopt GPT-4o Mini as the default LLM engine for meeting summaries and gap audits",
+        "rationale": "92% cost reduction with extraction accuracy matching larger tier models.",
+        "madeBy": "Sarah Chen & Marcus Brody",
+        "timestamp": "02:40",
+        "timestampSeconds": 160
+      },
+      {
+        "id": "dec-2",
+        "decision": "Feature the AI Review audit scorecard as a top-level tab across all meeting workspaces",
+        "rationale": "Executive users prioritize action item clarity, accountability, and risk mitigation over simple transcripts.",
+        "madeBy": "Product & Design Team",
+        "timestamp": "06:30",
+        "timestampSeconds": 390
+      }
+    ],
+    "highlights": [
+      {
+        "id": "hl-1",
+        "quote": "Executives don't just want bullet points—they want to see 'Readiness Scores' and click directly on timeline moments where unassigned blockers were mentioned.",
+        "speaker": "Elena Rostova",
+        "timestamp": "04:10",
+        "timestampSeconds": 250,
+        "significance": "Key product insight guiding the AI Review tab UX",
+        "category": "key_moment",
+        "isUserSaved": false
+      },
+      {
+        "id": "hl-2",
+        "quote": "Sub-50ms query latency for full-text search across transcripts is now rock solid.",
+        "speaker": "Alex Rivera",
+        "timestamp": "01:15",
+        "timestampSeconds": 75,
+        "significance": "Confirmed database performance milestone on Neon PostgreSQL",
+        "category": "action",
+        "isUserSaved": true
+      }
+    ],
+    "analyzedAt": "2026-10-28T14:30:00.000Z"
+  },
+  "review": {
+    "overallScore": 92,
+    "summary": "High alignment across product, engineering, and design. Clear ownership established for all major deliverables, with well-defined dates and low execution risks.",
+    "unresolvedQuestions": [
+      {
+        "id": "q-1",
+        "question": "Will offline local LLM endpoints (e.g. Ollama) require custom token streaming adjustments?",
+        "context": "Marcus mentioned Ollama support in passing but local streaming latency has not been measured.",
+        "raisedBy": "Marcus Brody",
+        "severity": "low"
+      }
+    ],
+    "unassignedResponsibilities": [],
+    "missingDeadlines": [
+      {
+        "id": "md-1",
+        "task": "Load testing concurrent transcript search under peak tenant traffic",
+        "assignee": "Alex Rivera",
+        "urgency": "medium"
+      }
+    ],
+    "missingDependencies": [],
+    "contradictions": [],
+    "potentialRisks": [
+      {
+        "id": "r-1",
+        "risk": "Large meeting transcripts (>90 min) may exceed single-pass prompt token budgets if not chunked.",
+        "severity": "medium",
+        "mitigation": "Implement automatic transcript truncation or multi-pass map-reduce summarization for 2+ hour recordings."
+      }
+    ],
+    "reviewedAt": "2026-10-28T14:32:00.000Z"
+  }
+}

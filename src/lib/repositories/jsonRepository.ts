@@ -262,6 +262,80 @@ export class JsonMeetingRepository implements IMeetingRepository {
     return true;
   }
 
+  async importMeeting(
+    userId: string,
+    input: import('@/lib/schemas/import').ImportMeetingInput
+  ): Promise<Meeting> {
+    const filePath = await this.getUserDataFilePath(userId);
+    if (!filePath) throw new Error('User not found');
+
+    const userData = await readJson<UserDataFile>(filePath);
+    const meetingId = input.id || `mtg-imp-${Date.now()}`;
+
+    const newMeeting: Meeting = {
+      id: meetingId,
+      title: input.title,
+      date: input.date,
+      durationMinutes: input.durationMinutes || 30,
+      videoUrl: input.videoUrl || undefined,
+      template: input.template || 'general',
+      participants: input.participants.map((p) => ({
+        name: p.name,
+        email: p.email || undefined,
+        role: p.role || undefined,
+        avatarColor: p.avatarColor || undefined,
+      })),
+      transcript: input.transcript.map((u, i) => ({
+        id: u.id || `${meetingId}-utt-${i + 1}`,
+        speaker: u.speaker,
+        speakerRole: u.speakerRole || undefined,
+        timestamp: u.timestamp,
+        timestampSeconds: u.timestampSeconds,
+        text: u.text,
+      })),
+      analysis: input.analysis
+        ? {
+            executiveSummary: input.analysis.executiveSummary,
+            keyTakeaways: input.analysis.keyTakeaways || [],
+            analyzedAt: input.analysis.analyzedAt || new Date().toISOString(),
+            actionItems: (input.analysis.actionItems || []).map((a, i) => ({
+              id: a.id || `${meetingId}-act-${i + 1}`,
+              task: a.task,
+              assignee: a.assignee || null,
+              dueDate: a.dueDate || null,
+              context: a.context || undefined,
+              completed: Boolean(a.completed),
+            })),
+            decisions: (input.analysis.decisions || []).map((d, i) => ({
+              id: d.id || `${meetingId}-dec-${i + 1}`,
+              decision: d.decision,
+              rationale: d.rationale || undefined,
+              madeBy: d.madeBy || undefined,
+              timestamp: d.timestamp || undefined,
+              timestampSeconds: d.timestampSeconds,
+            })),
+            highlights: (input.analysis.highlights || []).map((h, i) => ({
+              id: h.id || `${meetingId}-hl-${i + 1}`,
+              quote: h.quote,
+              speaker: h.speaker,
+              timestamp: h.timestamp,
+              timestampSeconds: h.timestampSeconds,
+              significance: h.significance,
+              category: h.category || 'key_moment',
+              isUserSaved: Boolean(h.isUserSaved),
+            })),
+          }
+        : null,
+      review: input.review || null,
+      isOwner: true,
+      isShared: false,
+    };
+
+    userData.meetings.unshift(newMeeting);
+    await writeJson(filePath, userData);
+    return newMeeting;
+  }
+
   async saveMeetingReview(
     _userId: string,
     _meetingId: string,

@@ -1,0 +1,207 @@
+{
+  "title": "Enterprise Sales Discovery: Acme Global Expansion",
+  "date": "Oct 26, 2026",
+  "durationMinutes": 35,
+  "template": "sales",
+  "participants": [
+    {
+      "name": "Sarah Chen",
+      "email": "sarah@fathom.ai",
+      "role": "VP of Customer Success",
+      "avatarColor": "bg-emerald-500"
+    },
+    {
+      "name": "Jordan Hayes",
+      "email": "jordan@acme.corp",
+      "role": "VP of Operations (Acme)",
+      "avatarColor": "bg-blue-600"
+    },
+    {
+      "name": "David Vance",
+      "email": "david@acme.corp",
+      "role": "Lead Security Architect (Acme)",
+      "avatarColor": "bg-slate-700"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "u-1",
+      "speaker": "Sarah Chen",
+      "speakerRole": "VP of Customer Success",
+      "timestamp": "00:00",
+      "timestampSeconds": 0,
+      "text": "Jordan, David, thank you both for joining today's session. Our goal is to review Acme's current meeting transcription workflow and understand your enterprise privacy requirements."
+    },
+    {
+      "id": "u-2",
+      "speaker": "Jordan Hayes",
+      "speakerRole": "VP of Operations (Acme)",
+      "timestamp": "01:20",
+      "timestampSeconds": 80,
+      "text": "Right now, our teams spend roughly 6 hours per week manually writing meeting recaps and chasing action items across Jira and Slack. We need automated summaries that integrate directly into our workflow."
+    },
+    {
+      "id": "u-3",
+      "speaker": "David Vance",
+      "speakerRole": "Lead Security Architect (Acme)",
+      "timestamp": "03:15",
+      "timestampSeconds": 195,
+      "text": "Security is our primary concern. We cannot have employee audio or transcript data used to train public foundation models. We require Bring-Your-Own-Key (BYOK) architecture and SOC2 compliance."
+    },
+    {
+      "id": "u-4",
+      "speaker": "Sarah Chen",
+      "speakerRole": "VP of Customer Success",
+      "timestamp": "05:40",
+      "timestampSeconds": 340,
+      "text": "That aligns perfectly with our architecture. With our BYOK model, your API keys stay strictly client-side or in your private tenant proxy. Meeting audio is processed ephemerally and never retained for model retraining."
+    },
+    {
+      "id": "u-5",
+      "speaker": "Jordan Hayes",
+      "speakerRole": "VP of Operations (Acme)",
+      "timestamp": "08:10",
+      "timestampSeconds": 490,
+      "text": "That sounds promising. What is the pricing model for a 250-seat rollout across our North America engineering and product divisions?"
+    },
+    {
+      "id": "u-6",
+      "speaker": "Sarah Chen",
+      "speakerRole": "VP of Customer Success",
+      "timestamp": "10:30",
+      "timestampSeconds": 630,
+      "text": "For enterprise tiers of 100+ seats, we offer annual tier packages with dedicated onboarding and SLA guarantees. I will follow up with our tailored proposal by Friday."
+    },
+    {
+      "id": "u-7",
+      "speaker": "David Vance",
+      "speakerRole": "Lead Security Architect (Acme)",
+      "timestamp": "12:45",
+      "timestampSeconds": 765,
+      "text": "Please also send over your standard vendor security assessment questionnaire (VSAQ) and data processing addendum (DPA) so our legal team can begin review."
+    },
+    {
+      "id": "u-8",
+      "speaker": "Jordan Hayes",
+      "speakerRole": "VP of Operations (Acme)",
+      "timestamp": "14:15",
+      "timestampSeconds": 855,
+      "text": "If security signs off, we want to start a 30-day pilot for 25 pilot users starting mid-November."
+    }
+  ],
+  "analysis": {
+    "executiveSummary": "Discovery call with Acme Global Operations and Security leads. Acme expressed urgent need to reduce the 6-hour weekly meeting documentation overhead while strictly enforcing enterprise data privacy via BYOK. Key requirements include SOC2 compliance, ephemeral audio processing, and a 25-user pilot leading to a 250-seat rollout.",
+    "keyTakeaways": [
+      "Customer currently loses ~6 hours per employee weekly on manual recaps and follow-up tracking.",
+      "Strict requirement: Bring-Your-Own-Key (BYOK) with zero AI model training on customer meeting data.",
+      "Target rollout: 25-user pilot in mid-November, expanding to 250 seats across North America.",
+      "Follow-up required: Security packet (VSAQ/DPA) and customized commercial proposal."
+    ],
+    "actionItems": [
+      {
+        "id": "act-1",
+        "task": "Send formal enterprise pricing proposal for 250 seats with pilot terms",
+        "assignee": "Sarah Chen",
+        "dueDate": "Oct 30, 2026",
+        "context": "Needs Friday delivery per Jordan Hayes request",
+        "completed": false
+      },
+      {
+        "id": "act-2",
+        "task": "Forward completed Vendor Security Assessment Questionnaire (VSAQ) and DPA",
+        "assignee": "Sarah Chen",
+        "dueDate": "Nov 2, 2026",
+        "context": "Send to David Vance for security/legal clearance",
+        "completed": false
+      },
+      {
+        "id": "act-3",
+        "task": "Provision private tenant sandbox for Acme 25-seat pilot",
+        "assignee": null,
+        "dueDate": "Nov 10, 2026",
+        "context": "Ensure BYOK custom proxy endpoint is configured",
+        "completed": false
+      }
+    ],
+    "decisions": [
+      {
+        "id": "dec-1",
+        "decision": "Structure onboarding as a 30-day paid pilot for 25 engineering leads prior to full 250-seat contract",
+        "rationale": "Allows Acme security team to observe real-world tenant isolation before company-wide rollout.",
+        "madeBy": "Jordan Hayes & Sarah Chen",
+        "timestamp": "14:15",
+        "timestampSeconds": 855
+      }
+    ],
+    "highlights": [
+      {
+        "id": "hl-1",
+        "quote": "Our teams spend roughly 6 hours per week manually writing meeting recaps and chasing action items across Jira and Slack.",
+        "speaker": "Jordan Hayes",
+        "timestamp": "01:20",
+        "timestampSeconds": 80,
+        "significance": "Core customer pain point and primary ROI driver",
+        "category": "risk",
+        "isUserSaved": false
+      },
+      {
+        "id": "hl-2",
+        "quote": "We cannot have employee audio or transcript data used to train public foundation models. We require Bring-Your-Own-Key (BYOK) architecture.",
+        "speaker": "David Vance",
+        "timestamp": "03:15",
+        "timestampSeconds": 195,
+        "significance": "Mandatory deal breaker security criteria",
+        "category": "decision",
+        "isUserSaved": true
+      }
+    ],
+    "analyzedAt": "2026-10-26T17:00:00.000Z"
+  },
+  "review": {
+    "overallScore": 76,
+    "summary": "Strong sales qualification and buyer interest, but notable follow-up gaps in sandbox provisioning ownership and legal DPA turnaround timelines.",
+    "unresolvedQuestions": [
+      {
+        "id": "q-1",
+        "question": "Does Acme require SSO integration (SAML/Okta) during the initial 25-seat pilot?",
+        "context": "David mentioned identity governance but SAML SSO was not explicitly scoped for Phase 1.",
+        "raisedBy": "David Vance",
+        "severity": "medium"
+      }
+    ],
+    "unassignedResponsibilities": [
+      {
+        "id": "u-1",
+        "task": "Provision private tenant sandbox and verify BYOK encryption keys",
+        "context": "Task identified but no solutions engineer assigned yet.",
+        "suggestedRole": "Solutions Architect / Devops Lead"
+      }
+    ],
+    "missingDeadlines": [
+      {
+        "id": "md-1",
+        "task": "Legal review of standard Data Processing Addendum (DPA)",
+        "assignee": "David Vance",
+        "urgency": "high"
+      }
+    ],
+    "missingDependencies": [
+      {
+        "id": "dep-1",
+        "blocker": "Security approval of Data Processing Addendum (DPA)",
+        "impactedArea": "Mid-November pilot launch",
+        "description": "Pilot cannot legally ingest proprietary code transcripts until Acme legal signs DPA."
+      }
+    ],
+    "contradictions": [],
+    "potentialRisks": [
+      {
+        "id": "r-1",
+        "risk": "Enterprise legal review could take 3-4 weeks, jeopardizing mid-November pilot launch target.",
+        "severity": "high",
+        "mitigation": "Proactively send pre-signed standard mutual NDA and click-through DPA immediately."
+      }
+    ],
+    "reviewedAt": "2026-10-26T17:05:00.000Z"
+  }
+}

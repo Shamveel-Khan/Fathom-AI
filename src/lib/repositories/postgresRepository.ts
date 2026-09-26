@@ -13,6 +13,7 @@ import {
 } from '@/lib/schemas/meeting';
 import { MeetingAnalysis, ActionItem, Decision } from '@/lib/schemas/analysis';
 import { AIReview } from '@/lib/schemas/review';
+import { ImportMeetingInput } from '@/lib/schemas/import';
 import { timestampToSeconds } from '@/lib/utils/time';
 
 function parseJsonField<T>(val: unknown, fallback: T): T {
@@ -399,6 +400,195 @@ export class PostgresMeetingRepository implements IMeetingRepository {
           }
         : undefined,
     }));
+  }
+
+  async importMeeting(userId: string, input: ImportMeetingInput): Promise<Meeting> {
+    const rawId = input.id?.trim();
+    const cleanId = rawId
+      ? (rawId.startsWith('mtg-') ? rawId : `mtg-${rawId}`)
+      : `mtg-imp-${crypto.randomUUID().slice(0, 8)}`;
+
+    // Ensure uniqueness: check if meeting ID already exists
+    const existing = await query<{ id: string }>(`SELECT id FROM meetings WHERE id = $1`, [cleanId]);
+    const finalMeetingId = existing.length > 0 ? `${cleanId}-${crypto.randomUUID().slice(0, 4)}` : cleanId;
+
+    const durationMinutes = Number(input.durationMinutes) || 30;
+    const template = input.template || 'general';
+
+    await withTransaction(async (client) => {
+      // 1. Insert Meeting
+      await queryClient(
+        client,
+        `INSERT INTO meetings (id, user_id, title, meeting_date, duration_minutes, video_url, template)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          finalMeetingId,
+          userId,
+          input.title.trim(),
+          input.date.trim(),
+          durationMinutes,
+          input.videoUrl || null,
+          template,
+        ]
+      );
+
+      // 2. Insert Participants
+      for (let i = 0; i < (input.participants || []).length; i++) {
+        const p = input.participants[i];
+        const participantId = `${finalMeetingId}-part-${i + 1}`;
+        await queryClient(
+          client,
+          `INSERT INTO participants (id, meeting_id, name, email, role, avatar_color)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [
+            participantId,
+            finalMeetingId,
+            p.name.trim(),
+            p.email?.trim() || null,
+            p.role?.trim() || null,
+            p.avatarColor?.trim() || null,
+          ]
+        );
+      }
+
+      // 3. Insert Transcript Utterances
+      for (let i = 0; i < (input.transcript || []).length; i++) {
+        const u = input.transcript[i];
+        const seconds = u.timestampSeconds ?? timestampToSeconds(u.timestamp);
+        const utteranceId = `${finalMeetingId}-utt-${i + 1}`;
+        await queryClient(
+          client,
+          `INSERT INTO transcript_utterances (id, meeting_id, speaker, speaker_role, timestamp, timestamp_seconds, text, sequence_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [
+            utteranceId,
+            finalMeetingId,
+            u.speaker.trim(),
+            u.speakerRole?.trim() || null,
+            u.timestamp.trim(),
+            seconds,
+            u.text.trim(),
+            i,
+          ]
+        );
+      }
+
+      // 4. Insert Analysis if present
+      if (input.analysis) {
+        const analysisId = `ans-${finalMeetingId}`;
+        await queryClient(
+          client,
+          `INSERT INTO analyses (id, meeting_id, executive_summary, key_takeaways, analyzed_at)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [
+            analysisId,
+            finalMeetingId,
+            input.analysis.executiveSummary.trim(),
+            JSON.stringify(input.analysis.keyTakeaways || []),
+            input.analysis.analyzedAt || new Date().toISOString(),
+          ]
+        );
+
+        // Action items
+        for (let i = 0; i < (input.analysis.actionItems || []).length; i++) {
+          const a = input.analysis.actionItems[i];
+          const actionId = `${finalMeetingId}-act-${i + 1}`;
+          await queryClient(
+            client,
+            `INSERT INTO action_items (id, meeting_id, task, assignee, due_date, context, completed)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+              actionId,
+              finalMeetingId,
+              a.task.trim(),
+              a.assignee?.trim() || null,
+              a.dueDate?.trim() || null,
+              a.context?.trim() || null,
+              Boolean(a.completed),
+            ]
+          );
+        }
+
+        // Decisions
+        for (let i = 0; i < (input.analysis.decisions || []).length; i++) {
+          const d = input.analysis.decisions[i];
+          const decisionId = `${finalMeetingId}-dec-${i + 1}`;
+          const ts = d.timestamp || '00:00';
+          const tsSecs = d.timestampSeconds ?? timestampToSeconds(ts);
+
+          await queryClient(
+            client,
+            `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by, timestamp, timestamp_seconds)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+              decisionId,
+              finalMeetingId,
+              d.decision.trim(),
+              d.rationale?.trim() || null,
+              d.madeBy?.trim() || null,
+              ts,
+              tsSecs,
+            ]
+          );
+        }
+
+        // Highlights
+        for (let i = 0; i < (input.analysis.highlights || []).length; i++) {
+          const h = input.analysis.highlights[i];
+          const hSecs = h.timestampSeconds ?? timestampToSeconds(h.timestamp);
+          const highlightId = `${finalMeetingId}-hl-${i + 1}`;
+          await queryClient(
+            client,
+            `INSERT INTO highlights (id, meeting_id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            [
+              highlightId,
+              finalMeetingId,
+              h.quote.trim(),
+              h.speaker.trim(),
+              h.timestamp.trim(),
+              hSecs,
+              h.significance?.trim() || null,
+              h.category || 'key_moment',
+              Boolean(h.isUserSaved),
+            ]
+          );
+        }
+      }
+
+      // 5. Insert AI Review if present
+      if (input.review) {
+        const rev = input.review;
+        const reviewId = `rev-${finalMeetingId}`;
+        await queryClient(
+          client,
+          `INSERT INTO ai_reviews (
+             id, meeting_id, overall_score, summary, unresolved_questions,
+             unassigned_responsibilities, missing_deadlines, missing_dependencies,
+             contradictions, potential_risks, reviewed_at
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+          [
+            reviewId,
+            finalMeetingId,
+            rev.overallScore ?? 85,
+            rev.summary || '',
+            JSON.stringify(rev.unresolvedQuestions || []),
+            JSON.stringify(rev.unassignedResponsibilities || []),
+            JSON.stringify(rev.missingDeadlines || []),
+            JSON.stringify(rev.missingDependencies || []),
+            JSON.stringify(rev.contradictions || []),
+            JSON.stringify(rev.potentialRisks || []),
+            rev.reviewedAt || new Date().toISOString(),
+          ]
+        );
+      }
+    });
+
+    const created = await this.getMeetingById(userId, finalMeetingId);
+    if (!created) {
+      throw new Error(`Failed to retrieve imported meeting ${finalMeetingId}`);
+    }
+    return created;
   }
 
   async getMeetingById(userId: string, meetingId: string): Promise<Meeting | null> {

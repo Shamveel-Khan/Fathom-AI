@@ -2,6 +2,7 @@ import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
 import { AIReview } from '@/lib/schemas/review';
+import { ImportMeetingInput } from '@/lib/schemas/import';
 import { SearchResultItem } from '@/lib/schemas/search';
 
 export interface GoogleProfile {
@@ -39,6 +40,7 @@ export interface IUserRepository {
 export interface IMeetingRepository {
   listMeetingsForUser(userId: string): Promise<MeetingSummary[]>;
   getMeetingById(userId: string, meetingId: string): Promise<Meeting | null>;
+  importMeeting(userId: string, input: ImportMeetingInput): Promise<Meeting>;
   saveMeetingAnalysis(
     userId: string,
     meetingId: string,

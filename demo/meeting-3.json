@@ -1,0 +1,170 @@
+{
+  "title": "Engineering Sync: Zero-Downtime Neon Database Migration",
+  "date": "Oct 24, 2026",
+  "durationMinutes": 25,
+  "template": "general",
+  "participants": [
+    {
+      "name": "Alex Rivera",
+      "email": "alex@fathom.ai",
+      "role": "Lead Infrastructure Engineer",
+      "avatarColor": "bg-indigo-500"
+    },
+    {
+      "name": "Marcus Brody",
+      "email": "marcus@fathom.ai",
+      "role": "Senior Backend Engineer",
+      "avatarColor": "bg-amber-500"
+    },
+    {
+      "name": "Priya Nair",
+      "email": "priya@fathom.ai",
+      "role": "Site Reliability Engineer",
+      "avatarColor": "bg-teal-500"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "u-1",
+      "speaker": "Alex Rivera",
+      "speakerRole": "Lead Infrastructure Engineer",
+      "timestamp": "00:00",
+      "timestampSeconds": 0,
+      "text": "Hey team, this is our final pre-flight sync before executing the database migration to Neon serverless PostgreSQL tonight at 02:00 UTC."
+    },
+    {
+      "id": "u-2",
+      "speaker": "Priya Nair",
+      "speakerRole": "Site Reliability Engineer",
+      "timestamp": "01:10",
+      "timestampSeconds": 70,
+      "text": "All synthetic read/write health checks passed on our staging environment. Connection pooling with PgBouncer handled 2,000 concurrent websocket connections without dropping a single packet."
+    },
+    {
+      "id": "u-3",
+      "speaker": "Marcus Brody",
+      "speakerRole": "Senior Backend Engineer",
+      "timestamp": "02:35",
+      "timestampSeconds": 155,
+      "text": "I verified all GIN indexes on meetings, transcript utterances, and action items. Search query times dropped from 320ms to 18ms."
+    },
+    {
+      "id": "u-4",
+      "speaker": "Alex Rivera",
+      "speakerRole": "Lead Infrastructure Engineer",
+      "timestamp": "04:00",
+      "timestampSeconds": 240,
+      "text": "What is our rollback plan in the unlikely event of replication drift during the 5-minute read-only window?"
+    },
+    {
+      "id": "u-5",
+      "speaker": "Priya Nair",
+      "speakerRole": "Site Reliability Engineer",
+      "timestamp": "05:20",
+      "timestampSeconds": 320,
+      "text": "We maintain dual-writes for 60 minutes post-cutover. If error rate exceeds 0.05%, DNS and database connection strings revert automatically in under 15 seconds."
+    },
+    {
+      "id": "u-6",
+      "speaker": "Marcus Brody",
+      "speakerRole": "Senior Backend Engineer",
+      "timestamp": "07:15",
+      "timestampSeconds": 435,
+      "text": "I will monitor query telemetry and slow query logs during the first 2 hours post-cutover."
+    },
+    {
+      "id": "u-7",
+      "speaker": "Alex Rivera",
+      "speakerRole": "Lead Infrastructure Engineer",
+      "timestamp": "08:50",
+      "timestampSeconds": 530,
+      "text": "Sounds like we are 100% prepared. Let's reconvene on the incident channel at 01:45 UTC tonight."
+    }
+  ],
+  "analysis": {
+    "executiveSummary": "Final pre-flight engineering review for the Neon Serverless PostgreSQL migration scheduled for 02:00 UTC. Load testing confirmed 2,000 concurrent connection capacity with PgBouncer and an 18ms search response time via GIN indexing. Automated rollback and 60-minute dual-write safety windows were confirmed.",
+    "keyTakeaways": [
+      "Cutover window scheduled for tonight at 02:00 UTC with automated health checks.",
+      "GIN full-text search indexing verified, reducing query latency from 320ms to 18ms.",
+      "Rollback mechanism verified: automated DNS switchover under 15 seconds if error rate exceeds 0.05%.",
+      "Post-migration monitoring: Marcus Brody handling telemetry and query analysis for 2 hours post-launch."
+    ],
+    "actionItems": [
+      {
+        "id": "act-1",
+        "task": "Initiate read-only maintenance banner in app UI at 01:55 UTC",
+        "assignee": "Alex Rivera",
+        "dueDate": "Oct 24, 2026",
+        "context": "5 minutes prior to cutover",
+        "completed": true
+      },
+      {
+        "id": "act-2",
+        "task": "Monitor connection pool metrics and PgBouncer saturation on production dashboard",
+        "assignee": "Priya Nair",
+        "dueDate": "Oct 24, 2026",
+        "context": "During 02:00 - 04:00 UTC window",
+        "completed": false
+      },
+      {
+        "id": "act-3",
+        "task": "Verify full-text search GIN index consistency and log query times",
+        "assignee": "Marcus Brody",
+        "dueDate": "Oct 24, 2026",
+        "context": "Execute synthetic transcript searches post-migration",
+        "completed": false
+      }
+    ],
+    "decisions": [
+      {
+        "id": "dec-1",
+        "decision": "Execute production database cutover to Neon at 02:00 UTC with 60-minute dual-write safety window",
+        "rationale": "Historical traffic is at minimum weekly baseline, minimizing disruption.",
+        "madeBy": "Alex Rivera & Priya Nair",
+        "timestamp": "00:00",
+        "timestampSeconds": 0
+      }
+    ],
+    "highlights": [
+      {
+        "id": "hl-1",
+        "quote": "Connection pooling with PgBouncer handled 2,000 concurrent websocket connections without dropping a single packet.",
+        "speaker": "Priya Nair",
+        "timestamp": "01:10",
+        "timestampSeconds": 70,
+        "significance": "Key scalability benchmark validation",
+        "category": "action",
+        "isUserSaved": false
+      },
+      {
+        "id": "hl-2",
+        "quote": "Search query times dropped from 320ms to 18ms.",
+        "speaker": "Marcus Brody",
+        "timestamp": "02:35",
+        "timestampSeconds": 155,
+        "significance": "17x search latency improvement on PostgreSQL GIN indexes",
+        "category": "decision",
+        "isUserSaved": true
+      }
+    ],
+    "analyzedAt": "2026-10-24T18:00:00.000Z"
+  },
+  "review": {
+    "overallScore": 95,
+    "summary": "Flawless operational alignment with explicit rollback thresholds, low traffic timing, and clear SRE duty assignments.",
+    "unresolvedQuestions": [],
+    "unassignedResponsibilities": [],
+    "missingDeadlines": [],
+    "missingDependencies": [],
+    "contradictions": [],
+    "potentialRisks": [
+      {
+        "id": "r-1",
+        "risk": "Temporary connection spikes during DNS TTL expiration if clients cache old IP address.",
+        "severity": "low",
+        "mitigation": "Set DNS TTL to 60 seconds 24 hours ahead of cutover."
+      }
+    ],
+    "reviewedAt": "2026-10-24T18:05:00.000Z"
+  }
+}
