@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { query, withTransaction, queryClient } from '@/lib/db/client';
-import { User, UserAccount } from '@/lib/auth/types';
+import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
+import { IUserRepository, IMeetingRepository, GoogleProfile } from './types';
 import {
   Meeting,
   MeetingSummary,
@@ -11,7 +12,6 @@ import {
 } from '@/lib/schemas/meeting';
 import { MeetingAnalysis, ActionItem, Decision } from '@/lib/schemas/analysis';
 import { timestampToSeconds } from '@/lib/utils/time';
-import { IUserRepository, IMeetingRepository } from './types';
 
 // -------------------------------------------------------
 // Postgres User Repository
@@ -23,11 +23,12 @@ export class PostgresUserRepository implements IUserRepository {
       id: string;
       name: string;
       email: string;
-      password: string;
+      password_hash: string | null;
       role: string | null;
       avatar_color: string | null;
+      avatar_url: string | null;
     }>(
-      `SELECT id, name, email, password, role, avatar_color
+      `SELECT id, name, email, password_hash, role, avatar_color, avatar_url
        FROM users
        WHERE LOWER(email) = LOWER($1)`,
       [email.trim()]
@@ -39,10 +40,10 @@ export class PostgresUserRepository implements IUserRepository {
       id: r.id,
       name: r.name,
       email: r.email,
-      password: r.password,
+      passwordHash: r.password_hash,
       role: r.role || undefined,
       avatarColor: r.avatar_color || undefined,
-      dataFile: `${r.id}.json`,
+      avatarUrl: r.avatar_url || undefined,
     };
   }
 
@@ -53,8 +54,9 @@ export class PostgresUserRepository implements IUserRepository {
       email: string;
       role: string | null;
       avatar_color: string | null;
+      avatar_url: string | null;
     }>(
-      `SELECT id, name, email, role, avatar_color
+      `SELECT id, name, email, role, avatar_color, avatar_url
        FROM users
        WHERE id = $1`,
       [id]
@@ -68,6 +70,7 @@ export class PostgresUserRepository implements IUserRepository {
       email: r.email,
       role: r.role || undefined,
       avatarColor: r.avatar_color || undefined,
+      avatarUrl: r.avatar_url || undefined,
     };
   }
 
@@ -78,7 +81,8 @@ export class PostgresUserRepository implements IUserRepository {
       email: string;
       role: string | null;
       avatar_color: string | null;
-    }>(`SELECT id, name, email, role, avatar_color FROM users ORDER BY name ASC`);
+      avatar_url: string | null;
+    }>(`SELECT id, name, email, role, avatar_color, avatar_url FROM users ORDER BY name ASC`);
 
     return rows.map((r) => ({
       id: r.id,
@@ -86,13 +90,105 @@ export class PostgresUserRepository implements IUserRepository {
       email: r.email,
       role: r.role || undefined,
       avatarColor: r.avatar_color || undefined,
+      avatarUrl: r.avatar_url || undefined,
     }));
+  }
+
+  async createUser(data: CreateUserInput): Promise<User> {
+    const id = `user-${crypto.randomUUID()}`;
+    const rows = await query<{
+      id: string;
+      name: string;
+      email: string;
+      role: string | null;
+      avatar_color: string | null;
+      avatar_url: string | null;
+    }>(
+      `INSERT INTO users (id, name, email, password, password_hash, updated_at)
+       VALUES ($1, $2, $3, '', $4, NOW())
+       RETURNING id, name, email, role, avatar_color, avatar_url`,
+      [id, data.name.trim(), data.email.toLowerCase().trim(), data.passwordHash]
+    );
+    const r = rows[0];
+    return {
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      role: r.role || undefined,
+      avatarColor: r.avatar_color || undefined,
+      avatarUrl: r.avatar_url || undefined,
+    };
+  }
+
+  async findOrCreateOAuthUser(
+    provider: string,
+    providerAccountId: string,
+    profile: GoogleProfile
+  ): Promise<User> {
+    // 1. Check if this OAuth account already exists
+    const oauthRows = await query<{ user_id: string }>(
+      `SELECT user_id FROM oauth_accounts WHERE provider = $1 AND provider_account_id = $2`,
+      [provider, providerAccountId]
+    );
+
+    if (oauthRows.length > 0) {
+      const user = await this.findById(oauthRows[0].user_id);
+      if (!user) throw new Error('OAuth user_id points to a non-existent user.');
+      return user;
+    }
+
+    // 2. Check if a user with the same email exists (link accounts)
+    const existingUser = await this.findByEmail(profile.email);
+    if (existingUser) {
+      await this.linkOAuthAccount(existingUser.id, provider, providerAccountId);
+      // Optionally update avatar_url from Google profile
+      if (profile.picture) {
+        await query(
+          `UPDATE users SET avatar_url = $1, updated_at = NOW() WHERE id = $2`,
+          [profile.picture, existingUser.id]
+        );
+      }
+      return existingUser;
+    }
+
+    // 3. Create a brand-new user + link OAuth account (in a transaction)
+    const newUserId = `user-${crypto.randomUUID()}`;
+    await withTransaction(async (client) => {
+      await queryClient(
+        client,
+        `INSERT INTO users (id, name, email, password, avatar_url, updated_at)
+         VALUES ($1, $2, $3, '', $4, NOW())`,
+        [newUserId, profile.name, profile.email.toLowerCase(), profile.picture ?? null]
+      );
+      const oauthId = `oauth-${crypto.randomUUID()}`;
+      await queryClient(
+        client,
+        `INSERT INTO oauth_accounts (id, user_id, provider, provider_account_id)
+         VALUES ($1, $2, $3, $4)`,
+        [oauthId, newUserId, provider, providerAccountId]
+      );
+    });
+
+    const newUser = await this.findById(newUserId);
+    if (!newUser) throw new Error('Failed to retrieve newly created OAuth user.');
+    return newUser;
+  }
+
+  async linkOAuthAccount(
+    userId: string,
+    provider: string,
+    providerAccountId: string
+  ): Promise<void> {
+    const id = `oauth-${crypto.randomUUID()}`;
+    await query(
+      `INSERT INTO oauth_accounts (id, user_id, provider, provider_account_id)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (provider, provider_account_id) DO NOTHING`,
+      [id, userId, provider, providerAccountId]
+    );
   }
 }
 
-// -------------------------------------------------------
-// Postgres Meeting Repository
-// -------------------------------------------------------
 
 export class PostgresMeetingRepository implements IMeetingRepository {
   async listMeetingsForUser(userId: string): Promise<MeetingSummary[]> {

@@ -1,18 +1,26 @@
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 import { User } from './types';
+import { signSession, verifySession, SessionPayload } from './jwt';
 import { userRepository } from '@/lib/repositories';
 
-const SESSION_COOKIE = 'fathom_session_user_id';
+export const SESSION_COOKIE = 'fathom_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 // -------------------------------------------------------
 // Server-side session helpers (use in Route Handlers / Server Components)
 // -------------------------------------------------------
 
-export async function getSessionUserId(): Promise<string | null> {
+export async function getSessionPayload(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
-  return cookieStore.get(SESSION_COOKIE)?.value ?? null;
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  return verifySession(token);
+}
+
+export async function getSessionUserId(): Promise<string | null> {
+  const payload = await getSessionPayload();
+  return payload?.userId ?? null;
 }
 
 export async function getCurrentUser(): Promise<User | null> {
@@ -23,25 +31,41 @@ export async function getCurrentUser(): Promise<User | null> {
 
 /**
  * Use in Route Handlers where we have a NextRequest.
- * Avoids the need to call cookies() from the dynamic context.
+ * Reads and verifies the JWT from the cookie header.
  */
-export function getUserIdFromRequest(req: NextRequest): string | null {
-  return req.cookies.get(SESSION_COOKIE)?.value ?? null;
+export async function getSessionPayloadFromRequest(
+  req: NextRequest
+): Promise<SessionPayload | null> {
+  const token = req.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  return verifySession(token);
 }
 
+export async function getUserIdFromRequest(
+  req: NextRequest
+): Promise<string | null> {
+  const payload = await getSessionPayloadFromRequest(req);
+  return payload?.userId ?? null;
+}
+
+
 export async function getUserFromRequest(req: NextRequest): Promise<User | null> {
-  const userId = getUserIdFromRequest(req);
-  if (!userId) return null;
-  return userRepository.findById(userId);
+  const payload = await getSessionPayloadFromRequest(req);
+  if (!payload) return null;
+  return userRepository.findById(payload.userId);
 }
 
 // -------------------------------------------------------
 // Cookie set / clear helpers — call from Route Handlers only
 // -------------------------------------------------------
 
-export async function setSessionCookie(userId: string): Promise<void> {
+export async function setSessionCookie(
+  userId: string,
+  email: string
+): Promise<void> {
+  const token = await signSession({ userId, email });
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, userId, {
+  cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

@@ -6,9 +6,21 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    avatar_url VARCHAR(500),
     role VARCHAR(255),
     avatar_color VARCHAR(64),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS oauth_accounts (
+    id VARCHAR(128) PRIMARY KEY,
+    user_id VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    provider VARCHAR(64) NOT NULL,
+    provider_account_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (provider, provider_account_id)
 );
 
 CREATE TABLE IF NOT EXISTS meetings (
@@ -89,6 +101,11 @@ ALTER TABLE highlights ALTER COLUMN id TYPE VARCHAR(128);
 ALTER TABLE analyses ALTER COLUMN id TYPE VARCHAR(128);
 ALTER TABLE participants ALTER COLUMN id TYPE VARCHAR(128);
 
+-- Add new auth columns to existing users table (idempotent)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(500);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_meetings_user_id ON meetings(user_id);
 CREATE INDEX IF NOT EXISTS idx_participants_meeting_id ON participants(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_meeting_id ON transcript_utterances(meeting_id);
@@ -97,6 +114,7 @@ CREATE INDEX IF NOT EXISTS idx_action_items_meeting_id ON action_items(meeting_i
 CREATE INDEX IF NOT EXISTS idx_decisions_meeting_id ON decisions(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_id ON highlights(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id, timestamp_seconds);
+CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
 `;
 
 export async function runMigrations(): Promise<void> {

@@ -1,6 +1,13 @@
-import { User, UserAccount } from '@/lib/auth/types';
+import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
+
+export interface GoogleProfile {
+  sub: string;
+  name: string;
+  email: string;
+  picture?: string;
+}
 
 // -------------------------------------------------------
 // User Repository Interface
@@ -9,7 +16,19 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<UserAccount | null>;
   findById(id: string): Promise<User | null>;
   listAll(): Promise<User[]>;
+  createUser(data: CreateUserInput): Promise<User>;
+  findOrCreateOAuthUser(
+    provider: string,
+    providerAccountId: string,
+    profile: GoogleProfile
+  ): Promise<User>;
+  linkOAuthAccount(
+    userId: string,
+    provider: string,
+    providerAccountId: string
+  ): Promise<void>;
 }
+
 
 // -------------------------------------------------------
 // Meeting Repository Interface

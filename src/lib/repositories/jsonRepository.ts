@@ -1,11 +1,22 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { User, UserAccount } from '@/lib/auth/types';
+import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
-import { IUserRepository, IMeetingRepository } from './types';
+import { IUserRepository, IMeetingRepository, GoogleProfile } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
+
+// The JSON files on disk still use the legacy schema
+interface LegacyUserRecord {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  dataFile: string;
+  role?: string;
+  avatarColor?: string;
+}
 
 interface UserDataFile {
   user: User;
@@ -39,35 +50,60 @@ function toMeetingSummary(meeting: Meeting): MeetingSummary {
 export class JsonUserRepository implements IUserRepository {
   private readonly usersPath = path.join(DATA_DIR, 'users.json');
 
+  private async readLegacyUsers(): Promise<LegacyUserRecord[]> {
+    return readJson<LegacyUserRecord[]>(this.usersPath);
+  }
+
   async findByEmail(email: string): Promise<UserAccount | null> {
-    const users = await readJson<UserAccount[]>(this.usersPath);
-    return users.find((u) => u.email === email) ?? null;
+    const users = await this.readLegacyUsers();
+    const u = users.find((r) => r.email.toLowerCase() === email.toLowerCase().trim());
+    if (!u) return null;
+    return {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      avatarColor: u.avatarColor,
+      // Legacy JSON stores plaintext password — expose as passwordHash so
+      // the login route can do a plain comparison in dev mode.
+      // The Postgres repo uses real bcrypt hashes in production.
+      passwordHash: u.password,
+    };
   }
 
   async findById(id: string): Promise<User | null> {
-    const users = await readJson<UserAccount[]>(this.usersPath);
-    const account = users.find((u) => u.id === id);
-    if (!account) return null;
-    const { password: _pw, dataFile: _df, ...user } = account;
-    return user;
+    const users = await this.readLegacyUsers();
+    const u = users.find((r) => r.id === id);
+    if (!u) return null;
+    return { id: u.id, name: u.name, email: u.email, role: u.role, avatarColor: u.avatarColor };
   }
 
   async listAll(): Promise<User[]> {
-    const users = await readJson<UserAccount[]>(this.usersPath);
-    return users.map(({ password: _pw, dataFile: _df, ...user }) => user);
+    const users = await this.readLegacyUsers();
+    return users.map((u) => ({ id: u.id, name: u.name, email: u.email, role: u.role, avatarColor: u.avatarColor }));
   }
 
-  async getFullAccount(id: string): Promise<UserAccount | null> {
-    const users = await readJson<UserAccount[]>(this.usersPath);
-    return users.find((u) => u.id === id) ?? null;
+  // Not implemented for JSON repo — only the Postgres repo supports auth mutations
+  async createUser(_data: CreateUserInput): Promise<User> {
+    throw new Error('createUser is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
+  }
+
+  async findOrCreateOAuthUser(_provider: string, _id: string, _profile: GoogleProfile): Promise<User> {
+    throw new Error('OAuth is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
+  }
+
+  async linkOAuthAccount(_userId: string, _provider: string, _accountId: string): Promise<void> {
+    throw new Error('OAuth is not supported by the JSON repository. Set DATABASE_URL to use PostgreSQL.');
   }
 }
+
+
 
 export class JsonMeetingRepository implements IMeetingRepository {
   private readonly usersPath = path.join(DATA_DIR, 'users.json');
 
   private async getUserDataFilePath(userId: string): Promise<string | null> {
-    const users = await readJson<UserAccount[]>(this.usersPath);
+    const users = await readJson<LegacyUserRecord[]>(this.usersPath);
     const account = users.find((u) => u.id === userId);
     if (!account) return null;
     return path.join(DATA_DIR, account.dataFile);

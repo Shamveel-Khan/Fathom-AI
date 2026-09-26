@@ -83,13 +83,21 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
               >
-                <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white ${
-                    user.avatarColor || 'bg-slate-600'
-                  }`}
-                >
-                  {initials}
-                </div>
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="w-7 h-7 rounded-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white ${
+                      user.avatarColor || 'bg-slate-600'
+                    }`}
+                  >
+                    {initials}
+                  </div>
+                )}
                 <div className="hidden sm:block text-left">
                   <p className="text-xs font-semibold text-slate-900 leading-tight">{user.name}</p>
                   <p className="text-[10px] text-slate-500 leading-tight">{user.role}</p>

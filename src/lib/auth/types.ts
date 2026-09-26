@@ -4,14 +4,23 @@ export interface User {
   email: string;
   role?: string;
   avatarColor?: string;
+  avatarUrl?: string;
 }
 
-// Full account record stored in users.json (includes password & file pointer)
+// Full account record used internally for authentication
+// passwordHash is null for OAuth-only accounts
 export interface UserAccount extends User {
-  password: string;
-  dataFile: string;
+  passwordHash: string | null;
+}
+
+// Input type for creating a new user via email/password signup
+export interface CreateUserInput {
+  name: string;
+  email: string;
+  passwordHash: string;
 }
 
 export interface Session {
   userId: string;
+  email: string;
 }

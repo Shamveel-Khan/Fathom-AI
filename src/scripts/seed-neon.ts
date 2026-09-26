@@ -4,7 +4,7 @@ import path from 'path';
 import { runMigrations } from '../lib/db/migrate';
 import { withTransaction, queryClient } from '../lib/db/client';
 import { timestampToSeconds } from '../lib/utils/time';
-import { UserAccount } from '../lib/auth/types';
+import { hashPassword } from '../lib/auth/password';
 import { Meeting } from '../lib/schemas/meeting';
 
 interface UserDataFile {
@@ -16,6 +16,16 @@ interface UserDataFile {
     avatarColor?: string;
   };
   meetings: Meeting[];
+}
+
+interface RawSeedUser {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  dataFile: string;
+  role?: string;
+  avatarColor?: string;
 }
 
 export async function seedDatabase() {
@@ -38,14 +48,14 @@ export async function seedDatabase() {
     process.exit(1);
   }
 
-  const users = JSON.parse(rawUsers) as UserAccount[];
+  const users = JSON.parse(rawUsers) as RawSeedUser[];
   if (!Array.isArray(users) || users.length === 0) {
     console.error('FATAL: No users found in users.json seed fixture.');
     process.exit(1);
   }
 
   // Pre-load and validate all user meeting files before database writes
-  const userFiles: { account: UserAccount; data: UserDataFile }[] = [];
+  const userFiles: { account: RawSeedUser; data: UserDataFile }[] = [];
   for (const userAccount of users) {
     if (!userAccount.id || !userAccount.email || !userAccount.dataFile) {
       throw new Error(`Invalid user record in users.json: ${JSON.stringify(userAccount)}`);
@@ -69,22 +79,27 @@ export async function seedDatabase() {
     for (const { account: userAccount, data: userData } of userFiles) {
       console.log(`Seeding user: ${userAccount.name} (${userAccount.email})`);
 
+      const passwordHash = await hashPassword(userAccount.password || 'password123');
+
       // 1. Upsert User
       await queryClient(
         client,
-        `INSERT INTO users (id, name, email, password, role, avatar_color)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO users (id, name, email, password, password_hash, role, avatar_color, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
          ON CONFLICT (id) DO UPDATE SET
            name = EXCLUDED.name,
            email = EXCLUDED.email,
            password = EXCLUDED.password,
+           password_hash = EXCLUDED.password_hash,
            role = EXCLUDED.role,
-           avatar_color = EXCLUDED.avatar_color`,
+           avatar_color = EXCLUDED.avatar_color,
+           updated_at = NOW()`,
         [
           userAccount.id,
           userAccount.name,
           userAccount.email,
           userAccount.password,
+          passwordHash,
           userAccount.role || null,
           userAccount.avatarColor || null,
         ]
