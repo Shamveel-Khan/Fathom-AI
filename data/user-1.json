@@ -1,0 +1,113 @@
+{
+  "user": {
+    "id": "user-1",
+    "name": "Sarah Chen",
+    "email": "sarah@fathom.ai",
+    "role": "Head of Product",
+    "avatarColor": "bg-emerald-500"
+  },
+  "meetings": [
+    {
+      "id": "mtg-101",
+      "title": "Q3 Product Launch Sync & Risk Assessment",
+      "date": "October 14, 2026",
+      "durationMinutes": 32,
+      "participants": [
+        { "name": "Sarah Chen", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
+        { "name": "Alex Rivera", "role": "Lead Frontend Engineer", "avatarColor": "bg-indigo-500" },
+        { "name": "Marcus Brody", "role": "Backend Infrastructure Lead", "avatarColor": "bg-amber-500" },
+        { "name": "Elena Rostova", "role": "Product Marketing Manager", "avatarColor": "bg-rose-500" }
+      ],
+      "transcript": [
+        { "id": "u-01", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:04", "text": "Thanks everyone for hopping on. Let's do a fast sync on our Q3 feature rollout. We have three main items: the real-time AI summary engine, workspace migration, and the updated billing tiers for enterprise." },
+        { "id": "u-02", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "00:38", "text": "On the frontend side, the new meeting timeline viewer and AI action-items panel are 95% complete. We tested latency with 50+ participants and client memory stayed rock-solid under 45MB." },
+        { "id": "u-03", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "01:12", "text": "That's huge Alex. What about the interactive checklist sync for action items? Can users edit owners directly from the summary?" },
+        { "id": "u-04", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "01:29", "text": "Yes, clicking any task lets you reassign or toggle status immediately. It pushes changes optimistically to state." },
+        { "id": "u-05", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "02:05", "text": "Speaking of infrastructure, we load-tested the LLM proxy handler. When handling simultaneous transcript requests, rate-limiting could trigger if users blast 20 summaries a minute on free tiers." },
+        { "id": "u-06", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "02:35", "text": "Good catch. We decided last week to enforce Bring-Your-Own-Key (BYOK) for power users, while free tier users get a capped 5 AI runs per day. Marcus, can we finalize that token-bucket limiter by Wednesday?" },
+        { "id": "u-07", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "03:10", "text": "Definitely. I will implement the Redis token-bucket middleware and write integration tests by Wednesday 4 PM." },
+        { "id": "u-08", "speaker": "Elena Rostova", "speakerRole": "Product Marketing Manager", "timestamp": "03:45", "text": "From marketing, customer feedback on the preview video was phenomenal. The headline feature they love is the 'Decision Tracker' and auto-generated action item bullets." },
+        { "id": "u-09", "speaker": "Elena Rostova", "speakerRole": "Product Marketing Manager", "timestamp": "04:18", "text": "One request: can we ensure the export-to-Slack and copy-markdown button includes timestamp links back into the transcript lines?" },
+        { "id": "u-10", "speaker": "Alex Rivera", "speakerRole": "Lead Frontend Engineer", "timestamp": "04:42", "text": "I can add deep link timestamps into the copy markdown payload today. It's a quick 1-hour task." },
+        { "id": "u-11", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "05:15", "text": "Awesome. Let's make that an official decision: all clipboard exports will contain deep-linked transcript timestamps by default." },
+        { "id": "u-12", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "05:40", "text": "Elena, what's our timeline for the changelog and release blog post?" },
+        { "id": "u-13", "speaker": "Elena Rostova", "speakerRole": "Product Marketing Manager", "timestamp": "06:02", "text": "Draft will be ready for review by Thursday morning. If Marcus and Alex give the all-clear on staging by Friday noon, we blast the email newsletter at 2 PM EST." },
+        { "id": "u-14", "speaker": "Marcus Brody", "speakerRole": "Backend Infrastructure Lead", "timestamp": "06:30", "text": "Sounds great. Staging deployment is scheduled for Thursday night so QA has all Friday morning to run smoke tests." },
+        { "id": "u-15", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "07:05", "text": "Perfect sync team. Let's execute. Alex handles deep links, Marcus finishes the limiter, Elena drafts the release notes, and I'll review pricing tier copy. Talk soon!" }
+      ],
+      "analysis": {
+        "executiveSummary": "The team conducted a Q3 feature rollout and risk assessment sync covering three primary pillars: the real-time AI summary engine, workspace migration, and updated billing tiers. Frontend reporting confirmed 95% completion with robust latency and memory profiles. Infrastructure raised token-bucket rate limits on LLM proxy handlers, leading to an agreed policy of Bring-Your-Own-Key (BYOK) for power users. All marketing and deployment milestones remain on track for Friday.",
+        "keyTakeaways": [
+          "Frontend meeting timeline and AI action-items panel are 95% complete with under 45MB memory usage.",
+          "Adopted BYOK model for power users and 5 runs/day limit for free users.",
+          "Decision made to include transcript deep-link timestamps in all clipboard/Slack exports.",
+          "Staging deployment set for Thursday night with public marketing launch Friday at 2 PM EST."
+        ],
+        "actionItems": [
+          { "id": "act-1", "task": "Implement Redis token-bucket limiter and integration tests", "assignee": "Marcus Brody", "context": "To prevent rate limiting when users run simultaneous transcript summaries", "completed": false },
+          { "id": "act-2", "task": "Add deep-link timestamps to copy-to-markdown export payload", "assignee": "Alex Rivera", "context": "Requested by marketing for richer Slack and documentation sharing", "completed": false },
+          { "id": "act-3", "task": "Finalize draft of release notes and changelog blog post", "assignee": "Elena Rostova", "context": "Draft due Thursday morning ahead of Friday 2 PM newsletter blast", "completed": false },
+          { "id": "act-4", "task": "Review pricing tier copy for enterprise billing update", "assignee": "Sarah Chen", "context": "Part of Q3 launch deliverables", "completed": false }
+        ],
+        "decisions": [
+          { "id": "dec-1", "decision": "Enforce BYOK for high-frequency AI users while capping free tier to 5 daily runs", "rationale": "Mitigate LLM proxy rate limits and manage API compute overhead", "madeBy": "Sarah Chen & Marcus Brody" },
+          { "id": "dec-2", "decision": "All exported summaries will include transcript deep-link timestamps by default", "rationale": "Provides seamless verification back to the source audio/utterance moment", "madeBy": "Sarah Chen" },
+          { "id": "dec-3", "decision": "Staging deployment locked for Thursday night to guarantee QA smoke testing Friday morning", "rationale": "Prevents release day bugs before the 2 PM EST public announcement", "madeBy": "Marcus Brody" }
+        ],
+        "highlights": [
+          { "id": "hl-1", "quote": "We tested latency with 50+ participants and client memory stayed rock-solid under 45MB.", "speaker": "Alex Rivera", "timestamp": "00:38", "significance": "Validates frontend scalability for enterprise-scale calls." },
+          { "id": "hl-2", "quote": "All clipboard exports will contain deep-linked transcript timestamps by default.", "speaker": "Sarah Chen", "timestamp": "05:15", "significance": "Core UX differentiator connecting AI summaries directly to source evidence." }
+        ],
+        "analyzedAt": "2026-10-14T10:35:00Z"
+      }
+    },
+    {
+      "id": "mtg-102",
+      "title": "Enterprise Customer Discovery — Acme Corp",
+      "date": "October 15, 2026",
+      "durationMinutes": 45,
+      "participants": [
+        { "name": "Sarah Chen", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
+        { "name": "James Morton", "role": "Acme Corp VP of Engineering", "avatarColor": "bg-violet-500" },
+        { "name": "Linda Park", "role": "Acme Corp Head of IT", "avatarColor": "bg-sky-500" }
+      ],
+      "transcript": [
+        { "id": "u-01", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:03", "text": "James, Linda, thanks for making time. I want to understand your meeting workflow deeply before showing anything. How does your team currently capture decisions after standups?" },
+        { "id": "u-02", "speaker": "James Morton", "speakerRole": "Acme VP Engineering", "timestamp": "00:42", "text": "Honestly, it's a mess. Engineers take personal notes, the PM tries to compile a Confluence doc after each meeting, and half the time action items just fall through the cracks." },
+        { "id": "u-03", "speaker": "Linda Park", "speakerRole": "Acme Head of IT", "timestamp": "01:28", "text": "Our biggest pain is security. We had a compliance audit last quarter. The auditors wanted evidence of who decided what and when. We couldn't produce a clean record." },
+        { "id": "u-04", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "02:10", "text": "That's really important context Linda. Would a timestamped, searchable decision log per meeting solve that audit trail problem?" },
+        { "id": "u-05", "speaker": "Linda Park", "speakerRole": "Acme Head of IT", "timestamp": "02:55", "text": "Absolutely. If it could also export to PDF or integrate with our JIRA, that would be transformative for us." },
+        { "id": "u-06", "speaker": "James Morton", "speakerRole": "Acme VP Engineering", "timestamp": "03:30", "text": "How does your AI handle confidential content? Our engineering discussions touch on unreleased roadmap items. We cannot have that going through a third-party model." },
+        { "id": "u-07", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "04:05", "text": "Good question James. We support Bring-Your-Own-Key so your data goes directly to your own OpenAI organization account. We never store the content of calls on our servers." },
+        { "id": "u-08", "speaker": "James Morton", "speakerRole": "Acme VP Engineering", "timestamp": "04:50", "text": "That actually unblocks a hard requirement. If we can confirm SOC2 compliance on your infrastructure side, I can see a pilot with 20 engineers starting in Q1." },
+        { "id": "u-09", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "05:20", "text": "We're on track for SOC2 Type II by year end. I'll send you the roadmap and our existing security documentation this week." },
+        { "id": "u-10", "speaker": "Linda Park", "speakerRole": "Acme Head of IT", "timestamp": "05:55", "text": "One more thing — can the meeting bot join Zoom and Teams without requiring special software installs on every device?" },
+        { "id": "u-11", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "06:35", "text": "Yes, our bot joins as a standard meeting participant via the Zoom / Teams meeting link. No device agents required." },
+        { "id": "u-12", "speaker": "James Morton", "speakerRole": "Acme VP Engineering", "timestamp": "07:10", "text": "Perfect. Let's schedule a technical deep-dive with my lead architect next week. I think we're ready to move this from evaluation to pilot planning." }
+      ],
+      "analysis": null
+    },
+    {
+      "id": "mtg-103",
+      "title": "Weekly Product & Design Critique",
+      "date": "October 16, 2026",
+      "durationMinutes": 28,
+      "participants": [
+        { "name": "Sarah Chen", "role": "Head of Product", "avatarColor": "bg-emerald-500" },
+        { "name": "Priya Nair", "role": "Senior Product Designer", "avatarColor": "bg-fuchsia-500" },
+        { "name": "Leo Hartman", "role": "Frontend Engineer", "avatarColor": "bg-teal-500" }
+      ],
+      "transcript": [
+        { "id": "u-01", "speaker": "Priya Nair", "speakerRole": "Senior Product Designer", "timestamp": "00:05", "text": "I want to present the new dashboard redesign I've been working on. The core idea is making meetings scannable at a glance — status, key people, action item count." },
+        { "id": "u-02", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "00:38", "text": "This looks great Priya. The meeting card density feels right. My one concern is the 'AI Analysis Pending' vs 'AI Ready' distinction — it needs to be much more visually prominent." },
+        { "id": "u-03", "speaker": "Priya Nair", "speakerRole": "Senior Product Designer", "timestamp": "01:15", "text": "Agreed. I'm thinking a colored left border on each card — indigo for analyzed, amber for pending. Combined with a subtle pill badge." },
+        { "id": "u-04", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "01:55", "text": "Technically that's totally doable. Tailwind handles that cleanly. I'd also suggest a hover state that reveals a quick 'Run AI Analysis' button without navigating to the detail page." },
+        { "id": "u-05", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "02:30", "text": "That's a great pattern Leo. Let's keep that in the backlog for the next iteration though — dashboard inline analysis might confuse new users." },
+        { "id": "u-06", "speaker": "Priya Nair", "speakerRole": "Senior Product Designer", "timestamp": "03:05", "text": "One more thing — the empty state when a user has no meetings needs love. Right now it's just a blank screen. I want to show a welcoming illustration and a CTA to either import or record a meeting." },
+        { "id": "u-07", "speaker": "Leo Hartman", "speakerRole": "Frontend Engineer", "timestamp": "03:45", "text": "I can build the empty state this sprint. Should take about half a day once Priya finalizes the illustration spec." },
+        { "id": "u-08", "speaker": "Sarah Chen", "speakerRole": "Head of Product", "timestamp": "04:20", "text": "Perfect. Priya — can you deliver illustration specs by EOD Thursday? Leo — schedule the empty state build for Friday. Great session everyone, let's ship this." }
+      ],
+      "analysis": null
+    }
+  ]
+}

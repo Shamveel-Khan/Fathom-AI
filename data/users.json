@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user-1",
+    "name": "Sarah Chen",
+    "email": "sarah@fathom.ai",
+    "password": "password123",
+    "role": "Head of Product",
+    "avatarColor": "bg-emerald-500",
+    "dataFile": "user-1.json"
+  },
+  {
+    "id": "user-2",
+    "name": "Alex Rivera",
+    "email": "alex@fathom.ai",
+    "password": "password123",
+    "role": "Lead Frontend Engineer",
+    "avatarColor": "bg-indigo-500",
+    "dataFile": "user-2.json"
+  }
+]
