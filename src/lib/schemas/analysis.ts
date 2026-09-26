@@ -4,6 +4,7 @@ export const ActionItemSchema = z.object({
   id: z.string(),
   task: z.string(),
   assignee: z.string().nullable().optional(),
+  dueDate: z.string().nullable().optional(),
   context: z.string().optional(),
   completed: z.boolean().default(false),
 });
@@ -13,6 +14,8 @@ export const DecisionSchema = z.object({
   decision: z.string(),
   rationale: z.string().optional(),
   madeBy: z.string().optional(),
+  timestamp: z.string().optional(),
+  timestampSeconds: z.number().optional(),
 });
 
 export const HighlightSchema = z.object({

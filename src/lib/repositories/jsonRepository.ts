@@ -3,7 +3,8 @@ import path from 'path';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
-import { IUserRepository, IMeetingRepository, GoogleProfile } from './types';
+import { IUserRepository, IMeetingRepository, ISearchRepository, GoogleProfile } from './types';
+import { SearchResultItem } from '@/lib/schemas/search';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 
@@ -226,6 +227,15 @@ export class JsonMeetingRepository implements IMeetingRepository {
     actionItemId: string,
     completed: boolean
   ): Promise<boolean> {
+    return this.updateActionItem(userId, meetingId, actionItemId, { completed });
+  }
+
+  async updateActionItem(
+    userId: string,
+    meetingId: string,
+    actionItemId: string,
+    updates: { completed?: boolean; assignee?: string | null; dueDate?: string | null }
+  ): Promise<boolean> {
     const filePath = await this.getUserDataFilePath(userId);
     if (!filePath) return false;
 
@@ -236,8 +246,107 @@ export class JsonMeetingRepository implements IMeetingRepository {
     const item = meeting.analysis.actionItems.find((a) => a.id === actionItemId);
     if (!item) return false;
 
-    item.completed = completed;
+    if (updates.completed !== undefined) item.completed = updates.completed;
+    if (updates.assignee !== undefined) item.assignee = updates.assignee;
+    if (updates.dueDate !== undefined) item.dueDate = updates.dueDate;
+
     await writeJson(filePath, userData);
     return true;
   }
 }
+
+export class JsonSearchRepository implements ISearchRepository {
+  private readonly meetingRepo: JsonMeetingRepository;
+
+  constructor() {
+    this.meetingRepo = new JsonMeetingRepository();
+  }
+
+  async search(userId: string, searchQuery: string): Promise<SearchResultItem[]> {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return [];
+
+    const summaries = await this.meetingRepo.listMeetingsForUser(userId);
+    const results: SearchResultItem[] = [];
+
+    for (const s of summaries) {
+      const meeting = await this.meetingRepo.getMeetingById(userId, s.id);
+      if (!meeting) continue;
+
+      if (meeting.title.toLowerCase().includes(q)) {
+        results.push({
+          id: `sr-mtg-${meeting.id}`,
+          meetingId: meeting.id,
+          meetingTitle: meeting.title,
+          meetingDate: meeting.date,
+          type: 'meeting',
+          title: meeting.title,
+          snippet: `Meeting recorded on ${meeting.date}`,
+          badgeText: 'Meeting Title',
+        });
+      }
+
+      for (const u of meeting.transcript || []) {
+        if (u.text.toLowerCase().includes(q)) {
+          results.push({
+            id: `sr-utt-${u.id}`,
+            meetingId: meeting.id,
+            meetingTitle: meeting.title,
+            meetingDate: meeting.date,
+            type: 'transcript',
+            title: `${u.speaker} at ${u.timestamp}`,
+            snippet: u.text,
+            speaker: u.speaker,
+            timestamp: u.timestamp,
+            timestampSeconds: u.timestampSeconds,
+            badgeText: 'Transcript',
+          });
+        }
+      }
+
+      if (meeting.analysis) {
+        for (const act of meeting.analysis.actionItems || []) {
+          if (
+            act.task.toLowerCase().includes(q) ||
+            (act.assignee && act.assignee.toLowerCase().includes(q)) ||
+            (act.context && act.context.toLowerCase().includes(q))
+          ) {
+            results.push({
+              id: `sr-act-${act.id}`,
+              meetingId: meeting.id,
+              meetingTitle: meeting.title,
+              meetingDate: meeting.date,
+              type: 'action_item',
+              title: act.task,
+              snippet: act.context || (act.assignee ? `Assigned to @${act.assignee}` : 'Action Item'),
+              badgeText: 'Action Item',
+            });
+          }
+        }
+
+        for (const dec of meeting.analysis.decisions || []) {
+          if (
+            dec.decision.toLowerCase().includes(q) ||
+            (dec.rationale && dec.rationale.toLowerCase().includes(q))
+          ) {
+            results.push({
+              id: `sr-dec-${dec.id}`,
+              meetingId: meeting.id,
+              meetingTitle: meeting.title,
+              meetingDate: meeting.date,
+              type: 'decision',
+              title: dec.decision,
+              snippet: dec.rationale || 'Key Decision',
+              timestamp: dec.timestamp,
+              timestampSeconds: dec.timestampSeconds,
+              badgeText: 'Decision',
+            });
+          }
+        }
+      }
+    }
+
+    return results;
+  }
+}
+

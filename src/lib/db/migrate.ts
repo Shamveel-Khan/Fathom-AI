@@ -106,6 +106,11 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(500);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
+-- Add new Commit 5 columns (idempotent)
+ALTER TABLE action_items ADD COLUMN IF NOT EXISTS due_date VARCHAR(64);
+ALTER TABLE decisions ADD COLUMN IF NOT EXISTS timestamp VARCHAR(32);
+ALTER TABLE decisions ADD COLUMN IF NOT EXISTS timestamp_seconds INTEGER NOT NULL DEFAULT 0;
+
 CREATE INDEX IF NOT EXISTS idx_meetings_user_id ON meetings(user_id);
 CREATE INDEX IF NOT EXISTS idx_participants_meeting_id ON participants(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_meeting_id ON transcript_utterances(meeting_id);
@@ -115,6 +120,8 @@ CREATE INDEX IF NOT EXISTS idx_decisions_meeting_id ON decisions(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_id ON highlights(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id, timestamp_seconds);
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_utterances_text_search ON transcript_utterances USING gin(to_tsvector('english', text));
+CREATE INDEX IF NOT EXISTS idx_meetings_title_search ON meetings USING gin(to_tsvector('english', title));
 `;
 
 export async function runMigrations(): Promise<void> {

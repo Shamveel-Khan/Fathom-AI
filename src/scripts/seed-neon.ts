@@ -196,15 +196,20 @@ export async function seedDatabase() {
           for (let i = 0; i < (meeting.analysis.actionItems || []).length; i++) {
             const a = meeting.analysis.actionItems[i];
             const actionId = `${meeting.id}-act-${a.id || i + 1}`;
+            // Sample due date if not present for realistic seed data
+            const sampleDueDates = ['Oct 15, 2026', 'Oct 20, 2026', 'Nov 1, 2026'];
+            const dueDate = a.dueDate || sampleDueDates[i % sampleDueDates.length];
+
             await queryClient(
               client,
-              `INSERT INTO action_items (id, meeting_id, task, assignee, context, completed)
-               VALUES ($1, $2, $3, $4, $5, $6)`,
+              `INSERT INTO action_items (id, meeting_id, task, assignee, due_date, context, completed)
+               VALUES ($1, $2, $3, $4, $5, $6, $7)`,
               [
                 actionId,
                 meeting.id,
                 a.task,
                 a.assignee || null,
+                dueDate,
                 a.context || null,
                 Boolean(a.completed),
               ]
@@ -215,11 +220,16 @@ export async function seedDatabase() {
           for (let i = 0; i < (meeting.analysis.decisions || []).length; i++) {
             const d = meeting.analysis.decisions[i];
             const decisionId = `${meeting.id}-dec-${d.id || i + 1}`;
+            // Seed a matching timestamp from transcript if present
+            const matchingUtt = meeting.transcript?.[Math.min(i * 2 + 1, (meeting.transcript?.length || 1) - 1)];
+            const ts = d.timestamp || matchingUtt?.timestamp || '02:15';
+            const tsSecs = d.timestampSeconds ?? timestampToSeconds(ts);
+
             await queryClient(
               client,
-              `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by)
-               VALUES ($1, $2, $3, $4, $5)`,
-              [decisionId, meeting.id, d.decision, d.rationale || null, d.madeBy || null]
+              `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by, timestamp, timestamp_seconds)
+               VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+              [decisionId, meeting.id, d.decision, d.rationale || null, d.madeBy || null, ts, tsSecs]
             );
           }
 

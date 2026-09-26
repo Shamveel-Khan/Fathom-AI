@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from './AuthProvider';
-import { LogOut, Key, ChevronDown, Users, Sparkles } from 'lucide-react';
+import { LogOut, Key, ChevronDown, Users, Sparkles, Search } from 'lucide-react';
 import { ApiKeyModal } from './ApiKeyModal';
+import { SearchModal } from './SearchModal';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
@@ -22,6 +23,7 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
   const { user, logout, quickLogin } = useAuth();
   const pathname = usePathname();
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   if (!user) return null;
@@ -63,6 +65,18 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
 
           {/* Right Controls */}
           <div className="flex items-center gap-2">
+            {/* Global Search Button */}
+            <button
+              onClick={() => setIsSearchModalOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 text-xs font-medium transition-all shadow-2xs"
+            >
+              <Search className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden sm:inline">Search...</span>
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 px-1.5 py-0.2 rounded-md shadow-2xs">
+                ⌘K
+              </kbd>
+            </button>
+
             {/* API Key Status */}
             <button
               onClick={() => setIsApiKeyModalOpen(true)}
@@ -176,6 +190,11 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
         onSaveKey={onSaveApiKey}
         baseUrl={baseUrl}
         model={model}
+      />
+
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
       />
     </>
   );

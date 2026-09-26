@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 import { query, withTransaction, queryClient } from '@/lib/db/client';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
-import { IUserRepository, IMeetingRepository, GoogleProfile } from './types';
+import { IUserRepository, IMeetingRepository, ISearchRepository, GoogleProfile } from './types';
+import { SearchResultItem } from '@/lib/schemas/search';
 import {
   Meeting,
   MeetingSummary,
@@ -344,10 +345,11 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         id: string;
         task: string;
         assignee: string | null;
+        due_date: string | null;
         context: string | null;
         completed: boolean;
       }>(
-        `SELECT id, task, assignee, context, completed
+        `SELECT id, task, assignee, due_date, context, completed
          FROM action_items
          WHERE meeting_id = $1
          ORDER BY created_at ASC`,
@@ -360,8 +362,10 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         decision: string;
         rationale: string | null;
         made_by: string | null;
+        timestamp: string | null;
+        timestamp_seconds: number | null;
       }>(
-        `SELECT id, decision, rationale, made_by
+        `SELECT id, decision, rationale, made_by, timestamp, timestamp_seconds
          FROM decisions
          WHERE meeting_id = $1
          ORDER BY created_at ASC`,
@@ -407,6 +411,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
           id: act.id,
           task: act.task,
           assignee: act.assignee || null,
+          dueDate: act.due_date || null,
           context: act.context || undefined,
           completed: Boolean(act.completed),
         })),
@@ -415,6 +420,8 @@ export class PostgresMeetingRepository implements IMeetingRepository {
           decision: d.decision,
           rationale: d.rationale || undefined,
           madeBy: d.made_by || undefined,
+          timestamp: d.timestamp || undefined,
+          timestampSeconds: d.timestamp_seconds ?? undefined,
         })),
         highlights: highlightRows.map((h) => ({
           id: h.id,
@@ -493,13 +500,14 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         const uniqueActId = `${meetingId}-act-${i + 1}-${crypto.randomUUID().slice(0, 8)}`;
         await queryClient(
           client,
-          `INSERT INTO action_items (id, meeting_id, task, assignee, context, completed)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
+          `INSERT INTO action_items (id, meeting_id, task, assignee, due_date, context, completed)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
           [
             uniqueActId,
             meetingId,
             a.task,
             a.assignee || null,
+            a.dueDate || null,
             a.context || null,
             Boolean(a.completed),
           ]
@@ -510,11 +518,20 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       for (let i = 0; i < (analysis.decisions || []).length; i++) {
         const d = analysis.decisions[i];
         const uniqueDecId = `${meetingId}-dec-${i + 1}-${crypto.randomUUID().slice(0, 8)}`;
+        const dSecs = d.timestampSeconds ?? (d.timestamp ? timestampToSeconds(d.timestamp) : 0);
         await queryClient(
           client,
-          `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by)
-           VALUES ($1, $2, $3, $4, $5)`,
-          [uniqueDecId, meetingId, d.decision, d.rationale || null, d.madeBy || null]
+          `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by, timestamp, timestamp_seconds)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            uniqueDecId,
+            meetingId,
+            d.decision,
+            d.rationale || null,
+            d.madeBy || null,
+            d.timestamp || null,
+            dSecs,
+          ]
         );
       }
 
@@ -609,13 +626,245 @@ export class PostgresMeetingRepository implements IMeetingRepository {
     actionItemId: string,
     completed: boolean
   ): Promise<boolean> {
+    return this.updateActionItem(userId, meetingId, actionItemId, { completed });
+  }
+
+  async updateActionItem(
+    userId: string,
+    meetingId: string,
+    actionItemId: string,
+    updates: { completed?: boolean; assignee?: string | null; dueDate?: string | null }
+  ): Promise<boolean> {
     const meeting = await this.getMeetingById(userId, meetingId);
     if (!meeting) return false;
 
+    const setClauses: string[] = [];
+    const values: (string | boolean | null)[] = [];
+    let paramIndex = 1;
+
+    if (updates.completed !== undefined) {
+      setClauses.push(`completed = $${paramIndex++}`);
+      values.push(updates.completed);
+    }
+    if (updates.assignee !== undefined) {
+      setClauses.push(`assignee = $${paramIndex++}`);
+      values.push(updates.assignee);
+    }
+    if (updates.dueDate !== undefined) {
+      setClauses.push(`due_date = $${paramIndex++}`);
+      values.push(updates.dueDate);
+    }
+
+    if (setClauses.length === 0) return true;
+
+    values.push(actionItemId);
+    values.push(meetingId);
+
     await query(
-      `UPDATE action_items SET completed = $1 WHERE id = $2 AND meeting_id = $3`,
-      [completed, actionItemId, meetingId]
+      `UPDATE action_items
+       SET ${setClauses.join(', ')}
+       WHERE id = $${paramIndex++} AND meeting_id = $${paramIndex++}`,
+      values
     );
     return true;
   }
 }
+
+// -------------------------------------------------------
+// Postgres Search Repository
+// -------------------------------------------------------
+
+export class PostgresSearchRepository implements ISearchRepository {
+  async search(userId: string, searchQuery: string): Promise<SearchResultItem[]> {
+    const q = searchQuery.trim();
+    if (!q) return [];
+    const pattern = `%${q}%`;
+
+    const results: SearchResultItem[] = [];
+
+    // 1. Search Meetings (title)
+    const meetingRows = await query<{
+      id: string;
+      title: string;
+      meeting_date: string;
+    }>(
+      `SELECT id, title, meeting_date
+       FROM meetings
+       WHERE user_id = $1 AND title ILIKE $2
+       ORDER BY created_at DESC
+       LIMIT 10`,
+      [userId, pattern]
+    );
+
+    for (const m of meetingRows) {
+      results.push({
+        id: `sr-mtg-${m.id}`,
+        meetingId: m.id,
+        meetingTitle: m.title,
+        meetingDate: m.meeting_date,
+        type: 'meeting',
+        title: m.title,
+        snippet: `Meeting recorded on ${m.meeting_date}`,
+        badgeText: 'Meeting Title',
+      });
+    }
+
+    // 2. Search Transcripts (spoken text)
+    const utteranceRows = await query<{
+      id: string;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+      speaker: string;
+      timestamp: string;
+      timestamp_seconds: number;
+      text: string;
+    }>(
+      `SELECT u.id, u.meeting_id, m.title AS meeting_title, m.meeting_date,
+              u.speaker, u.timestamp, u.timestamp_seconds, u.text
+       FROM transcript_utterances u
+       JOIN meetings m ON m.id = u.meeting_id
+       WHERE m.user_id = $1 AND u.text ILIKE $2
+       ORDER BY m.created_at DESC, u.timestamp_seconds ASC
+       LIMIT 25`,
+      [userId, pattern]
+    );
+
+    for (const u of utteranceRows) {
+      results.push({
+        id: `sr-utt-${u.id}`,
+        meetingId: u.meeting_id,
+        meetingTitle: u.meeting_title,
+        meetingDate: u.meeting_date,
+        type: 'transcript',
+        title: `${u.speaker} at ${u.timestamp}`,
+        snippet: u.text,
+        speaker: u.speaker,
+        timestamp: u.timestamp,
+        timestampSeconds: u.timestamp_seconds,
+        badgeText: 'Transcript',
+      });
+    }
+
+    // 3. Search Action Items (task, assignee, context)
+    const actionRows = await query<{
+      id: string;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+      task: string;
+      assignee: string | null;
+      due_date: string | null;
+      context: string | null;
+      completed: boolean;
+    }>(
+      `SELECT a.id, a.meeting_id, m.title AS meeting_title, m.meeting_date,
+              a.task, a.assignee, a.due_date, a.context, a.completed
+       FROM action_items a
+       JOIN meetings m ON m.id = a.meeting_id
+       WHERE m.user_id = $1 AND (a.task ILIKE $2 OR COALESCE(a.assignee, '') ILIKE $2 OR COALESCE(a.context, '') ILIKE $2)
+       ORDER BY m.created_at DESC
+       LIMIT 15`,
+      [userId, pattern]
+    );
+
+    for (const act of actionRows) {
+      const details = [
+        act.assignee ? `Assignee: @${act.assignee}` : null,
+        act.due_date ? `Due: ${act.due_date}` : null,
+        act.completed ? 'Completed' : 'Pending',
+      ]
+        .filter(Boolean)
+        .join(' • ');
+
+      results.push({
+        id: `sr-act-${act.id}`,
+        meetingId: act.meeting_id,
+        meetingTitle: act.meeting_title,
+        meetingDate: act.meeting_date,
+        type: 'action_item',
+        title: act.task,
+        snippet: act.context ? `${details} — ${act.context}` : details,
+        badgeText: 'Action Item',
+      });
+    }
+
+    // 4. Search Decisions
+    const decisionRows = await query<{
+      id: string;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+      decision: string;
+      rationale: string | null;
+      made_by: string | null;
+      timestamp: string | null;
+      timestamp_seconds: number;
+    }>(
+      `SELECT d.id, d.meeting_id, m.title AS meeting_title, m.meeting_date,
+              d.decision, d.rationale, d.made_by, d.timestamp, d.timestamp_seconds
+       FROM decisions d
+       JOIN meetings m ON m.id = d.meeting_id
+       WHERE m.user_id = $1 AND (d.decision ILIKE $2 OR COALESCE(d.rationale, '') ILIKE $2)
+       ORDER BY m.created_at DESC
+       LIMIT 15`,
+      [userId, pattern]
+    );
+
+    for (const dec of decisionRows) {
+      results.push({
+        id: `sr-dec-${dec.id}`,
+        meetingId: dec.meeting_id,
+        meetingTitle: dec.meeting_title,
+        meetingDate: dec.meeting_date,
+        type: 'decision',
+        title: dec.decision,
+        snippet: dec.rationale || (dec.made_by ? `Decided by ${dec.made_by}` : 'Key Decision'),
+        timestamp: dec.timestamp || undefined,
+        timestampSeconds: dec.timestamp_seconds || undefined,
+        badgeText: 'Decision',
+      });
+    }
+
+    // 5. Search Highlights
+    const highlightRows = await query<{
+      id: string;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+      quote: string;
+      speaker: string;
+      timestamp: string;
+      timestamp_seconds: number;
+      significance: string | null;
+    }>(
+      `SELECT h.id, h.meeting_id, m.title AS meeting_title, m.meeting_date,
+              h.quote, h.speaker, h.timestamp, h.timestamp_seconds, h.significance
+       FROM highlights h
+       JOIN meetings m ON m.id = h.meeting_id
+       WHERE m.user_id = $1 AND (h.quote ILIKE $2 OR COALESCE(h.significance, '') ILIKE $2)
+       ORDER BY m.created_at DESC
+       LIMIT 15`,
+      [userId, pattern]
+    );
+
+    for (const h of highlightRows) {
+      results.push({
+        id: `sr-hl-${h.id}`,
+        meetingId: h.meeting_id,
+        meetingTitle: h.meeting_title,
+        meetingDate: h.meeting_date,
+        type: 'highlight',
+        title: `"${h.quote}"`,
+        snippet: h.significance || `${h.speaker} at ${h.timestamp}`,
+        speaker: h.speaker,
+        timestamp: h.timestamp,
+        timestampSeconds: h.timestamp_seconds,
+        badgeText: 'Highlight',
+      });
+    }
+
+    return results;
+  }
+}
+

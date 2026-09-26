@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { AppNav } from '@/components/AppNav';
 import { MeetingPlayer } from '@/components/MeetingPlayer';
@@ -29,8 +29,9 @@ const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
 const LOCAL_STORAGE_BASE_URL = 'fathom_ai_base_url';
 const LOCAL_STORAGE_MODEL = 'fathom_ai_model';
 
-export default function MeetingDetailPage() {
+function MeetingDetailPageContent() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const meetingId = params.id as string;
@@ -45,6 +46,17 @@ export default function MeetingDetailPage() {
   const [currentTimeSeconds, setCurrentTimeSeconds] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
+
+  // Deep link ?t= parameter on mount
+  const initialT = searchParams?.get('t');
+  useEffect(() => {
+    if (initialT) {
+      const sec = parseInt(initialT, 10);
+      if (!isNaN(sec) && sec >= 0) {
+        setCurrentTimeSeconds(sec);
+      }
+    }
+  }, [initialT]);
 
   // Highlight modal state
   const [isHighlightModalOpen, setIsHighlightModalOpen] = useState<boolean>(false);
@@ -214,6 +226,17 @@ export default function MeetingDetailPage() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ completed }),
+    });
+  };
+
+  const handleUpdateActionItem = async (
+    actionId: string,
+    updates: { completed?: boolean; assignee?: string; dueDate?: string }
+  ) => {
+    await fetch(`/api/meetings/${meetingId}/action-items/${actionId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
     });
   };
 
@@ -389,6 +412,7 @@ export default function MeetingDetailPage() {
                   onSeek={handleSeek}
                   onTriggerAnalyze={() => handleRunAnalysis(false)}
                   onToggleActionItem={handleToggleActionItem}
+                  onUpdateActionItem={handleUpdateActionItem}
                   onDeleteHighlight={handleDeleteHighlight}
                   onOpenCreateHighlight={() => {
                     setSelectedSnippet({
@@ -418,5 +442,19 @@ export default function MeetingDetailPage() {
         onSaveHighlight={handleSaveCustomHighlight}
       />
     </div>
+  );
+}
+
+export default function MeetingDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+          <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+        </div>
+      }
+    >
+      <MeetingDetailPageContent />
+    </Suspense>
   );
 }

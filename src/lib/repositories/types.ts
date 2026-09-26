@@ -1,6 +1,7 @@
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
+import { SearchResultItem } from '@/lib/schemas/search';
 
 export interface GoogleProfile {
   sub: string;
@@ -29,7 +30,6 @@ export interface IUserRepository {
   ): Promise<void>;
 }
 
-
 // -------------------------------------------------------
 // Meeting Repository Interface
 // -------------------------------------------------------
@@ -57,4 +57,18 @@ export interface IMeetingRepository {
     actionItemId: string,
     completed: boolean
   ): Promise<boolean>;
+  updateActionItem(
+    userId: string,
+    meetingId: string,
+    actionItemId: string,
+    updates: { completed?: boolean; assignee?: string | null; dueDate?: string | null }
+  ): Promise<boolean>;
 }
+
+// -------------------------------------------------------
+// Search Repository Interface
+// -------------------------------------------------------
+export interface ISearchRepository {
+  search(userId: string, query: string): Promise<SearchResultItem[]>;
+}
+

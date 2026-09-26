@@ -14,13 +14,17 @@ export async function PATCH(
   const { id: meetingId, actionId } = await params;
 
   try {
-    const { completed } = await request.json() as { completed: boolean };
+    const body = await request.json() as {
+      completed?: boolean;
+      assignee?: string | null;
+      dueDate?: string | null;
+    };
 
-    const success = await meetingRepository.toggleActionItem(
+    const success = await meetingRepository.updateActionItem(
       userId,
       meetingId,
       actionId,
-      Boolean(completed)
+      body
     );
 
     return NextResponse.json({ success });

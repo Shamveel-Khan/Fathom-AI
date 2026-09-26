@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS action_items (
     meeting_id VARCHAR(64) NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
     task TEXT NOT NULL,
     assignee VARCHAR(255),
+    due_date VARCHAR(64),
     context TEXT,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -87,6 +88,8 @@ CREATE TABLE IF NOT EXISTS decisions (
     decision TEXT NOT NULL,
     rationale TEXT,
     made_by VARCHAR(255),
+    timestamp VARCHAR(32),
+    timestamp_seconds INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -104,7 +107,7 @@ CREATE TABLE IF NOT EXISTS highlights (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Performance Indexes
+-- Performance & Search Indexes
 CREATE INDEX IF NOT EXISTS idx_meetings_user_id ON meetings(user_id);
 CREATE INDEX IF NOT EXISTS idx_participants_meeting_id ON participants(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_utterances_meeting_id ON transcript_utterances(meeting_id);
@@ -113,3 +116,7 @@ CREATE INDEX IF NOT EXISTS idx_action_items_meeting_id ON action_items(meeting_i
 CREATE INDEX IF NOT EXISTS idx_decisions_meeting_id ON decisions(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_id ON highlights(meeting_id);
 CREATE INDEX IF NOT EXISTS idx_highlights_meeting_time ON highlights(meeting_id, timestamp_seconds);
+CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_utterances_text_search ON transcript_utterances USING gin(to_tsvector('english', text));
+CREATE INDEX IF NOT EXISTS idx_meetings_title_search ON meetings USING gin(to_tsvector('english', title));
+
