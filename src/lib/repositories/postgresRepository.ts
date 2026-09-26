@@ -1,4 +1,5 @@
-import { query } from '@/lib/db/client';
+import crypto from 'crypto';
+import { query, withTransaction, queryClient } from '@/lib/db/client';
 import { User, UserAccount } from '@/lib/auth/types';
 import {
   Meeting,
@@ -28,8 +29,8 @@ export class PostgresUserRepository implements IUserRepository {
     }>(
       `SELECT id, name, email, password, role, avatar_color
        FROM users
-       WHERE email = $1`,
-      [email]
+       WHERE LOWER(email) = LOWER($1)`,
+      [email.trim()]
     );
 
     if (rows.length === 0) return null;
@@ -115,7 +116,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
        FROM meetings m
        LEFT JOIN analyses a ON a.meeting_id = m.id
        WHERE m.user_id = $1
-       ORDER BY m.created_at DESC`,
+       ORDER BY m.created_at DESC, m.id ASC`,
       [userId]
     );
 
@@ -131,7 +132,8 @@ export class PostgresMeetingRepository implements IMeetingRepository {
     }>(
       `SELECT meeting_id, name, email, role, avatar_color
        FROM participants
-       WHERE meeting_id IN (SELECT id FROM meetings WHERE user_id = $1)`,
+       WHERE meeting_id IN (SELECT id FROM meetings WHERE user_id = $1)
+       ORDER BY id ASC`,
       [userId]
     );
 
@@ -152,7 +154,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       id: m.id,
       title: m.title,
       date: m.meeting_date,
-      durationMinutes: m.duration_minutes,
+      durationMinutes: Number(m.duration_minutes),
       participants: participantsByMeeting[m.id] || [],
       hasAnalysis: Boolean(m.has_analysis),
       actionItemsCount: Number(m.action_items_count),
@@ -211,7 +213,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       `SELECT id, speaker, speaker_role, timestamp, timestamp_seconds, text
        FROM transcript_utterances
        WHERE meeting_id = $1
-       ORDER BY sequence_order ASC`,
+       ORDER BY sequence_order ASC, timestamp_seconds ASC`,
       [meetingId]
     );
 
@@ -220,7 +222,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       speaker: u.speaker,
       speakerRole: u.speaker_role || undefined,
       timestamp: u.timestamp,
-      timestampSeconds: u.timestamp_seconds,
+      timestampSeconds: Number(u.timestamp_seconds),
       text: u.text,
     }));
 
@@ -285,7 +287,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         `SELECT id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved, created_at
          FROM highlights
          WHERE meeting_id = $1
-         ORDER BY timestamp_seconds ASC`,
+         ORDER BY timestamp_seconds ASC, created_at ASC`,
         [meetingId]
       );
 
@@ -310,7 +312,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
           task: act.task,
           assignee: act.assignee || null,
           context: act.context || undefined,
-          completed: act.completed,
+          completed: Boolean(act.completed),
         })),
         decisions: decisionRows.map((d) => ({
           id: d.id,
@@ -338,7 +340,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       id: m.id,
       title: m.title,
       date: m.meeting_date,
-      durationMinutes: m.duration_minutes,
+      durationMinutes: Number(m.duration_minutes),
       videoUrl: m.video_url || undefined,
       participants,
       transcript,
@@ -360,75 +362,89 @@ export class PostgresMeetingRepository implements IMeetingRepository {
     const analyzedAt = new Date().toISOString();
     const analysisId = `ans-${meetingId}`;
 
-    // Upsert analysis record
-    await query(
-      `INSERT INTO analyses (id, meeting_id, executive_summary, key_takeaways, analyzed_at)
-       VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (meeting_id) DO UPDATE SET
-         executive_summary = EXCLUDED.executive_summary,
-         key_takeaways = EXCLUDED.key_takeaways,
-         analyzed_at = EXCLUDED.analyzed_at`,
-      [
-        analysisId,
-        meetingId,
-        analysis.executiveSummary,
-        JSON.stringify(analysis.keyTakeaways || []),
-        analyzedAt,
-      ]
-    );
-
-    // Delete existing AI action items and decisions (preserve user saved highlights)
-    await query(`DELETE FROM action_items WHERE meeting_id = $1`, [meetingId]);
-    await query(`DELETE FROM decisions WHERE meeting_id = $1`, [meetingId]);
-    await query(
-      `DELETE FROM highlights WHERE meeting_id = $1 AND is_user_saved = FALSE`,
-      [meetingId]
-    );
-
-    // Insert action items
-    for (const a of analysis.actionItems || []) {
-      await query(
-        `INSERT INTO action_items (id, meeting_id, task, assignee, context, completed)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
+    // Execute all updates inside an atomic transaction
+    await withTransaction(async (client) => {
+      // 1. Upsert analysis record
+      await queryClient(
+        client,
+        `INSERT INTO analyses (id, meeting_id, executive_summary, key_takeaways, analyzed_at)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (meeting_id) DO UPDATE SET
+           executive_summary = EXCLUDED.executive_summary,
+           key_takeaways = EXCLUDED.key_takeaways,
+           analyzed_at = EXCLUDED.analyzed_at`,
         [
-          a.id,
+          analysisId,
           meetingId,
-          a.task,
-          a.assignee || null,
-          a.context || null,
-          Boolean(a.completed),
+          analysis.executiveSummary,
+          JSON.stringify(analysis.keyTakeaways || []),
+          analyzedAt,
         ]
       );
-    }
 
-    // Insert decisions
-    for (const d of analysis.decisions || []) {
-      await query(
-        `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [d.id, meetingId, d.decision, d.rationale || null, d.madeBy || null]
+      // 2. Delete existing AI action items and decisions (preserve user saved highlights)
+      await queryClient(client, `DELETE FROM action_items WHERE meeting_id = $1`, [meetingId]);
+      await queryClient(client, `DELETE FROM decisions WHERE meeting_id = $1`, [meetingId]);
+      await queryClient(
+        client,
+        `DELETE FROM highlights WHERE meeting_id = $1 AND is_user_saved = FALSE`,
+        [meetingId]
       );
-    }
 
-    // Insert AI highlights
-    for (const h of analysis.highlights || []) {
-      const hSecs = timestampToSeconds(h.timestamp);
-      await query(
-        `INSERT INTO highlights (id, meeting_id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-        [
-          h.id,
-          meetingId,
-          h.quote,
-          h.speaker,
-          h.timestamp,
-          hSecs,
-          h.significance || null,
-          'key_moment',
-          false,
-        ]
-      );
-    }
+      // 3. Insert action items with globally safe scoped IDs
+      for (let i = 0; i < (analysis.actionItems || []).length; i++) {
+        const a = analysis.actionItems[i];
+        const uniqueActId = `${meetingId}-act-${i + 1}-${crypto.randomUUID().slice(0, 8)}`;
+        await queryClient(
+          client,
+          `INSERT INTO action_items (id, meeting_id, task, assignee, context, completed)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [
+            uniqueActId,
+            meetingId,
+            a.task,
+            a.assignee || null,
+            a.context || null,
+            Boolean(a.completed),
+          ]
+        );
+      }
+
+      // 4. Insert decisions with globally safe scoped IDs
+      for (let i = 0; i < (analysis.decisions || []).length; i++) {
+        const d = analysis.decisions[i];
+        const uniqueDecId = `${meetingId}-dec-${i + 1}-${crypto.randomUUID().slice(0, 8)}`;
+        await queryClient(
+          client,
+          `INSERT INTO decisions (id, meeting_id, decision, rationale, made_by)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [uniqueDecId, meetingId, d.decision, d.rationale || null, d.madeBy || null]
+        );
+      }
+
+      // 5. Insert AI highlights with globally safe scoped IDs
+      for (let i = 0; i < (analysis.highlights || []).length; i++) {
+        const h = analysis.highlights[i];
+        const hSecs = timestampToSeconds(h.timestamp);
+        const uniqueHlId = `${meetingId}-hl-${i + 1}-${crypto.randomUUID().slice(0, 8)}`;
+        await queryClient(
+          client,
+          `INSERT INTO highlights (id, meeting_id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+          [
+            uniqueHlId,
+            meetingId,
+            h.quote,
+            h.speaker,
+            h.timestamp,
+            hSecs,
+            h.significance || null,
+            'key_moment',
+            false,
+          ]
+        );
+      }
+    });
 
     const updated = await this.getMeetingById(userId, meetingId);
     if (!updated) {
@@ -446,12 +462,13 @@ export class PostgresMeetingRepository implements IMeetingRepository {
     if (!meeting) throw new Error('Meeting not found');
 
     const hSecs = timestampToSeconds(highlight.timestamp);
-    const id = highlight.id || `hl-user-${Date.now()}`;
+    const id = `${meetingId}-hl-user-${crypto.randomUUID()}`;
     const category = highlight.category || 'user_saved';
+    const createdAt = new Date().toISOString();
 
     await query(
-      `INSERT INTO highlights (id, meeting_id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      `INSERT INTO highlights (id, meeting_id, quote, speaker, timestamp, timestamp_seconds, significance, category, is_user_saved, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         id,
         meetingId,
@@ -462,6 +479,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
         highlight.significance || null,
         category,
         true,
+        createdAt,
       ]
     );
 
@@ -470,7 +488,7 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       id,
       category,
       isUserSaved: true,
-      createdAt: new Date().toISOString(),
+      createdAt,
     };
   }
 

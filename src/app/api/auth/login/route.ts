@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { JsonUserRepository } from '@/lib/repositories/jsonRepository';
+import { userRepository } from '@/lib/repositories';
 import { setSessionCookie } from '@/lib/auth/session';
-
-const userRepo = new JsonUserRepository();
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const account = await userRepo.findByEmail(email);
+    const account = await userRepository.findByEmail(email);
 
     if (!account || account.password !== password) {
       return NextResponse.json(

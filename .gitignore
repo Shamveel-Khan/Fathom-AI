@@ -23,7 +23,6 @@
 # misc
 .DS_Store
 *.pem
-.agent-logs/
 
 # debug
 npm-debug.log*
