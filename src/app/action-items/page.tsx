@@ -4,8 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { AppNav } from '@/components/AppNav';
-import { MeetingSummary } from '@/lib/schemas/meeting';
-import { CheckSquare, User, Calendar, ArrowUpRight, CheckCircle2, Circle } from 'lucide-react';
+import { CheckSquare, User, Calendar, ArrowUpRight, CheckCircle2, Circle, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 const LOCAL_STORAGE_KEY = 'fathom_ai_api_key';
@@ -17,8 +16,10 @@ interface ActionItem {
   task: string;
   assignee?: string;
   dueDate?: string;
+  context?: string;
   priority?: string;
-  status?: string;
+  completed: boolean;
+  status: 'pending' | 'in_progress' | 'done';
   meetingId: string;
   meetingTitle: string;
   meetingDate: string;
@@ -29,7 +30,7 @@ export default function ActionItemsPage() {
   const router = useRouter();
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
   const [isFetching, setIsFetching] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'in_progress' | 'done'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'done'>('all');
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [model, setModel] = useState('gpt-4o-mini');
@@ -46,37 +47,14 @@ export default function ActionItemsPage() {
     if (!authLoading && !user) router.push('/login');
   }, [user, authLoading, router]);
 
+  // Single dedicated backend fetch
   const fetchActionItems = useCallback(async () => {
     setIsFetching(true);
     try {
-      const res = await fetch('/api/meetings');
+      const res = await fetch('/api/action-items');
       const data = await res.json();
-      if (data.success && data.meetings) {
-        const allItems: ActionItem[] = [];
-        for (const meeting of data.meetings as MeetingSummary[]) {
-          if (meeting.hasAnalysis) {
-            try {
-              const mRes = await fetch(`/api/meetings/${meeting.id}`);
-              const mData = await mRes.json();
-              if (mData.success && mData.meeting?.analysis?.actionItems) {
-                for (const item of mData.meeting.analysis.actionItems) {
-                  allItems.push({
-                    id: item.id || `${meeting.id}-${Math.random()}`,
-                    task: item.task,
-                    assignee: item.assignee,
-                    dueDate: item.dueDate,
-                    priority: item.priority,
-                    status: item.status || 'pending',
-                    meetingId: meeting.id,
-                    meetingTitle: meeting.title,
-                    meetingDate: meeting.date,
-                  });
-                }
-              }
-            } catch {}
-          }
-        }
-        setActionItems(allItems);
+      if (data.success && data.actionItems) {
+        setActionItems(data.actionItems);
       }
     } catch (err) {
       console.error('Failed to fetch action items:', err);
@@ -100,23 +78,49 @@ export default function ActionItemsPage() {
     } catch {}
   };
 
-  const filtered = actionItems.filter((item) => {
-    if (statusFilter === 'all') return true;
-    return item.status === statusFilter;
-  });
+  const handleToggleStatus = async (item: ActionItem) => {
+    const nextCompleted = !item.completed;
+    // Optimistic UI update
+    setActionItems((prev) =>
+      prev.map((a) =>
+        a.id === item.id
+          ? { ...a, completed: nextCompleted, status: nextCompleted ? 'done' : 'pending' }
+          : a
+      )
+    );
 
-  const getPriorityStyle = (priority?: string) => {
-    switch (priority?.toLowerCase()) {
-      case 'high': return { color: '#eb5757', bg: 'rgba(235,87,87,0.1)' };
-      case 'medium': return { color: '#d4b144', bg: 'rgba(212,177,68,0.1)' };
-      default: return { color: '#8a8f98', bg: 'rgba(255,255,255,0.05)' };
+    try {
+      await fetch(`/api/meetings/${item.meetingId}/action-items/${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: nextCompleted }),
+      });
+    } catch (err) {
+      console.error('Failed to toggle status:', err);
+      // Revert on error
+      setActionItems((prev) =>
+        prev.map((a) => (a.id === item.id ? { ...a, completed: item.completed, status: item.status } : a))
+      );
     }
   };
+
+  const filteredItems = actionItems.filter((item) => {
+    if (statusFilter === 'all') return true;
+    if (statusFilter === 'done') return item.completed;
+    if (statusFilter === 'pending') return !item.completed;
+    return true;
+  });
+
+  const pendingCount = actionItems.filter((a) => !a.completed).length;
+  const doneCount = actionItems.filter((a) => a.completed).length;
 
   if (authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#08090a' }}>
-        <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: '#23252a', borderTopColor: '#7170ff' }} />
+        <div
+          className="w-8 h-8 rounded-full border-2 animate-spin"
+          style={{ borderColor: '#23252a', borderTopColor: '#7170ff' }}
+        />
       </div>
     );
   }
@@ -126,129 +130,164 @@ export default function ActionItemsPage() {
       <AppNav apiKey={apiKey} onSaveApiKey={handleSaveApiKey} baseUrl={baseUrl} model={model} />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold mb-1" style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}>
-            Action Items
-          </h1>
-          <p className="text-sm" style={{ color: '#8a8f98' }}>
-            All commitments and tasks extracted across your meetings
-          </p>
-        </div>
+        {/* Page Header */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold mb-1" style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}>
+              Action Items
+            </h1>
+            <p className="text-sm" style={{ color: '#8a8f98' }}>
+              Cross-meeting verifiable deliverables, assignees, and deadlines.
+            </p>
+          </div>
 
-        {/* Status filters */}
-        <div className="flex items-center gap-1 rounded-lg border p-1 mb-6 w-fit" style={{ background: '#0f1011', borderColor: '#23252a' }}>
-          {([
-            { value: 'all', label: 'All' },
-            { value: 'pending', label: 'Pending' },
-            { value: 'in_progress', label: 'In Progress' },
-            { value: 'done', label: 'Done' },
-          ] as const).map((tab) => (
+          {/* Status Filter Tabs */}
+          <div className="flex items-center gap-1 p-0.5 rounded-lg border" style={{ background: '#0f1011', borderColor: '#23252a' }}>
             <button
-              key={tab.value}
-              onClick={() => setStatusFilter(tab.value)}
-              className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+              onClick={() => setStatusFilter('all')}
+              className="px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
               style={{
-                background: statusFilter === tab.value ? '#232326' : 'transparent',
-                color: statusFilter === tab.value ? '#f7f8f8' : '#8a8f98',
-                border: statusFilter === tab.value ? '1px solid #34343a' : '1px solid transparent',
+                background: statusFilter === 'all' ? '#232326' : 'transparent',
+                color: statusFilter === 'all' ? '#f7f8f8' : '#8a8f98',
               }}
             >
-              {tab.label}
+              All ({actionItems.length})
             </button>
-          ))}
+            <button
+              onClick={() => setStatusFilter('pending')}
+              className="px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+              style={{
+                background: statusFilter === 'pending' ? '#232326' : 'transparent',
+                color: statusFilter === 'pending' ? '#f7f8f8' : '#8a8f98',
+              }}
+            >
+              Pending ({pendingCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter('done')}
+              className="px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+              style={{
+                background: statusFilter === 'done' ? '#232326' : 'transparent',
+                color: statusFilter === 'done' ? '#f7f8f8' : '#8a8f98',
+              }}
+            >
+              Done ({doneCount})
+            </button>
+          </div>
         </div>
 
         {/* Content */}
         {isFetching ? (
           <div className="space-y-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="rounded-xl border p-4 animate-pulse" style={{ background: '#0f1011', borderColor: '#23252a' }}>
-                <div className="h-4 w-3/4 rounded mb-3" style={{ background: '#232326' }} />
-                <div className="flex gap-3">
-                  <div className="h-3 w-20 rounded" style={{ background: '#1c1c1f' }} />
-                  <div className="h-3 w-24 rounded" style={{ background: '#1c1c1f' }} />
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="h-20 rounded-xl border animate-pulse"
+                style={{ background: '#0f1011', borderColor: '#23252a' }}
+              />
+            ))}
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <div
+            className="text-center py-20 rounded-xl border border-dashed p-8"
+            style={{ background: '#0f1011', borderColor: '#23252a' }}
+          >
+            <CheckSquare className="w-10 h-10 mx-auto mb-3" style={{ color: '#3e3e44' }} />
+            <h3 className="text-sm font-semibold mb-1" style={{ color: '#f7f8f8' }}>No action items found</h3>
+            <p className="text-xs mb-4 max-w-sm mx-auto" style={{ color: '#8a8f98' }}>
+              {statusFilter !== 'all'
+                ? `No ${statusFilter} items in your meetings.`
+                : 'Action items are automatically extracted when you analyze your recorded or imported meetings.'}
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all"
+              style={{ background: '#ffffff', color: '#08090a' }}
+            >
+              Go to Meetings
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-2.5">
+            {filteredItems.map((item) => (
+              <div
+                key={item.id}
+                className="p-4 rounded-xl border flex items-start gap-3.5 transition-all duration-150 hover:border-[#3e3e44]"
+                style={{
+                  background: '#0f1011',
+                  borderColor: '#23252a',
+                  opacity: item.completed ? 0.65 : 1,
+                }}
+              >
+                {/* Checkbox */}
+                <button
+                  onClick={() => handleToggleStatus(item)}
+                  className="mt-0.5 shrink-0 transition-transform active:scale-90"
+                  title={item.completed ? 'Mark pending' : 'Mark done'}
+                >
+                  {item.completed ? (
+                    <CheckCircle2 className="w-5 h-5" style={{ color: '#27a644' }} />
+                  ) : (
+                    <Circle className="w-5 h-5" style={{ color: '#62666d' }} />
+                  )}
+                </button>
+
+                {/* Body */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3 mb-1">
+                    <p
+                      className="text-sm font-medium leading-snug"
+                      style={{
+                        color: item.completed ? '#8a8f98' : '#f7f8f8',
+                        textDecoration: item.completed ? 'line-through' : 'none',
+                      }}
+                    >
+                      {item.task}
+                    </p>
+                  </div>
+
+                  {item.context && (
+                    <p className="text-xs italic mb-2 leading-relaxed" style={{ color: '#8a8f98' }}>
+                      &ldquo;{item.context}&rdquo;
+                    </p>
+                  )}
+
+                  {/* Metadata & source meeting */}
+                  <div className="flex flex-wrap items-center gap-3 text-xs pt-1">
+                    {item.assignee && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded border"
+                        style={{ background: '#18182f', borderColor: 'rgba(113,112,255,0.2)', color: '#828fff' }}
+                      >
+                        <User className="w-3 h-3" />
+                        {item.assignee}
+                      </span>
+                    )}
+
+                    {item.dueDate && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded border"
+                        style={{ background: 'rgba(212,177,68,0.1)', borderColor: 'rgba(212,177,68,0.2)', color: '#d4b144' }}
+                      >
+                        <Clock className="w-3 h-3" />
+                        {item.dueDate}
+                      </span>
+                    )}
+
+                    <Link
+                      href={`/meetings/${item.meetingId}`}
+                      className="inline-flex items-center gap-1 text-[11px] transition-colors ml-auto group"
+                      style={{ color: '#8a8f98' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#828fff')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#8a8f98')}
+                    >
+                      <span className="truncate max-w-[200px]">{item.meetingTitle}</span>
+                      <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-16 text-center" style={{ borderColor: '#34343a' }}>
-            <CheckSquare className="w-10 h-10 mx-auto mb-3" style={{ color: '#3e3e44' }} />
-            <h3 className="text-sm font-semibold mb-2" style={{ color: '#f7f8f8' }}>No action items found</h3>
-            <p className="text-xs" style={{ color: '#8a8f98' }}>
-              Analyze your meetings with AI to extract action items automatically.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map((item) => {
-              const pStyle = getPriorityStyle(item.priority);
-              const isDone = item.status === 'done';
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-xl border p-4 transition-colors"
-                  style={{ background: '#0f1011', borderColor: '#23252a' }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 shrink-0">
-                      {isDone ? (
-                        <CheckCircle2 className="w-5 h-5" style={{ color: '#27a644' }} />
-                      ) : (
-                        <Circle className="w-5 h-5" style={{ color: '#3e3e44' }} />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="text-sm font-medium leading-snug mb-2"
-                        style={{ color: isDone ? '#62666d' : '#d0d6e0', textDecoration: isDone ? 'line-through' : 'none' }}
-                      >
-                        {item.task}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-3">
-                        {item.assignee && (
-                          <span
-                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                            style={{ background: '#18182f', color: '#828fff' }}
-                          >
-                            <User className="w-3 h-3" />
-                            {item.assignee}
-                          </span>
-                        )}
-                        {item.priority && (
-                          <span
-                            className="text-[10px] font-medium px-2 py-0.5 rounded"
-                            style={{ background: pStyle.bg, color: pStyle.color }}
-                          >
-                            {item.priority}
-                          </span>
-                        )}
-                        {item.dueDate && (
-                          <span
-                            className="inline-flex items-center gap-1 text-xs"
-                            style={{ color: '#d4b144', fontFamily: "'JetBrains Mono', monospace" }}
-                          >
-                            <Calendar className="w-3 h-3" />
-                            {item.dueDate}
-                          </span>
-                        )}
-                        <Link
-                          href={`/meetings/${item.meetingId}`}
-                          className="inline-flex items-center gap-1 text-xs transition-colors"
-                          style={{ color: '#8a8f98' }}
-                          onMouseEnter={(e) => (e.currentTarget.style.color = '#828fff')}
-                          onMouseLeave={(e) => (e.currentTarget.style.color = '#8a8f98')}
-                        >
-                          <ArrowUpRight className="w-3 h-3" />
-                          {item.meetingTitle}
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         )}
       </main>

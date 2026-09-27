@@ -3,7 +3,18 @@ import path from 'path';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
 import { Meeting, MeetingSummary, MeetingHighlight } from '@/lib/schemas/meeting';
 import { MeetingAnalysis } from '@/lib/schemas/analysis';
-import { IUserRepository, IMeetingRepository, ISearchRepository, IShareRepository, PublicShareRecord, SharedUserRecord, GoogleProfile } from './types';
+import {
+  IUserRepository,
+  IMeetingRepository,
+  ISearchRepository,
+  IShareRepository,
+  PublicShareRecord,
+  SharedUserRecord,
+  GoogleProfile,
+  DashboardData,
+  ActionItemWithMeeting,
+  DecisionWithMeeting,
+} from './types';
 import { SearchResultItem } from '@/lib/schemas/search';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -134,6 +145,102 @@ export class JsonMeetingRepository implements IMeetingRepository {
     const userData = await this.readUserData(userId);
     if (!userData) return null;
     return userData.meetings.find((m) => m.id === meetingId) ?? null;
+  }
+
+  async getDashboardData(userId: string): Promise<DashboardData> {
+    const userData = await this.readUserData(userId);
+    if (!userData) {
+      return {
+        stats: {
+          totalMeetings: 0,
+          analyzedCount: 0,
+          reviewCount: 0,
+          totalActionItems: 0,
+          completedActionItems: 0,
+        },
+        meetings: [],
+      };
+    }
+
+    const meetings = userData.meetings.map(toMeetingSummary);
+    let analyzedCount = 0;
+    let reviewCount = 0;
+    let totalActionItems = 0;
+    let completedActionItems = 0;
+
+    for (const m of userData.meetings) {
+      if (m.analysis) {
+        analyzedCount++;
+        for (const a of m.analysis.actionItems || []) {
+          totalActionItems++;
+          if (a.completed) completedActionItems++;
+        }
+      }
+      if (m.review) {
+        reviewCount++;
+      }
+    }
+
+    return {
+      stats: {
+        totalMeetings: meetings.length,
+        analyzedCount,
+        reviewCount,
+        totalActionItems,
+        completedActionItems,
+      },
+      meetings,
+    };
+  }
+
+  async getActionItemsForUser(userId: string): Promise<ActionItemWithMeeting[]> {
+    const userData = await this.readUserData(userId);
+    if (!userData) return [];
+
+    const items: ActionItemWithMeeting[] = [];
+    for (const m of userData.meetings) {
+      if (!m.analysis?.actionItems) continue;
+      for (const act of m.analysis.actionItems) {
+        items.push({
+          id: act.id,
+          meetingId: m.id,
+          task: act.task,
+          assignee: act.assignee || undefined,
+          dueDate: act.dueDate || undefined,
+          context: act.context || undefined,
+          completed: Boolean(act.completed),
+          status: act.completed ? 'done' : 'pending',
+          meetingTitle: m.title,
+          meetingDate: m.date,
+        });
+      }
+    }
+    return items;
+  }
+
+  async getDecisionsForUser(userId: string): Promise<DecisionWithMeeting[]> {
+    const userData = await this.readUserData(userId);
+    if (!userData) return [];
+
+    const items: DecisionWithMeeting[] = [];
+    for (const m of userData.meetings) {
+      if (!m.analysis?.decisions) continue;
+      for (const dec of m.analysis.decisions) {
+        items.push({
+          id: dec.id,
+          meetingId: m.id,
+          decision: dec.decision,
+          rationale: dec.rationale || undefined,
+          madeBy: dec.madeBy || undefined,
+          timestamp: dec.timestamp || undefined,
+          timestampSeconds: dec.timestampSeconds,
+          meetingTitle: m.title,
+          meetingDate: m.date,
+          participants: (m.participants || []).map((p) => (typeof p === 'string' ? p : p.name)),
+        });
+      }
+    }
+    return items;
   }
 
   async saveMeetingAnalysis(

@@ -1,7 +1,18 @@
 import crypto from 'crypto';
 import { query, withTransaction, queryClient } from '@/lib/db/client';
 import { User, UserAccount, CreateUserInput } from '@/lib/auth/types';
-import { IUserRepository, IMeetingRepository, ISearchRepository, IShareRepository, PublicShareRecord, SharedUserRecord, GoogleProfile } from './types';
+import {
+  IUserRepository,
+  IMeetingRepository,
+  ISearchRepository,
+  IShareRepository,
+  PublicShareRecord,
+  SharedUserRecord,
+  GoogleProfile,
+  ActionItemWithMeeting,
+  DecisionWithMeeting,
+  DashboardData,
+} from './types';
 import { SearchResultItem } from '@/lib/schemas/search';
 import {
   Meeting,
@@ -399,6 +410,140 @@ export class PostgresMeetingRepository implements IMeetingRepository {
             avatarUrl: m.shared_by_avatar_url || undefined,
           }
         : undefined,
+    }));
+  }
+
+  async getDashboardData(userId: string): Promise<DashboardData> {
+    const meetings = await this.listMeetingsForUser(userId);
+    const totalMeetings = meetings.length;
+    const analyzedCount = meetings.filter((m) => m.hasAnalysis).length;
+    const reviewCount = meetings.filter((m) => m.hasReview).length;
+    const totalActionItems = meetings.reduce((sum, m) => sum + m.actionItemsCount, 0);
+
+    const completedRows = await query<{ count: string }>(
+      `SELECT COUNT(*) AS count
+       FROM action_items a
+       JOIN meetings m ON m.id = a.meeting_id
+       WHERE (m.user_id = $1 OR m.id IN (SELECT meeting_id FROM meeting_user_shares WHERE shared_with_user_id = $1))
+         AND a.completed = TRUE`,
+      [userId]
+    );
+    const completedActionItems = Number(completedRows[0]?.count || 0);
+
+    return {
+      stats: {
+        totalMeetings,
+        analyzedCount,
+        reviewCount,
+        totalActionItems,
+        completedActionItems,
+      },
+      meetings,
+    };
+  }
+
+  async getActionItemsForUser(userId: string): Promise<ActionItemWithMeeting[]> {
+    const rows = await query<{
+      id: string;
+      task: string;
+      assignee: string | null;
+      due_date: string | null;
+      context: string | null;
+      completed: boolean;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+    }>(
+      `SELECT
+         a.id,
+         a.task,
+         a.assignee,
+         a.due_date,
+         a.context,
+         a.completed,
+         m.id AS meeting_id,
+         m.title AS meeting_title,
+         m.meeting_date
+       FROM action_items a
+       JOIN meetings m ON m.id = a.meeting_id
+       WHERE m.user_id = $1
+          OR m.id IN (SELECT meeting_id FROM meeting_user_shares WHERE shared_with_user_id = $1)
+       ORDER BY m.meeting_date DESC, a.id ASC`,
+      [userId]
+    );
+
+    return rows.map((r) => ({
+      id: r.id,
+      task: r.task,
+      assignee: r.assignee || undefined,
+      dueDate: r.due_date || undefined,
+      context: r.context || undefined,
+      completed: Boolean(r.completed),
+      status: r.completed ? 'done' : 'pending',
+      meetingId: r.meeting_id,
+      meetingTitle: r.meeting_title,
+      meetingDate: r.meeting_date,
+    }));
+  }
+
+  async getDecisionsForUser(userId: string): Promise<DecisionWithMeeting[]> {
+    const rows = await query<{
+      id: string;
+      decision: string;
+      rationale: string | null;
+      made_by: string | null;
+      impact: string | null;
+      timestamp: string | null;
+      timestamp_seconds: number | null;
+      meeting_id: string;
+      meeting_title: string;
+      meeting_date: string;
+    }>(
+      `SELECT
+         d.id,
+         d.decision,
+         d.rationale,
+         d.made_by,
+         d.impact,
+         d.timestamp,
+         d.timestamp_seconds,
+         m.id AS meeting_id,
+         m.title AS meeting_title,
+         m.meeting_date
+       FROM decisions d
+       JOIN meetings m ON m.id = d.meeting_id
+       WHERE m.user_id = $1
+          OR m.id IN (SELECT meeting_id FROM meeting_user_shares WHERE shared_with_user_id = $1)
+       ORDER BY m.meeting_date DESC, d.id ASC`,
+      [userId]
+    );
+
+    if (rows.length === 0) return [];
+
+    const meetingIds = Array.from(new Set(rows.map((r) => r.meeting_id)));
+    const participantRows = await query<{ meeting_id: string; name: string }>(
+      `SELECT meeting_id, name FROM participants WHERE meeting_id = ANY($1::text[])`,
+      [meetingIds]
+    );
+
+    const participantsMap: Record<string, string[]> = {};
+    for (const p of participantRows) {
+      if (!participantsMap[p.meeting_id]) participantsMap[p.meeting_id] = [];
+      participantsMap[p.meeting_id].push(p.name);
+    }
+
+    return rows.map((r) => ({
+      id: r.id,
+      decision: r.decision,
+      rationale: r.rationale || undefined,
+      madeBy: r.made_by || undefined,
+      impact: r.impact || undefined,
+      timestamp: r.timestamp || undefined,
+      timestampSeconds: r.timestamp_seconds !== null ? Number(r.timestamp_seconds) : undefined,
+      meetingId: r.meeting_id,
+      meetingTitle: r.meeting_title,
+      meetingDate: r.meeting_date,
+      participants: participantsMap[r.meeting_id] || [],
     }));
   }
 

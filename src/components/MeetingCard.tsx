@@ -71,14 +71,14 @@ export function MeetingCard({ meeting }: MeetingCardProps) {
         {/* Title */}
         <div className="flex items-start justify-between gap-2 mb-3">
           <h3
-            className="text-sm font-medium leading-snug line-clamp-2 flex-1 transition-colors duration-150"
+            className="text-sm font-medium leading-snug line-clamp-2 flex-1 transition-colors duration-150 group-hover:text-white"
             style={{ color: '#f7f8f8', letterSpacing: '-0.012em' }}
           >
             {meeting.title}
           </h3>
           <ChevronRight
-            className="w-4 h-4 shrink-0 mt-0.5 transition-colors duration-150"
-            style={{ color: '#3e3e44' }}
+            className="w-4 h-4 shrink-0 mt-0.5 transition-all duration-150 group-hover:translate-x-0.5"
+            style={{ color: '#62666d' }}
           />
         </div>
 

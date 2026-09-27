@@ -12,6 +12,45 @@ export interface GoogleProfile {
   picture?: string;
 }
 
+export interface ActionItemWithMeeting {
+  id: string;
+  task: string;
+  assignee?: string;
+  dueDate?: string;
+  context?: string;
+  priority?: string;
+  completed: boolean;
+  status: 'pending' | 'in_progress' | 'done';
+  meetingId: string;
+  meetingTitle: string;
+  meetingDate: string;
+}
+
+export interface DecisionWithMeeting {
+  id: string;
+  decision: string;
+  rationale?: string;
+  madeBy?: string;
+  impact?: string;
+  timestamp?: string;
+  timestampSeconds?: number;
+  meetingId: string;
+  meetingTitle: string;
+  meetingDate: string;
+  participants: string[];
+}
+
+export interface DashboardData {
+  stats: {
+    totalMeetings: number;
+    analyzedCount: number;
+    reviewCount: number;
+    totalActionItems: number;
+    completedActionItems: number;
+  };
+  meetings: MeetingSummary[];
+}
+
 // -------------------------------------------------------
 // User Repository Interface
 // -------------------------------------------------------
@@ -40,6 +79,9 @@ export interface IUserRepository {
 export interface IMeetingRepository {
   listMeetingsForUser(userId: string): Promise<MeetingSummary[]>;
   getMeetingById(userId: string, meetingId: string): Promise<Meeting | null>;
+  getDashboardData(userId: string): Promise<DashboardData>;
+  getActionItemsForUser(userId: string): Promise<ActionItemWithMeeting[]>;
+  getDecisionsForUser(userId: string): Promise<DecisionWithMeeting[]>;
   importMeeting(userId: string, input: ImportMeetingInput): Promise<Meeting>;
   saveMeetingAnalysis(
     userId: string,
@@ -121,5 +163,3 @@ export interface IShareRepository {
   shareWithUser(sharedByUserId: string, meetingId: string, sharedWithUserId: string): Promise<void>;
   removeUserShare(sharedByUserId: string, meetingId: string, sharedWithUserId: string): Promise<boolean>;
 }
-
-
