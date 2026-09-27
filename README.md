@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# Fathom AI Clone
+
+Fathom AI Clone is a meeting intelligence workspace built with Next.js, React, TypeScript, and PostgreSQL. It turns meeting imports into summaries, decisions, action items, reviews, and shareable read-only meeting views.
+
+## What It Does
+
+- Landing page with a product preview, call to action, and feature overview.
+- Auth flow for sign in and sign up.
+- Dashboard with meeting stats, recent activity, and import actions.
+- Meetings library with grid and dense views, search, and template filters.
+- Meeting detail workspace with transcript, timeline, analysis, and export tooling.
+- Decisions and action items views for tracking outcomes from meetings.
+- Settings for profile data, AI configuration, and default meeting template.
+- Public share links for read-only meeting access.
+
+## Screenshots
+
+The screenshots below come from the captured assets in `pics/`.
+
+| Landing Page | Dashboard |
+| --- | --- |
+| ![Landing page](pics/landingPage.png) | ![Dashboard](pics/dashboard.png) |
+
+| Login | Meeting Workspace |
+| --- | --- |
+| ![Login](pics/login.png) | ![Meeting workspace](pics/meeting.png) |
+
+| Settings | Share View 1 |
+| --- | --- |
+| ![Settings](pics/settings.png) | ![Share view 1](pics/share1.png) |
+
+| Share View 2 |
+| --- |
+| ![Share view 2](pics/share2.png) |
+
+The `/pics` folder currently contains all available screenshots for the landing page, login, dashboard, meeting workspace, settings, and two share views.
+
+## Tech Stack
+
+- Next.js App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- PostgreSQL via Neon
+- OpenAI-compatible AI providers
+- Zod schema validation
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20 or newer
+- A PostgreSQL database
+- Optional: OpenAI API key or another OpenAI-compatible endpoint
+
+### Environment Variables
+
+Create a `.env.local` file from `.env.example` and fill in the values below:
+
+- `DATABASE_URL`
+- `OPENAI_API_KEY`
+- `OPENAI_BASE_URL`
+- `AUTH_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_REDIRECT_URI`
+
+### Install
+
+```bash
+npm install
+```
+
+### Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Database
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run migrations and optional seed data with:
 
-## Learn More
+```bash
+npm run db:migrate
+npm run db:seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Available Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` - start the development server
+- `npm run build` - build the production app
+- `npm run start` - run the production build
+- `npm run lint` - run ESLint
+- `npm run db:migrate` - run database migrations
+- `npm run db:seed` - seed sample data
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Main Routes
 
-## Deploy on Vercel
+- `/` - landing page
+- `/login` and `/signup` - authentication pages
+- `/dashboard` - workspace overview
+- `/meetings` - meetings library
+- `/meetings/[id]` - meeting workspace
+- `/action-items` - action items view
+- `/decisions` - decision log
+- `/settings` - profile and AI settings
+- `/share/[token]` - public shared meeting view
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The product supports both imported meetings and shared meetings.
+- AI settings can be configured per user in the app UI.
+- The public share view is read-only and does not require authentication.
+
