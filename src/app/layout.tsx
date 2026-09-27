@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} dark h-full`}>
       <body className="min-h-full flex flex-col bg-[#08090a] text-[#d0d6e0] antialiased" style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
         <AuthProvider>{children}</AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
