@@ -16,7 +16,6 @@ interface Decision {
   decision: string;
   rationale?: string;
   madeBy?: string;
-  impact?: string;
   timestamp?: string;
   timestampSeconds?: number;
   meetingId: string;

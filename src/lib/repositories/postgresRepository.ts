@@ -492,7 +492,6 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       decision: string;
       rationale: string | null;
       made_by: string | null;
-      impact: string | null;
       timestamp: string | null;
       timestamp_seconds: number | null;
       meeting_id: string;
@@ -504,7 +503,6 @@ export class PostgresMeetingRepository implements IMeetingRepository {
          d.decision,
          d.rationale,
          d.made_by,
-         d.impact,
          d.timestamp,
          d.timestamp_seconds,
          m.id AS meeting_id,
@@ -537,7 +535,6 @@ export class PostgresMeetingRepository implements IMeetingRepository {
       decision: r.decision,
       rationale: r.rationale || undefined,
       madeBy: r.made_by || undefined,
-      impact: r.impact || undefined,
       timestamp: r.timestamp || undefined,
       timestampSeconds: r.timestamp_seconds !== null ? Number(r.timestamp_seconds) : undefined,
       meetingId: r.meeting_id,
