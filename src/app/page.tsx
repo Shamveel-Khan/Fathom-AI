@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
+import TechText from './TechText';
 import {
   Sparkles,
   ArrowRight,
@@ -155,19 +156,20 @@ export default function LandingPage() {
             </kbd>
           </div>
 
-          {/* Hero Headline */}
-          <h1
-            className="max-w-4xl mx-auto tracking-tight mb-6"
-            style={{
-              color: '#f7f8f8',
-              fontSize: 'clamp(36px, 5.5vw, 56px)',
-              fontWeight: 590,
-              lineHeight: '1.1',
-              letterSpacing: '-0.022em',
-            }}
-          >
-            Engineered meeting intelligence for high-velocity teams.
-          </h1>
+          {/* Hero Headline with TechText effect */}
+          <div style={{ width: '100%', height: '250px', position: 'relative' }}>
+            <TechText
+              text="
+                  FATHOM AI.
+                  "
+              fontWeight={600}
+              fontSize={150}
+              reveal="letter"
+              dashLength={4}
+              dashGap={2}
+              specks={15}
+            />
+          </div>
 
           {/* Hero Subtitle */}
           <p
