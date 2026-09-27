@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from './AuthProvider';
@@ -35,6 +35,26 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [switchingUserId, setSwitchingUserId] = useState<string | null>(null);
+  const [shortcutLabel, setShortcutLabel] = useState('⌘K');
+
+  // Detect platform for shortcut hint (macOS vs Windows/Linux)
+  useEffect(() => {
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/i.test(navigator.userAgent || navigator.platform || '');
+    setShortcutLabel(isMac ? '⌘K' : 'Ctrl+K');
+  }, []);
+
+  // Global keyboard shortcut listener for Cmd+K and Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchModalOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   if (!user) return null;
 
@@ -103,12 +123,13 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
             {/* Search */}
             <button
               onClick={() => setIsSearchModalOpen(true)}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors duration-150"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors duration-150 cursor-pointer"
               style={{
                 background: 'rgba(255,255,255,0.04)',
                 borderColor: 'rgba(255,255,255,0.08)',
                 color: '#8a8f98',
               }}
+              title={`Global Search (${shortcutLabel})`}
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden lg:inline text-sm">Search...</span>
@@ -122,15 +143,16 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
                   letterSpacing: '0.02em',
                 }}
               >
-                ⌘K
+                {shortcutLabel}
               </kbd>
             </button>
 
             {/* Mobile search */}
             <button
               onClick={() => setIsSearchModalOpen(true)}
-              className="sm:hidden p-2 rounded-lg"
+              className="sm:hidden p-2 rounded-lg cursor-pointer"
               style={{ color: '#8a8f98' }}
+              title={`Global Search (${shortcutLabel})`}
             >
               <Search className="w-4 h-4" />
             </button>
@@ -138,7 +160,7 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
             {/* Import Meeting */}
             <button
               onClick={() => setIsImportModalOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-opacity duration-150 hover:opacity-90"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-opacity duration-150 hover:opacity-90 cursor-pointer"
               style={{ background: '#ffffff', color: '#08090a' }}
             >
               <Upload className="w-3.5 h-3.5" />
@@ -149,7 +171,7 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-lg transition-colors duration-150"
+                className="flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
                 style={{ color: '#d0d6e0' }}
               >
                 <div
@@ -193,28 +215,47 @@ export function AppNav({ apiKey, onSaveApiKey, baseUrl = '', model = 'gpt-4o-min
                       {[
                         { id: 'user-1', initials: 'SC', name: 'Sarah Chen', role: 'Head of Product', color: '#27a644' },
                         { id: 'user-2', initials: 'AR', name: 'Alex Rivera', role: 'Lead Engineer', color: '#7170ff' },
-                      ].map((u) => (
-                        <button
-                          key={u.id}
-                          onClick={async () => { setIsUserMenuOpen(false); await quickLogin(u.id); }}
-                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left transition-colors duration-150"
-                          style={{ color: '#d0d6e0' }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        >
-                          <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-                            style={{ background: u.color }}
+                      ].map((u) => {
+                        const isSwitchingThis = switchingUserId === u.id;
+                        return (
+                          <button
+                            key={u.id}
+                            disabled={Boolean(switchingUserId)}
+                            onClick={async () => {
+                              if (switchingUserId) return;
+                              setSwitchingUserId(u.id);
+                              try {
+                                await quickLogin(u.id);
+                              } finally {
+                                setSwitchingUserId(null);
+                                setIsUserMenuOpen(false);
+                              }
+                            }}
+                            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ color: '#d0d6e0' }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                           >
-                            {u.initials}
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-xs font-medium" style={{ color: '#f7f8f8' }}>{u.name}</p>
-                            <p className="text-[10px]" style={{ color: '#62666d' }}>{u.role}</p>
-                          </div>
-                          {user.id === u.id && <Sparkles className="w-3 h-3" style={{ color: '#7170ff' }} />}
-                        </button>
-                      ))}
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                              style={{ background: u.color }}
+                            >
+                              {isSwitchingThis ? (
+                                <div className="w-3 h-3 border-2 border-white/30 border-t-white animate-spin rounded-full" />
+                              ) : (
+                                u.initials
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium truncate" style={{ color: '#f7f8f8' }}>
+                                {isSwitchingThis ? 'Switching…' : u.name}
+                              </p>
+                              <p className="text-[10px] truncate" style={{ color: '#62666d' }}>{u.role}</p>
+                            </div>
+                            {user.id === u.id && !isSwitchingThis && <Sparkles className="w-3 h-3 shrink-0" style={{ color: '#7170ff' }} />}
+                          </button>
+                        );
+                      })}
                     </div>
 
                     <div className="p-2 border-t" style={{ borderColor: '#23252a' }}>

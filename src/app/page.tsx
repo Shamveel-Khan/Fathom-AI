@@ -26,6 +26,12 @@ export default function LandingPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'video' | 'transcript'>('video');
+  const [shortcutLabel, setShortcutLabel] = useState('⌘K');
+
+  useEffect(() => {
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/i.test(navigator.userAgent || navigator.platform || '');
+    setShortcutLabel(isMac ? '⌘K' : 'Ctrl+K');
+  }, []);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -145,7 +151,7 @@ export default function LandingPage() {
               className="text-[11px] font-mono px-1.5 py-0.5 rounded border group-hover:text-white transition-colors"
               style={{ background: '#232326', borderColor: '#34343a', color: '#d0d6e0' }}
             >
-              ⌘K
+              {shortcutLabel}
             </kbd>
           </div>
 

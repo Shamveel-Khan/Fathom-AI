@@ -3,6 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Key, Eye, EyeOff, Save, Trash2, X, CheckCircle2, ShieldCheck } from 'lucide-react';
 
+const MODEL_PRESETS = [
+  { id: 'gpt-4o-mini', label: 'GPT-4o Mini (Fast & Cost Effective - Default)' },
+  { id: 'gpt-4o', label: 'GPT-4o (High Reasoning & Executive Quality)' },
+  { id: 'claude-3-5-sonnet', label: 'Claude 3.5 Sonnet (via OpenAI compatible proxy)' },
+  { id: 'deepseek-chat', label: 'DeepSeek Chat (via OpenAI compatible proxy)' },
+];
+
 interface ApiKeyModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,21 +29,33 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
 }) => {
   const [inputKey, setInputKey] = useState(apiKey);
   const [inputBaseUrl, setInputBaseUrl] = useState(baseUrl);
-  const [inputModel, setInputModel] = useState(model);
+  const [selectedPreset, setSelectedPreset] = useState('gpt-4o-mini');
+  const [customModelInput, setCustomModelInput] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     setInputKey(apiKey);
     setInputBaseUrl(baseUrl);
-    setInputModel(model);
+    const isPreset = MODEL_PRESETS.some((m) => m.id === model);
+    if (isPreset) {
+      setSelectedPreset(model);
+      setCustomModelInput('');
+    } else {
+      setSelectedPreset('custom');
+      setCustomModelInput(model || '');
+    }
   }, [apiKey, baseUrl, model, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    onSaveKey(inputKey.trim(), inputBaseUrl.trim() || undefined, inputModel.trim() || undefined);
+    const effectiveModel = selectedPreset === 'custom'
+      ? (customModelInput.trim() || 'gpt-4o-mini')
+      : selectedPreset;
+
+    onSaveKey(inputKey.trim(), inputBaseUrl.trim() || undefined, effectiveModel || undefined);
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);
@@ -47,7 +66,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
   const handleClear = () => {
     setInputKey('');
     setInputBaseUrl('');
-    setInputModel('gpt-4o-mini');
+    setSelectedPreset('gpt-4o-mini');
+    setCustomModelInput('');
     onSaveKey('', undefined, undefined);
   };
 
@@ -132,17 +152,51 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
             >
               Model Name
             </label>
-            <input
-              type="text"
-              placeholder="gpt-4o-mini"
-              value={inputModel}
-              onChange={(e) => setInputModel(e.target.value)}
+            <select
+              value={selectedPreset}
+              onChange={(e) => setSelectedPreset(e.target.value)}
               className="w-full rounded-lg border px-3.5 py-2 text-xs focus:outline-none transition-colors"
               style={{ background: '#1c1c1f', borderColor: '#34343a', color: '#f7f8f8' }}
               onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
               onBlur={(e) => (e.currentTarget.style.borderColor = '#34343a')}
-            />
+            >
+              {MODEL_PRESETS.map((m) => (
+                <option key={m.id} value={m.id} style={{ background: '#1c1c1f' }}>
+                  {m.label}
+                </option>
+              ))}
+              <option value="custom" style={{ background: '#1c1c1f' }}>
+                Custom model (enter identifier)…
+              </option>
+            </select>
           </div>
+
+          {selectedPreset === 'custom' && (
+            <div>
+              <label
+                className="block text-[11px] font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: '#8a8f98', letterSpacing: '0.06em' }}
+              >
+                Custom Model Identifier
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. meta-llama/llama-3.3-70b-instruct or mistralai/mistral-large"
+                value={customModelInput}
+                onChange={(e) => setCustomModelInput(e.target.value)}
+                required={selectedPreset === 'custom'}
+                className="w-full rounded-lg border px-3.5 py-2 text-xs focus:outline-none transition-colors"
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  background: '#1c1c1f',
+                  borderColor: '#34343a',
+                  color: '#f7f8f8',
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
+                onBlur={(e) => (e.currentTarget.style.borderColor = '#34343a')}
+              />
+            </div>
+          )}
 
           <div>
             <label

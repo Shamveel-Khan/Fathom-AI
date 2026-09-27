@@ -8,7 +8,7 @@ interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  quickLogin: (userId: string) => Promise<void>;
+  quickLogin: (userId: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   mutateUser: (newUser?: User | null) => void;
 }
@@ -66,14 +66,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Quick login for demo: directly call login with preset credentials
   const quickLogin = useCallback(
-    async (userId: string) => {
+    async (userId: string): Promise<{ success: boolean; error?: string }> => {
       const credentials: Record<string, { email: string; password: string }> = {
         'user-1': { email: 'sarah@fathom.ai', password: 'password123' },
         'user-2': { email: 'alex@fathom.ai', password: 'password123' },
       };
       const creds = credentials[userId];
-      if (!creds) return;
-      await login(creds.email, creds.password);
+      if (!creds) return { success: false, error: 'User credentials not found' };
+      return await login(creds.email, creds.password);
     },
     [login]
   );

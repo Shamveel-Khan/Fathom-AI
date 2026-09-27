@@ -12,7 +12,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<null | 'credentials' | 'google' | 'user-1' | 'user-2'>(null);
+
+  const isSubmitting = loadingAction !== null;
 
   // Already logged in → redirect
   useEffect(() => {
@@ -23,13 +25,33 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
-    setIsSubmitting(true);
+    setLoadingAction('credentials');
     const result = await login(email, password);
     if (!result.success) {
       setError(result.error || 'Login failed.');
-      setIsSubmitting(false);
+      setLoadingAction(null);
     }
+  };
+
+  const handleQuickDemo = async (userId: 'user-1' | 'user-2') => {
+    if (isSubmitting) return;
+    setError('');
+    setLoadingAction(userId);
+    const result = await quickLogin(userId);
+    if (!result?.success) {
+      setError(result?.error || 'Demo login failed.');
+      setLoadingAction(null);
+    }
+  };
+
+  const handleGoogleLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setError('');
+    setLoadingAction('google');
+    window.location.href = '/api/auth/google';
   };
 
   if (isLoading) {
@@ -114,47 +136,72 @@ export default function LoginPage() {
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
-                onClick={() => quickLogin('user-1')}
+                type="button"
+                onClick={() => handleQuickDemo('user-1')}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-[#34343a] bg-[#232326] hover:border-[#3e3e44] transition-colors text-left disabled:opacity-50"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-[#34343a] bg-[#232326] hover:border-[#3e3e44] transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <div className="w-7 h-7 rounded-full bg-[#68cc58]/20 border border-[#68cc58]/30 flex items-center justify-center text-[10px] font-bold text-[#68cc58] shrink-0">
-                  SC
+                  {loadingAction === 'user-1' ? (
+                    <div className="w-3.5 h-3.5 border-2 border-[#23252a] border-t-[#68cc58] animate-spin rounded-full" />
+                  ) : (
+                    'SC'
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-[#f7f8f8] leading-tight">Sarah Chen</p>
-                  <p className="text-[10px] text-[#62666d] leading-tight">Head of Product</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-[#f7f8f8] leading-tight truncate">
+                    {loadingAction === 'user-1' ? 'Signing in…' : 'Sarah Chen'}
+                  </p>
+                  <p className="text-[10px] text-[#62666d] leading-tight truncate">Head of Product</p>
                 </div>
               </button>
               <button
-                onClick={() => quickLogin('user-2')}
+                type="button"
+                onClick={() => handleQuickDemo('user-2')}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-[#34343a] bg-[#232326] hover:border-[#3e3e44] transition-colors text-left disabled:opacity-50"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-[#34343a] bg-[#232326] hover:border-[#3e3e44] transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <div className="w-7 h-7 rounded-full bg-[#7170ff]/20 border border-[#7170ff]/30 flex items-center justify-center text-[10px] font-bold text-[#7170ff] shrink-0">
-                  AR
+                  {loadingAction === 'user-2' ? (
+                    <div className="w-3.5 h-3.5 border-2 border-[#23252a] border-t-[#7170ff] animate-spin rounded-full" />
+                  ) : (
+                    'AR'
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-[#f7f8f8] leading-tight">Alex Rivera</p>
-                  <p className="text-[10px] text-[#62666d] leading-tight">Lead Engineer</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-[#f7f8f8] leading-tight truncate">
+                    {loadingAction === 'user-2' ? 'Signing in…' : 'Alex Rivera'}
+                  </p>
+                  <p className="text-[10px] text-[#62666d] leading-tight truncate">Lead Engineer</p>
                 </div>
               </button>
             </div>
           </div>
 
           {/* Google OAuth Button */}
-          <a
-            href="/api/auth/google"
-            className="w-full mb-5 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-[#34343a] bg-[#1c1c1f] hover:border-[#3e3e44] text-sm text-[#d0d6e0] transition-colors"
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isSubmitting}
+            className="w-full mb-5 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-[#34343a] bg-[#1c1c1f] hover:border-[#3e3e44] text-sm text-[#d0d6e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-            </svg>
-            Sign in with Google
-          </a>
+            {loadingAction === 'google' ? (
+              <>
+                <div className="w-4 h-4 border-2 border-[#23252a] border-t-[#7170ff] animate-spin rounded-full" />
+                <span>Connecting to Google…</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>Sign in with Google</span>
+              </>
+            )}
+          </button>
 
           {/* Divider */}
           <div className="relative mb-5">
@@ -176,7 +223,8 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="sarah@fathom.ai"
                 required
-                className="w-full bg-[#1c1c1f] border border-[#34343a] rounded-lg px-3.5 py-2.5 h-[36px] text-[#f7f8f8] placeholder:text-[#62666d] focus:border-[#7170ff] focus:outline-none focus:ring-1 focus:ring-[#7170ff] text-sm transition-colors"
+                disabled={isSubmitting}
+                className="w-full bg-[#1c1c1f] border border-[#34343a] rounded-lg px-3.5 py-2.5 h-[36px] text-[#f7f8f8] placeholder:text-[#62666d] focus:border-[#7170ff] focus:outline-none focus:ring-1 focus:ring-[#7170ff] text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -188,12 +236,14 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="password123"
                   required
-                  className="w-full bg-[#1c1c1f] border border-[#34343a] rounded-lg px-3.5 py-2.5 pr-10 h-[36px] text-[#f7f8f8] placeholder:text-[#62666d] focus:border-[#7170ff] focus:outline-none focus:ring-1 focus:ring-[#7170ff] text-sm transition-colors"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#1c1c1f] border border-[#34343a] rounded-lg px-3.5 py-2.5 pr-10 h-[36px] text-[#f7f8f8] placeholder:text-[#62666d] focus:border-[#7170ff] focus:outline-none focus:ring-1 focus:ring-[#7170ff] text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#62666d] hover:text-[#8a8f98] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#62666d] hover:text-[#8a8f98] transition-colors disabled:opacity-50"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -209,13 +259,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 bg-white text-[#08090a] rounded-lg h-[36px] px-4 font-medium text-sm hover:bg-white/90 disabled:opacity-50 transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-white text-[#08090a] rounded-lg h-[36px] px-4 font-medium text-sm hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
-              {isSubmitting ? (
-                <div className="w-4 h-4 border-2 border-[#23252a] border-t-[#7170ff] animate-spin rounded-full" />
+              {loadingAction === 'credentials' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-[#23252a] border-t-[#7170ff] animate-spin rounded-full" />
+                  <span>Signing in…</span>
+                </>
               ) : (
                 <>
-                  Sign in <ArrowRight className="w-4 h-4" />
+                  <span>Sign in</span>
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
@@ -223,7 +277,10 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-xs text-[#62666d]">
             Don&apos;t have an account?{' '}
-            <a href="/signup" className="text-[#828fff] hover:text-[#7170ff] transition-colors">
+            <a
+              href="/signup"
+              className={`text-[#828fff] hover:text-[#7170ff] transition-colors ${isSubmitting ? 'pointer-events-none opacity-50' : ''}`}
+            >
               Create an account
             </a>
           </p>

@@ -51,6 +51,8 @@ export default function SettingsPage() {
 
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
+  const [selectedModelPreset, setSelectedModelPreset] = useState('gpt-4o-mini');
+  const [customModelInput, setCustomModelInput] = useState('');
   const [model, setModel] = useState('gpt-4o-mini');
   const [defaultTemplate, setDefaultTemplate] = useState('general');
   const [aiSuccess, setAiSuccess] = useState(false);
@@ -68,7 +70,17 @@ export default function SettingsPage() {
     try {
       setApiKey(localStorage.getItem(LOCAL_STORAGE_KEY) || '');
       setBaseUrl(localStorage.getItem(LOCAL_STORAGE_BASE_URL) || '');
-      setModel(localStorage.getItem(LOCAL_STORAGE_MODEL) || 'gpt-4o-mini');
+      const storedModel = localStorage.getItem(LOCAL_STORAGE_MODEL) || 'gpt-4o-mini';
+      const isPreset = MODEL_PRESETS.some((m) => m.id === storedModel);
+      if (isPreset) {
+        setSelectedModelPreset(storedModel);
+        setCustomModelInput('');
+        setModel(storedModel);
+      } else {
+        setSelectedModelPreset('custom');
+        setCustomModelInput(storedModel);
+        setModel(storedModel);
+      }
       setDefaultTemplate(localStorage.getItem(LOCAL_STORAGE_DEFAULT_TEMPLATE) || 'general');
     } catch {}
   }, []);
@@ -99,13 +111,35 @@ export default function SettingsPage() {
     }
   };
 
+  const handleModelPresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setSelectedModelPreset(val);
+    if (val === 'custom') {
+      const effective = customModelInput.trim();
+      setModel(effective);
+    } else {
+      setModel(val);
+    }
+  };
+
+  const handleCustomModelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCustomModelInput(val);
+    setModel(val);
+  };
+
   const handleSaveAiSettings = (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const effectiveModel = selectedModelPreset === 'custom'
+        ? (customModelInput.trim() || 'gpt-4o-mini')
+        : selectedModelPreset;
+
       localStorage.setItem(LOCAL_STORAGE_KEY, apiKey.trim());
       baseUrl.trim() ? localStorage.setItem(LOCAL_STORAGE_BASE_URL, baseUrl.trim()) : localStorage.removeItem(LOCAL_STORAGE_BASE_URL);
-      localStorage.setItem(LOCAL_STORAGE_MODEL, model.trim() || 'gpt-4o-mini');
+      localStorage.setItem(LOCAL_STORAGE_MODEL, effectiveModel);
       localStorage.setItem(LOCAL_STORAGE_DEFAULT_TEMPLATE, defaultTemplate);
+      setModel(effectiveModel);
       setAiSuccess(true);
       setTimeout(() => setAiSuccess(false), 2500);
     } catch (err) {
@@ -299,10 +333,10 @@ export default function SettingsPage() {
                 <p className="text-[10px] mt-1" style={{ color: '#62666d' }}>For proxy endpoints or self-hosted Ollama/vLLM.</p>
               </div>
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: '#d0d6e0' }}>Model Identifier</label>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: '#d0d6e0' }}>AI Model</label>
                 <select
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
+                  value={selectedModelPreset}
+                  onChange={handleModelPresetChange}
                   className={inputClass}
                   style={{ ...inputStyle }}
                   onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
@@ -311,9 +345,31 @@ export default function SettingsPage() {
                   {MODEL_PRESETS.map((m) => (
                     <option key={m.id} value={m.id} style={{ background: '#1c1c1f' }}>{m.label}</option>
                   ))}
+                  <option value="custom" style={{ background: '#1c1c1f' }}>Custom model (enter identifier)…</option>
                 </select>
+                <p className="text-[10px] mt-1" style={{ color: '#62666d' }}>Select a preset or enter a custom model ID.</p>
               </div>
             </div>
+
+            {selectedModelPreset === 'custom' && (
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: '#d0d6e0' }}>Custom Model Identifier</label>
+                <input
+                  type="text"
+                  value={customModelInput}
+                  onChange={handleCustomModelChange}
+                  placeholder="e.g. meta-llama/llama-3.3-70b-instruct, mistralai/mistral-large, or qwen/qwen-2.5-72b-instruct"
+                  required={selectedModelPreset === 'custom'}
+                  className={inputClass}
+                  style={{ ...inputStyle, fontFamily: "'JetBrains Mono', monospace" }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = '#7170ff')}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = '#34343a')}
+                />
+                <p className="text-[10px] mt-1" style={{ color: '#62666d' }}>
+                  Specify the exact model name or ID for your OpenAI-compatible endpoint.
+                </p>
+              </div>
+            )}
 
             {/* Default Template */}
             <div className="pt-2">
